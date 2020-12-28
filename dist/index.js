@@ -5906,6 +5906,7 @@ function wrappy (fn, cb) {
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 const fs = __webpack_require__(747);
+const path = __webpack_require__(622);
 const core = __webpack_require__(186);
 const github = __webpack_require__(438);
 const lcov = __webpack_require__(318);
@@ -5914,6 +5915,19 @@ async function main() {
   const token = core.getInput('github-token');
   const baseFile = core.getInput('lcov-file');
   const headFile = core.getInput('head-lcov-file');
+  const directoryPath = path.join(__dirname, '../');
+
+  fs.readdir(directoryPath, function (err, files) {
+    //handling error
+    if (err) {
+      return console.log('Unable to scan directory: ' + err);
+    }
+    //listing all files using forEach
+    files.forEach(function (file) {
+      // Do whatever you want to do with the file
+      console.log(file);
+    });
+  });
 
   const baseFileRaw = fs.readFileSync(baseFile, 'utf8');
 
