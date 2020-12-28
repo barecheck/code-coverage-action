@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "description": "GitHub Action that posts coverage as comment in Pull request",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0"
+  },
   "devDependencies": {
     "eslint": "^7.16.0",
     "eslint-plugin-import": "^2.22.1",

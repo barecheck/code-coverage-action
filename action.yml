@@ -1,11 +1,13 @@
-name: "Baremetric - Code Coverage"
-description: "Sends a message to PR with proper percentage of code coverage"
+name: 'Baremetric - Code Coverage'
+description: 'Sends a message to PR with proper percentage of code coverage'
 inputs:
   lcov-file:
-    description: "Path where code coverage artifacts located"
+    description: 'Path where code coverage artifacts located'
     required: false
-    default: "./coverage/lcov.info"
-
+    default: './coverage/lcov.info'
+outputs:
+  time:
+    description: 'The time we greeted you'
 runs:
-  using: "node12"
-  main: "index.js"
+  using: 'node12'
+  main: 'index.js'
