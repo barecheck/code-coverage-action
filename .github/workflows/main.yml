@@ -1,4 +1,4 @@
-on: [push]
+on: [pull_request]
 
 jobs:
   generate_coverage_job:
@@ -7,8 +7,9 @@ jobs:
     steps:
       - name: Generate Code Coverage report
         id: code_coverage
-        uses: barecheck/code-coverage-action@v0.1.4
+        uses: barecheck/code-coverage-action@v0.1.5
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           lcov-file: './data/lcov.info'
           head-lcov-file: './data/head-lcov.info'
 

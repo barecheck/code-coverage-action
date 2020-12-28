@@ -1,8 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const core = require('@actions/core');
-const github = require('@actions/github');
+
 const lcov = require('./lcov');
+const { sendComment } = require('./github');
 
 async function main() {
   const token = core.getInput('github-token');
@@ -32,16 +33,20 @@ async function main() {
   const headFileData = await lcov.parse(headFileRaw);
   const baseFileData = await lcov.parse(baseFileRaw);
 
-  const basePercentage = lcov.percentage(baseFileData);
-  const headPercentage = lcov.percentage(headFileData);
+  const basePercentage = lcov.percentage(baseFileData).toFixed(2);
+  const headPercentage = lcov.percentage(headFileData).toFixed(2);
 
   const diff = basePercentage - headPercentage;
+
+  sendComment(token, diff, basePercentage);
 
   core.setOutput('percentage', basePercentage);
   core.setOutput('diff', diff);
 }
 
-main().catch(function (err) {
+try {
+  main();
+} catch {
   console.log(err);
   core.setFailed(err.message);
-});
+}

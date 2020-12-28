@@ -5902,14 +5902,40 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 396:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const github = __webpack_require__(438);
+
+const sendComment = async (token, diff, totalCoverage) => {
+  const octokit = github.getOctokit(token);
+  const arrow = diff === 0 ? '' : diff < 0 ? '▾' : '▴';
+
+  if (github.context.payload.pull_request) {
+    await octokit.issues.createComment({
+      repo: github.context.repo.repo,
+      owner: github.context.repo.owner,
+      issue_number: github.context.payload.pull_request.number,
+      body: `<h3>Code coverage report</h3>Total: <b>${totalCoverage}%</b>:\n\nYour code coverage diff: <b>${diff}% ${arrow}</b>`
+    });
+  }
+};
+module.exports = {
+  sendComment
+};
+
+
+/***/ }),
+
 /***/ 351:
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 const fs = __webpack_require__(747);
 const path = __webpack_require__(622);
 const core = __webpack_require__(186);
-const github = __webpack_require__(438);
+
 const lcov = __webpack_require__(318);
+const { sendComment } = __webpack_require__(396);
 
 async function main() {
   const token = core.getInput('github-token');
@@ -5939,19 +5965,23 @@ async function main() {
   const headFileData = await lcov.parse(headFileRaw);
   const baseFileData = await lcov.parse(baseFileRaw);
 
-  const basePercentage = lcov.percentage(baseFileData);
-  const headPercentage = lcov.percentage(headFileData);
+  const basePercentage = lcov.percentage(baseFileData).toFixed(2);
+  const headPercentage = lcov.percentage(headFileData).toFixed(2);
 
   const diff = basePercentage - headPercentage;
+
+  sendComment(token, diff, basePercentage);
 
   core.setOutput('percentage', basePercentage);
   core.setOutput('diff', diff);
 }
 
-main().catch(function (err) {
+try {
+  main();
+} catch {
   console.log(err);
   core.setFailed(err.message);
-});
+}
 
 
 /***/ }),
