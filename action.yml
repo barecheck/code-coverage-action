@@ -1,4 +1,4 @@
-name: 'Baremetric - Code Coverage'
+name: 'Barecheck - Code Coverage'
 description: 'Sends a message to PR with proper percentage of code coverage'
 inputs:
   lcov-file:
