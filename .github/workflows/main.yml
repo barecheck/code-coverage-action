@@ -9,7 +9,7 @@ jobs:
         id: code-coverage
         uses: barecheck/code-coverage-action@v0.1.4
         with:
-          lcov-file: './coverage/lcov.info'
+          lcov-file: './data/lcov.info'
           head-lcov-file: './data/head-lcov.info'
       # Use the output from the `code-coverage` step
       - name: Get the output percentage
