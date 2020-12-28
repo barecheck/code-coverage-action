@@ -6,11 +6,11 @@ jobs:
     name: Example of using Code Coverage action
     steps:
       - name: Generate Code Coverage report
-        id: code-coverage
+        id: code_coverage
         uses: barecheck/code-coverage-action@v0.1.6
         with:
           lcov-file: 'data/lcov.info'
           head-lcov-file: 'data/head-lcov.info'
-      # Use the output from the `code-coverage` step
+      # Use the output from the `code_coverage` step
       - name: Get the output percentage
-        run: echo "The percentage was ${{ steps.hello.outputs.percentage }}"
+        run: echo "The percentage ${{ steps.code_coverage.outputs.percentage }}"
