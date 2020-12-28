@@ -5902,14 +5902,36 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 396:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const { GitHub, context } = __webpack_require__(438);
+
+const sendComment = async (token, diff) => {
+  await new GitHub(token).issues.createComment({
+    repo: context.repo.repo,
+    owner: context.repo.owner,
+    issue_number: context.payload.pull_request.number,
+    body: `Your percentage difference is ${diff}`
+  });
+};
+
+module.exports = {
+  sendComment
+};
+
+
+/***/ }),
+
 /***/ 351:
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 const fs = __webpack_require__(747);
 const path = __webpack_require__(622);
 const core = __webpack_require__(186);
-const github = __webpack_require__(438);
+
 const lcov = __webpack_require__(318);
+const { sendComment } = __webpack_require__(396);
 
 async function main() {
   const token = core.getInput('github-token');
@@ -5943,6 +5965,8 @@ async function main() {
   const headPercentage = lcov.percentage(headFileData);
 
   const diff = basePercentage - headPercentage;
+
+  sendComment(token, diff);
 
   core.setOutput('percentage', basePercentage);
   core.setOutput('diff', diff);
