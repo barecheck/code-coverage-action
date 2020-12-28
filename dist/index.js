@@ -5936,7 +5936,6 @@ const { sendComment } = __webpack_require__(396);
 
 async function main() {
   const token = core.getInput('github-token');
-  console.log(token);
   const baseFile = core.getInput('lcov-file');
   const headFile = core.getInput('head-lcov-file');
 

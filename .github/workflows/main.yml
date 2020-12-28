@@ -9,6 +9,7 @@ jobs:
         id: code_coverage
         uses: barecheck/code-coverage-action@v0.1.5
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           lcov-file: './data/lcov.info'
           head-lcov-file: './data/head-lcov.info'
 

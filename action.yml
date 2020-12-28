@@ -1,13 +1,16 @@
 name: 'Barecheck - Code Coverage'
 description: 'Sends a message to PR with proper percentage of code coverage'
 inputs:
+  github-token:
+    description: Your GitHub secret token
+    required: true
   lcov-file:
     description: 'Path where code coverage artifacts located'
-    required: false
+    required: true
     default: './coverage/lcov.info'
   head-lcov-file:
     description: 'Code coverage head branch report to compare with'
-    required: false
+    required: true
     default: null
 outputs:
   percentage:
