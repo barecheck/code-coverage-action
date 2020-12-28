@@ -1,5 +1,8 @@
 name: 'Barecheck - Code Coverage'
 description: 'Sends a message to PR with proper percentage of code coverage'
+branding:
+  icon: 'check-circle'
+  color: 'yellow'
 inputs:
   github-token:
     description: Your GitHub secret token

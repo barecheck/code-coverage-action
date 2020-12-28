@@ -5910,12 +5910,14 @@ const github = __webpack_require__(438);
 const sendComment = async (token, diff) => {
   const octokit = github.getOctokit(token);
 
-  await octokit.issues.createComment({
-    repo: github.context.repo.repo,
-    owner: github.context.repo.owner,
-    issue_number: github.context.payload.pull_request.number,
-    body: `Your percentage difference is ${diff}`
-  });
+  if (github.context.payload.pull_request) {
+    await octokit.issues.createComment({
+      repo: github.context.repo.repo,
+      owner: github.context.repo.owner,
+      issue_number: github.context.payload.pull_request.number,
+      body: `Your percentage difference is ${diff}`
+    });
+  }
 };
 module.exports = {
   sendComment
@@ -5973,10 +5975,12 @@ async function main() {
   core.setOutput('diff', diff);
 }
 
-main().catch(function (err) {
+try {
+  main();
+} catch {
   console.log(err);
   core.setFailed(err.message);
-});
+}
 
 
 /***/ }),

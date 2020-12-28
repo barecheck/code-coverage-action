@@ -44,7 +44,9 @@ async function main() {
   core.setOutput('diff', diff);
 }
 
-main().catch(function (err) {
+try {
+  main();
+} catch {
   console.log(err);
   core.setFailed(err.message);
-});
+}
