@@ -1,6 +1,6 @@
 const github = require('@actions/github');
 
-const sendComment = async (token, diff) => {
+const sendComment = async (token, diff, totalCoverage) => {
   const octokit = github.getOctokit(token);
 
   if (github.context.payload.pull_request) {
@@ -8,7 +8,10 @@ const sendComment = async (token, diff) => {
       repo: github.context.repo.repo,
       owner: github.context.repo.owner,
       issue_number: github.context.payload.pull_request.number,
-      body: `Your percentage difference is ${diff}`
+      body: `
+      <h4>Code coverage report</h4>
+      Total: <b>${totalCoverage}%</b>: \n\n
+      Your percentage difference: <b>${diff}%</b>`
     });
   }
 };

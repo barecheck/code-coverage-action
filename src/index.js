@@ -38,7 +38,7 @@ async function main() {
 
   const diff = basePercentage - headPercentage;
 
-  sendComment(token, diff);
+  sendComment(token, diff, basePercentage);
 
   core.setOutput('percentage', basePercentage);
   core.setOutput('diff', diff);
