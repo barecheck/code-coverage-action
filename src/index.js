@@ -32,12 +32,13 @@ async function main() {
   const headFileData = await lcov.parse(headFileRaw);
   const baseFileData = await lcov.parse(baseFileRaw);
 
-  console.log(baseFileData);
-  console.log(headFileData);
+  const basePercentage = lcov.percentage(baseFileData);
+  const headPercentage = lcov.percentage(headFileData);
 
-  const percentage = lcov.percentage(baseFileData);
+  const diff = basePercentage - headPercentage;
 
   core.setOutput('percentage', percentage);
+  core.setOutput('diff', diff);
 }
 
 main().catch(function (err) {

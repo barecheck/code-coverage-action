@@ -12,6 +12,8 @@ inputs:
 outputs:
   percentage:
     description: 'Total Percentage coverage'
+  diff:
+    description: 'Percantage difference between head branch'
 runs:
   using: 'node12'
   main: 'dist/index.js'
