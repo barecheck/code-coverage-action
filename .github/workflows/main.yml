@@ -1,0 +1,15 @@
+on: [push]
+
+jobs:
+  generate_coverage_job:
+    runs-on: ubuntu-latest
+    name: Example of using Code Coverage action
+    steps:
+      - name: Generate Code Coverage report
+        id: code-coverage
+        uses: barecheck/code-coverage-action@v0.1
+        with:
+          lcov-file: './coverage/my-lcov.info'
+      # Use the output from the `code-coverage` step
+      - name: Get the output time
+        run: echo "The time was ${{ steps.hello.outputs.time }}"
