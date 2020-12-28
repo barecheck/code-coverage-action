@@ -8,10 +8,7 @@ const sendComment = async (token, diff, totalCoverage) => {
       repo: github.context.repo.repo,
       owner: github.context.repo.owner,
       issue_number: github.context.payload.pull_request.number,
-      body: `
-      <h4>Code coverage report</h4>
-      Total: <b>${totalCoverage}%</b>: \n\n
-      Your percentage difference: <b>${diff}%</b>`
+      body: `<h4>Code coverage report</h4>Total: <b>${totalCoverage}%</b>:\n\nYour percentage difference: <b>${diff}%</b>`
     });
   }
 };

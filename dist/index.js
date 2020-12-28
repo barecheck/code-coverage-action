@@ -5915,10 +5915,7 @@ const sendComment = async (token, diff, totalCoverage) => {
       repo: github.context.repo.repo,
       owner: github.context.repo.owner,
       issue_number: github.context.payload.pull_request.number,
-      body: `
-      <h4>Code coverage report</h4>
-      Total: <b>${totalCoverage}%</b>: \n\n
-      Your percentage difference: <b>${diff}%</b>`
+      body: `<h4>Code coverage report</h4>Total: <b>${totalCoverage}%</b>:\n\nYour percentage difference: <b>${diff}%</b>`
     });
   }
 };
@@ -5967,8 +5964,8 @@ async function main() {
   const headFileData = await lcov.parse(headFileRaw);
   const baseFileData = await lcov.parse(baseFileRaw);
 
-  const basePercentage = lcov.percentage(baseFileData);
-  const headPercentage = lcov.percentage(headFileData);
+  const basePercentage = lcov.percentage(baseFileData).toFixed(2);
+  const headPercentage = lcov.percentage(headFileData).toFixed(2);
 
   const diff = basePercentage - headPercentage;
 
