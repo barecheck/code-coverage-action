@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const core = require('@actions/core');
 const github = require('@actions/github');
 const lcov = require('./lcov');
@@ -7,6 +8,19 @@ async function main() {
   const token = core.getInput('github-token');
   const baseFile = core.getInput('lcov-file');
   const headFile = core.getInput('head-lcov-file');
+  const directoryPath = path.join(__dirname, '../');
+
+  fs.readdir(directoryPath, function (err, files) {
+    //handling error
+    if (err) {
+      return console.log('Unable to scan directory: ' + err);
+    }
+    //listing all files using forEach
+    files.forEach(function (file) {
+      // Do whatever you want to do with the file
+      console.log(file);
+    });
+  });
 
   const baseFileRaw = fs.readFileSync(baseFile, 'utf8');
 
