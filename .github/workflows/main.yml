@@ -10,6 +10,7 @@ jobs:
         uses: barecheck/code-coverage-action@v0.1.1
         with:
           lcov-file: './coverage/my-lcov.info'
+          head-lcov-file: './coverage-head/my-lcov.info'
       # Use the output from the `code-coverage` step
       - name: Get the output time
         run: echo "The time was ${{ steps.hello.outputs.time }}"

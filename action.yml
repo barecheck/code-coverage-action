@@ -5,6 +5,10 @@ inputs:
     description: 'Path where code coverage artifacts located'
     required: false
     default: './coverage/lcov.info'
+  head-lcov-file:
+    description: 'Code coverage head branch report to compare with'
+    required: false
+    default: null
 outputs:
   time:
     description: 'The time we greeted you'
