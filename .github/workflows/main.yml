@@ -7,7 +7,7 @@ jobs:
     steps:
       - name: Generate Code Coverage report
         id: code_coverage
-        uses: barecheck/code-coverage-action@v0.1.4
+        uses: barecheck/code-coverage-action@v0.1.5
         with:
           lcov-file: './data/lcov.info'
           head-lcov-file: './data/head-lcov.info'
