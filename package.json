@@ -5,7 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "@actions/core": "^1.2.6",
-    "@actions/github": "^4.0.0"
+    "@actions/github": "^4.0.0",
+    "lcov-parse": "^1.0.0"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.26.1",
@@ -19,7 +20,7 @@
     "check-all": "yarn format-check && yarn lint",
     "format": "prettier --write src",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "ncc build index.js --license licenses.txt"
+    "build": "ncc build src/index.js --license licenses.txt"
   },
   "repository": {
     "type": "git",

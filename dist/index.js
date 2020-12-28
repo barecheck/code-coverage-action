@@ -2,32 +2,7 @@ module.exports =
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 932:
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
-
-const core = __webpack_require__(186);
-const github = __webpack_require__(438);
-
-try {
-  // `lcov-file` input defined in action metadata file
-  const fileName = core.getInput('lcov-file');
-  const headFileName = core.getInput('head-lcov-file');
-  console.log(`File name ${fileName}!`);
-  console.log(`Head File name ${headFileName}!`);
-
-  const time = new Date().toTimeString();
-  core.setOutput('time', time);
-  // Get the JSON webhook payload for the event that triggered the workflow
-  const payload = JSON.stringify(github.context.payload, undefined, 2);
-  console.log(`The event payload: ${payload}`);
-} catch (error) {
-  core.setFailed(error.message);
-}
-
-
-/***/ }),
-
-/***/ 351:
+/***/ 241:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -135,7 +110,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const command_1 = __webpack_require__(351);
+const command_1 = __webpack_require__(241);
 const file_command_1 = __webpack_require__(717);
 const utils_1 = __webpack_require__(278);
 const os = __importStar(__webpack_require__(87));
@@ -3283,7 +3258,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var deprecation = __webpack_require__(481);
+var deprecation = __webpack_require__(932);
 var once = _interopDefault(__webpack_require__(223));
 
 const logOnce = once(deprecation => console.warn(deprecation));
@@ -3668,7 +3643,7 @@ function removeHook (state, name, method) {
 
 /***/ }),
 
-/***/ 481:
+/***/ 932:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -3738,6 +3713,139 @@ function isPlainObject(o) {
 }
 
 exports.isPlainObject = isPlainObject;
+
+
+/***/ }),
+
+/***/ 454:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/*
+Copyright (c) 2012, Yahoo! Inc. All rights reserved.
+Code licensed under the BSD License:
+http://yuilibrary.com/license/
+*/
+
+var fs = __webpack_require__(747),
+    path = __webpack_require__(622);
+
+/* istanbul ignore next */
+var exists = fs.exists || path.exists;
+
+var walkFile = function(str, cb) {
+    var data = [], item;
+
+    [ 'end_of_record' ].concat(str.split('\n')).forEach(function(line) {
+        line = line.trim();
+        var allparts = line.split(':'),
+            parts = [allparts.shift(), allparts.join(':')],
+            lines, fn;
+
+        switch (parts[0].toUpperCase()) {
+            case 'TN':
+                item.title = parts[1].trim();
+                break;
+            case 'SF':
+                item.file = parts.slice(1).join(':').trim();
+                break;
+            case 'FNF':
+                item.functions.found = Number(parts[1].trim());
+                break;
+            case 'FNH':
+                item.functions.hit = Number(parts[1].trim());
+                break;
+            case 'LF':
+                item.lines.found = Number(parts[1].trim());
+                break;
+            case 'LH':
+                item.lines.hit = Number(parts[1].trim());
+                break;
+            case 'DA':
+                lines = parts[1].split(',');
+                item.lines.details.push({
+                    line: Number(lines[0]),
+                    hit: Number(lines[1])
+                });
+                break;
+            case 'FN':
+                fn = parts[1].split(',');
+                item.functions.details.push({
+                    name: fn[1],
+                    line: Number(fn[0])
+                });
+                break;
+            case 'FNDA':
+                fn = parts[1].split(',');
+                item.functions.details.some(function(i, k) {
+                    if (i.name === fn[1] && i.hit === undefined) {
+                        item.functions.details[k].hit = Number(fn[0]);
+                        return true;
+                    }
+                });
+                break;
+            case 'BRDA':
+                fn = parts[1].split(',');
+                item.branches.details.push({
+                    line: Number(fn[0]),
+                    block: Number(fn[1]),
+                    branch: Number(fn[2]),
+                    taken: ((fn[3] === '-') ? 0 : Number(fn[3]))
+                });
+                break;
+            case 'BRF':
+                item.branches.found = Number(parts[1]);
+                break;
+            case 'BRH':
+                item.branches.hit = Number(parts[1]);
+                break;
+        }
+
+        if (line.indexOf('end_of_record') > -1) {
+            data.push(item);
+            item = {
+              lines: {
+                  found: 0,
+                  hit: 0,
+                  details: []
+              },
+              functions: {
+                  hit: 0,
+                  found: 0,
+                  details: []
+              },
+              branches: {
+                hit: 0,
+                found: 0,
+                details: []
+              }
+            };
+        }
+    });
+
+    data.shift();
+
+    if (data.length) {
+        cb(null, data);
+    } else {
+        cb('Failed to parse string');
+    }
+};
+
+var parse = function(file, cb) {
+    exists(file, function(x) {
+        if (!x) {
+            return walkFile(file, cb);
+        }
+        fs.readFile(file, 'utf8', function(err, str) {
+            walkFile(str, cb);
+        });
+    });
+
+};
+
+
+module.exports = parse;
+module.exports.source = walkFile;
 
 
 /***/ }),
@@ -5794,6 +5902,87 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 351:
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+
+const fs = __webpack_require__(747);
+const core = __webpack_require__(186);
+const github = __webpack_require__(438);
+const lcov = __webpack_require__(318);
+
+async function main() {
+  const token = core.getInput('github-token');
+  const baseFile = core.getInput('lcov-file');
+  const headFile = core.getInput('head-lcov-file');
+
+  const baseFileRaw = await fs.readFile(baseFile, 'utf-8').catch((err) => null);
+
+  if (!baseFileRaw) {
+    console.log(`No coverage report found at '${baseFile}', exiting...`);
+    return;
+  }
+
+  const headFileRaw =
+    headFile && (await fs.readFile(headFile, 'utf-8').catch((err) => null));
+  if (headFile && !headFileRaw) {
+    console.log(`No coverage report found at '${headFile}', ignoring...`);
+  }
+
+  const headFileData = await lcov.parse(headFileRaw);
+  const baseFileData = await lcov.parse(baseFileRaw);
+
+  console.log(baseFileData);
+  console.log(headFileData);
+
+  const percentage = lcov.percentage(baseFileData);
+
+  core.setOutput('percentage', percentage);
+}
+
+main().catch(function (err) {
+  console.log(err);
+  core.setFailed(err.message);
+});
+
+
+/***/ }),
+
+/***/ 318:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const lcov = __webpack_require__(454);
+
+const parse = (data) => {
+  return new Promise(function (resolve, reject) {
+    lcov(data, function (err, res) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(res);
+    });
+  });
+};
+
+const percentage = (lcov) => {
+  let hit = 0;
+  let found = 0;
+  for (const entry of lcov) {
+    hit += entry.lines.hit;
+    found += entry.lines.found;
+  }
+
+  return (hit / found) * 100;
+};
+
+module.exports = {
+  parse,
+  percentage
+};
+
+
+/***/ }),
+
 /***/ 877:
 /***/ ((module) => {
 
@@ -5944,6 +6133,6 @@ module.exports = require("zlib");;
 /******/ 	// module exports must be returned from runtime so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(932);
+/******/ 	return __webpack_require__(351);
 /******/ })()
 ;

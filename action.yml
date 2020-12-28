@@ -10,8 +10,8 @@ inputs:
     required: false
     default: null
 outputs:
-  time:
-    description: 'The time we greeted you'
+  percentage:
+    description: 'Total Percentage coverage'
 runs:
   using: 'node12'
   main: 'dist/index.js'
