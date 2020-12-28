@@ -5915,28 +5915,21 @@ async function main() {
   const token = core.getInput('github-token');
   const baseFile = core.getInput('lcov-file');
   const headFile = core.getInput('head-lcov-file');
-  const directoryPath = path.join(__dirname, '../');
 
-  fs.readdir(directoryPath, function (err, files) {
-    //handling error
-    if (err) {
-      return console.log('Unable to scan directory: ' + err);
-    }
-    //listing all files using forEach
-    files.forEach(function (file) {
-      // Do whatever you want to do with the file
-      console.log(file);
-    });
-  });
-
-  const baseFileRaw = fs.readFileSync(baseFile, 'utf8');
+  const baseFileRaw = fs.readFileSync(
+    path.join(__dirname, '../', baseFile),
+    'utf8'
+  );
 
   if (!baseFileRaw) {
     console.log(`No coverage report found at '${baseFile}', exiting...`);
     return;
   }
 
-  const headFileRaw = fs.readFileSync(headFile, 'utf8');
+  const headFileRaw = fs.readFileSync(
+    path.join(__dirname, '../', headFile),
+    'utf8'
+  );
 
   if (!headFileRaw) {
     console.log(`No coverage report found at '${headFileRaw}', exiting...`);
