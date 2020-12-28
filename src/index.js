@@ -7,6 +7,7 @@ const { sendComment } = require('./github');
 
 async function main() {
   const token = core.getInput('github-token');
+  console.log(token);
   const baseFile = core.getInput('lcov-file');
   const headFile = core.getInput('head-lcov-file');
 
