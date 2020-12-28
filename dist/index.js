@@ -5905,17 +5905,18 @@ function wrappy (fn, cb) {
 /***/ 396:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-const { GitHub, context } = __webpack_require__(438);
+const github = __webpack_require__(438);
 
 const sendComment = async (token, diff) => {
-  await new GitHub(token).issues.createComment({
-    repo: context.repo.repo,
-    owner: context.repo.owner,
-    issue_number: context.payload.pull_request.number,
+  const octokit = github.getOctokit(token);
+
+  await octokit.issues.createComment({
+    repo: github.context.repo.repo,
+    owner: github.context.repo.owner,
+    issue_number: github.context.payload.pull_request.number,
     body: `Your percentage difference is ${diff}`
   });
 };
-
 module.exports = {
   sendComment
 };
