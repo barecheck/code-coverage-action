@@ -37,7 +37,7 @@ async function main() {
 
   const diff = basePercentage - headPercentage;
 
-  core.setOutput('percentage', percentage);
+  core.setOutput('percentage', basePercentage);
   core.setOutput('diff', diff);
 }
 
