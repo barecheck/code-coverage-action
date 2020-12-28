@@ -8,17 +8,18 @@ async function main() {
   const baseFile = core.getInput('lcov-file');
   const headFile = core.getInput('head-lcov-file');
 
-  const baseFileRaw = await fs.readFile(baseFile, 'utf-8').catch((err) => null);
+  const baseFileRaw = fs.readFileSync(baseFile);
 
   if (!baseFileRaw) {
     console.log(`No coverage report found at '${baseFile}', exiting...`);
     return;
   }
 
-  const headFileRaw =
-    headFile && (await fs.readFile(headFile, 'utf-8').catch((err) => null));
-  if (headFile && !headFileRaw) {
-    console.log(`No coverage report found at '${headFile}', ignoring...`);
+  const headFileRaw = fs.readFileSync(headFile);
+
+  if (!headFileRaw) {
+    console.log(`No coverage report found at '${headFileRaw}', exiting...`);
+    return;
   }
 
   const headFileData = await lcov.parse(headFileRaw);
