@@ -7,10 +7,13 @@ jobs:
     steps:
       - name: Generate Code Coverage report
         id: code_coverage
-        uses: barecheck/code-coverage-action@v0.1.6
+        uses: barecheck/code-coverage-action@v0.1.4
         with:
           lcov-file: './data/lcov.info'
           head-lcov-file: './data/head-lcov.info'
-      # Use the output from the `code_coverage` step
+
       - name: Get the output percentage
         run: echo "The percentage ${{ steps.code_coverage.outputs.percentage }}"
+
+      - name: Get the output diff
+        run: echo "The percentage diff from head branch ${{ steps.code_coverage.outputs.diff }}"
