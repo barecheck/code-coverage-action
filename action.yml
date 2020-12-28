@@ -1,4 +1,4 @@
-name: 'Baremetric - Code Coverage'
+name: 'Barecheck - Code Coverage'
 description: 'Sends a message to PR with proper percentage of code coverage'
 inputs:
   lcov-file:
@@ -10,8 +10,10 @@ inputs:
     required: false
     default: null
 outputs:
-  time:
-    description: 'The time we greeted you'
+  percentage:
+    description: 'Total Percentage coverage'
+  diff:
+    description: 'Percantage difference between head branch'
 runs:
   using: 'node12'
   main: 'dist/index.js'
