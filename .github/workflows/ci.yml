@@ -13,7 +13,6 @@ on:
 jobs:
   checks:
     runs-on: ubuntu-latest
-    needs: base_branch_cov
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 12.13.1
