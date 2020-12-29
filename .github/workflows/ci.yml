@@ -1,0 +1,42 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    needs: base_branch_cov
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.13.1
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.13.1
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: node_modules-v1-${{ hashFiles('yarn.lock') }}
+          # loading an older version is fine here, since it will get an npm install
+          restore-keys: |
+            node_modules-
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Run linting checks
+        run: yarn lint
+
+      - name: Run formatting checks
+        run: yarn format-check
+
+      - name: Install dependencies
+        run: yarn test
