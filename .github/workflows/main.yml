@@ -5,7 +5,7 @@ on: [pull_request]
 jobs:
   generate_coverage_job:
     runs-on: ubuntu-latest
-    name: Example of using Code Coverage action
+
     steps:
       - uses: actions/checkout@v2
       - name: Generate Code Coverage report
