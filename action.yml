@@ -14,7 +14,11 @@ inputs:
   head-lcov-file:
     description: 'Code coverage head branch report to compare with'
     required: true
-    default: null
+    default: ''
+  minimum-coverage-ratio:
+    description: 'Minimum coverage ratio that would to be considered as a difference between based and head commits'
+    required: false
+    default: ''
 outputs:
   percentage:
     description: 'Total Percentage coverage'
