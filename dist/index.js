@@ -5902,6 +5902,31 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 880:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const core = __webpack_require__(186);
+
+const checkCoverageRation = (coverageDiff) => {
+  const minCoverageRatio = parseInt(
+    core.getInput('minimum-coverage-ratio'),
+    10
+  );
+
+  const coverageDiffAlert = coverageDiff + minCoverageRatio;
+
+  if (coverageDiffAlert < 0) {
+    throw new Error(`Your coverage is ${coverageDiffAlert}%`);
+  }
+};
+
+module.exports = {
+  checkCoverageRation
+};
+
+
+/***/ }),
+
 /***/ 396:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -5931,11 +5956,11 @@ module.exports = {
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 const fs = __webpack_require__(747);
-const path = __webpack_require__(622);
 const core = __webpack_require__(186);
 
 const lcov = __webpack_require__(318);
 const { sendComment } = __webpack_require__(396);
+const { checkCoverageRation } = __webpack_require__(880);
 
 async function main() {
   const token = core.getInput('github-token');
@@ -5965,6 +5990,7 @@ async function main() {
   const diff = basePercentage - headPercentage;
 
   sendComment(token, diff, basePercentage);
+  checkCoverageRation(diff);
 
   core.setOutput('percentage', basePercentage);
   core.setOutput('diff', diff);
