@@ -1,10 +1,8 @@
 const core = require('@actions/core');
 
 const checkCoverageRation = (coverageDiff) => {
-  const minCoverageRatio = parseInt(
-    core.getInput('minimum-coverage-ratio'),
-    10
-  );
+  const minCoverageRatio =
+    parseInt(core.getInput('minimum-coverage-ratio'), 10) || 0;
 
   const coverageDiffAlert = coverageDiff + minCoverageRatio;
 
