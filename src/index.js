@@ -1,5 +1,4 @@
 const fs = require('fs');
-const path = require('path');
 const core = require('@actions/core');
 
 const lcov = require('./lcov');
