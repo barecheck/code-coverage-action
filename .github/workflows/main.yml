@@ -1,23 +1,78 @@
-name: Code coverage
+name: Code Coverage
 
-on: [pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
-  generate_coverage_job:
+  base_branch_cov:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: master
+      - name: Use Node.js 12.13.1
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.13.1
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: node_modules-v1-${{ hashFiles('yarn.lock') }}
+          # loading an older version is fine here, since it will get an npm install
+          restore-keys: |
+            node_modules-
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Run test coverage
+        run: yarn coverage-lcov
+
+      - name: Upload code coverage for ref branch
+        uses: actions/upload-artifact@v2
+        with:
+          name: ref-lcov.info
+          path: ./coverage/lcov.info
+
+  checks:
+    runs-on: ubuntu-latest
+    needs: base_branch_cov
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.13.1
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.13.1
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: node_modules-v1-${{ hashFiles('yarn.lock') }}
+          # loading an older version is fine here, since it will get an npm install
+          restore-keys: |
+            node_modules-
+
+      - name: Download math result for job 2
+        uses: actions/download-artifact@v2
+        with:
+          name: ref-lcov.info
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Run test coverage
+        run: yarn coverage-lcov
+
+      # Testing beta of code coverage checks
+      # This part can be removed or optimized once barecheck code coverage will be out of beta
       - name: Generate Code Coverage report
-        id: code_coverage
+        id: code-coverage
         uses: ./
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          lcov-file: './data/lcov.info'
-          head-lcov-file: './data/head-lcov.info'
-
-      - name: Get the output percentage
-        run: echo "The percentage ${{ steps.code_coverage.outputs.percentage }}"
-
-      - name: Get the output diff
-        run: echo "The percentage diff from head branch ${{ steps.code_coverage.outputs.diff }}"
+          lcov-file: './coverage/lcov.info'
+          head-lcov-file: './lcov.info'
