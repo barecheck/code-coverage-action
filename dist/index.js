@@ -5902,16 +5902,13 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 880:
+/***/ 324:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 const core = __webpack_require__(186);
 
-const checkCoverageRation = (coverageDiff) => {
-  const minCoverageRatio = parseInt(
-    core.getInput('minimum-ratio'),
-    10
-  );
+const checkMinimumRatio = (coverageDiff) => {
+  const minCoverageRatio = parseInt(core.getInput('minimum-ratio'), 10);
 
   core.info(`minimum-ratio: ${minCoverageRatio}`);
 
@@ -5926,22 +5923,28 @@ const checkCoverageRation = (coverageDiff) => {
 };
 
 module.exports = {
-  checkCoverageRation
+  checkMinimumRatio
 };
 
 
 /***/ }),
 
-/***/ 396:
+/***/ 788:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 const github = __webpack_require__(438);
+const core = __webpack_require__(186);
 
-const sendComment = async (token, diff, totalCoverage) => {
-  const octokit = github.getOctokit(token);
-  const arrow = diff === 0 ? '' : diff < 0 ? '▾' : '▴';
+const sendSummaryComment = async (diff, totalCoverage) => {
+  const githubToken = core.getInput('github-token');
+  const sendSummaryComment = core.getInput('send-summary-comment');
 
-  if (github.context.payload.pull_request) {
+  if (sendSummaryComment && github.context.payload.pull_request) {
+    core.info(`send-summary-comment is enabled for this workflow`);
+
+    const octokit = github.getOctokit(githubToken);
+    const arrow = diff === 0 ? '' : diff < 0 ? '▾' : '▴';
+
     await octokit.issues.createComment({
       repo: github.context.repo.repo,
       owner: github.context.repo.owner,
@@ -5951,7 +5954,7 @@ const sendComment = async (token, diff, totalCoverage) => {
   }
 };
 module.exports = {
-  sendComment
+  sendSummaryComment
 };
 
 
@@ -5964,25 +5967,23 @@ const fs = __webpack_require__(747);
 const core = __webpack_require__(186);
 
 const lcov = __webpack_require__(318);
-const { sendComment } = __webpack_require__(396);
-const { checkCoverageRation } = __webpack_require__(880);
+const { sendComment } = __webpack_require__(447);
+const { checkMinimumRatio } = __webpack_require__(324);
+const { sendSummaryComment } = __webpack_require__(788);
 
 async function main() {
-  const token = core.getInput('github-token');
   const compareFile = core.getInput('lcov-file');
   const baseFile = core.getInput('base-lcov-file');
   core.info(`lcov-file: ${compareFile}`);
   core.info(`base-lcov-file: ${baseFile}`);
 
   const compareFileRaw = fs.readFileSync(compareFile, 'utf8');
-
   if (!compareFileRaw) {
     core.info(`No coverage report found at '${compareFile}', exiting...`);
     return;
   }
 
   const baseFileRaw = fs.readFileSync(baseFile, 'utf8');
-
   if (!baseFileRaw) {
     core.info(`No coverage report found at '${baseFileRaw}', exiting...`);
     return;
@@ -6000,8 +6001,8 @@ async function main() {
   const diff = (comparePercentage - basePercentage).toFixed(2);
   core.info(`Code coverage diff: ${diff}%`);
 
-  sendComment(token, diff, comparePercentage);
-  checkCoverageRation(diff);
+  await sendSummaryComment(diff, comparePercentage);
+  checkMinimumRatio(diff);
 
   core.setOutput('percentage', comparePercentage);
   core.setOutput('diff', diff);
@@ -6049,6 +6050,14 @@ module.exports = {
   parse,
   percentage
 };
+
+
+/***/ }),
+
+/***/ 447:
+/***/ ((module) => {
+
+module.exports = eval("require")("./github");
 
 
 /***/ }),
