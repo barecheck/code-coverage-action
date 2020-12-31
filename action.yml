@@ -8,11 +8,11 @@ inputs:
     description: Your GitHub secret token
     required: true
   lcov-file:
-    description: 'Code coverage report with new changes'
+    description: 'Compare code coverage report'
     required: true
     default: './coverage/lcov.info'
   base-lcov-file:
-    description: 'Code coverage report for base branch to compare'
+    description: 'Base code coverage report to generate percentage diff'
     required: true
     default: ''
   minimum-coverage-ratio:
