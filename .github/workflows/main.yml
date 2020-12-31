@@ -18,7 +18,7 @@ jobs:
         run: yarn
 
       - name: Run test coverage
-        run: yarn coverage-lcov
+        run: yarn coverage
 
       - name: Upload code coverage for ref branch
         uses: actions/upload-artifact@v2
@@ -57,3 +57,4 @@ jobs:
           lcov-file: './coverage/lcov.info'
           base-lcov-file: './lcov.info'
           minimum-ratio: 0
+          send-summary-comment: true
