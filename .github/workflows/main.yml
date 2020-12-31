@@ -36,7 +36,7 @@ jobs:
         with:
           node-version: 12.13.1
 
-      - name: Download math result for job 2
+      - name: Download code coverage report from base branch
         uses: actions/download-artifact@v2
         with:
           name: ref-lcov.info
