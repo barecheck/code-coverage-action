@@ -8,7 +8,7 @@ const checkCoverageRation = (coverageDiff) => {
 
   core.info(`minimum-coverage-ratio: ${minCoverageRatio}`);
 
-  if (minCoverageRatio) {
+  if (minCoverageRatio >= 0) {
     core.info(`minimum-coverage-ratio is enabled for this workflow`);
     const coverageDiffAlert = coverageDiff + minCoverageRatio;
 

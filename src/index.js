@@ -13,14 +13,14 @@ async function main() {
   const compareFileRaw = fs.readFileSync(compareFile, 'utf8');
 
   if (!compareFileRaw) {
-    console.log(`No coverage report found at '${compareFile}', exiting...`);
+    core.info(`No coverage report found at '${compareFile}', exiting...`);
     return;
   }
 
   const baseFileRaw = fs.readFileSync(baseFile, 'utf8');
 
   if (!baseFileRaw) {
-    console.log(`No coverage report found at '${baseFileRaw}', exiting...`);
+    core.info(`No coverage report found at '${baseFileRaw}', exiting...`);
     return;
   }
 
@@ -28,12 +28,13 @@ async function main() {
   const compareFileData = await lcov.parse(compareFileRaw);
 
   const comparePercentage = lcov.percentage(compareFileData);
-  console.log(`compare branch code coverage: ${comparePercentage}%`);
+  core.info(`Compare branch code coverage: ${comparePercentage}%`);
 
   const basePercentage = lcov.percentage(baseFileData);
-  console.log(`compare branch code coverage: ${basePercentage}%`);
+  core.info(`Base branch code coverage: ${basePercentage}%`);
 
   const diff = comparePercentage - basePercentage;
+  core.info(`Code coverage diff: ${diff}%`);
 
   sendComment(token, diff, comparePercentage);
   checkCoverageRation(diff);
