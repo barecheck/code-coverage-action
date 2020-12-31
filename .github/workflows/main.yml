@@ -1,19 +1,14 @@
 name: Code Coverage
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
+on: [pull_request]
 
 jobs:
   base_branch_cov:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      #TODO: uncommend after merge to master
-      # with:
-      #   ref: master
+        with:
+          ref: ${{ github.base_ref }}
       - name: Use Node.js 12.13.1
         uses: actions/setup-node@v1
         with:
