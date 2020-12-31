@@ -18,7 +18,7 @@ jobs:
         run: yarn
 
       - name: Run test coverage
-        run: yarn coverage
+        run: yarn coverage-lcov
 
       - name: Upload code coverage for ref branch
         uses: actions/upload-artifact@v2
