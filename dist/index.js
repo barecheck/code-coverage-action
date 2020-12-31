@@ -5911,6 +5911,8 @@ const checkCoverageRation = (coverageDiff) => {
   const minCoverageRatio =
     parseInt(core.getInput('minimum-coverage-ratio'), 10) || 0;
 
+  console.log('minimum-coverage-ratio', minCoverageRatio);
+
   const coverageDiffAlert = coverageDiff + minCoverageRatio;
 
   if (coverageDiffAlert < 0) {
@@ -5962,35 +5964,38 @@ const { checkCoverageRation } = __webpack_require__(880);
 
 async function main() {
   const token = core.getInput('github-token');
-  const baseFile = core.getInput('lcov-file');
-  const headFile = core.getInput('head-lcov-file');
+  const compareFile = core.getInput('lcov-file');
+  const baseFile = core.getInput('base-lcov-file');
+
+  const compareFileRaw = fs.readFileSync(compareFile, 'utf8');
+
+  if (!compareFileRaw) {
+    console.log(`No coverage report found at '${compareFile}', exiting...`);
+    return;
+  }
 
   const baseFileRaw = fs.readFileSync(baseFile, 'utf8');
 
   if (!baseFileRaw) {
-    console.log(`No coverage report found at '${baseFile}', exiting...`);
+    console.log(`No coverage report found at '${baseFileRaw}', exiting...`);
     return;
   }
 
-  const headFileRaw = fs.readFileSync(headFile, 'utf8');
-
-  if (!headFileRaw) {
-    console.log(`No coverage report found at '${headFileRaw}', exiting...`);
-    return;
-  }
-
-  const headFileData = await lcov.parse(headFileRaw);
   const baseFileData = await lcov.parse(baseFileRaw);
+  const compareFileData = await lcov.parse(compareFileRaw);
 
-  const basePercentage = lcov.percentage(baseFileData).toFixed(2);
-  const headPercentage = lcov.percentage(headFileData).toFixed(2);
+  const comparePercentage = lcov.percentage(compareFileData);
+  console.log(`compare branch code coverage: ${comparePercentage}%`);
 
-  const diff = basePercentage - headPercentage;
+  const basePercentage = lcov.percentage(baseFileData);
+  console.log(`compare branch code coverage: ${basePercentage}%`);
 
-  sendComment(token, diff, basePercentage);
+  const diff = comparePercentage - basePercentage;
+
+  sendComment(token, diff, comparePercentage);
   checkCoverageRation(diff);
 
-  core.setOutput('percentage', basePercentage);
+  core.setOutput('percentage', comparePercentage);
   core.setOutput('diff', diff);
 }
 
@@ -6029,7 +6034,7 @@ const percentage = (lcov) => {
     found += entry.lines.found;
   }
 
-  return (hit / found) * 100;
+  return ((hit / found) * 100).toFixed(2);
 };
 
 module.exports = {

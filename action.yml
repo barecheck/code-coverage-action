@@ -8,11 +8,11 @@ inputs:
     description: Your GitHub secret token
     required: true
   lcov-file:
-    description: 'Path where code coverage artifacts located'
+    description: 'Code coverage report with new changes'
     required: true
     default: './coverage/lcov.info'
-  head-lcov-file:
-    description: 'Code coverage head branch report to compare with'
+  base-lcov-file:
+    description: 'Code coverage report for base branch to compare'
     required: true
     default: ''
   minimum-coverage-ratio:

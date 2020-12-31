@@ -27,7 +27,7 @@ describe('lcov', () => {
 
       const res = lcov.percentage(parsedLcovFile);
 
-      assert.deepEqual(res, 50);
+      assert.deepEqual(res, '50.00');
     });
   });
 });
