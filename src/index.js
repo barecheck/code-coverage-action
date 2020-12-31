@@ -2,7 +2,6 @@ const fs = require('fs');
 const core = require('@actions/core');
 
 const lcov = require('./lcov');
-const { sendComment } = require('./github');
 const { checkMinimumRatio } = require('./features/minimumRatio');
 const { sendSummaryComment } = require('./features/sendSummaryComment');
 

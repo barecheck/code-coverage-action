@@ -5967,7 +5967,6 @@ const fs = __webpack_require__(747);
 const core = __webpack_require__(186);
 
 const lcov = __webpack_require__(318);
-const { sendComment } = __webpack_require__(447);
 const { checkMinimumRatio } = __webpack_require__(324);
 const { sendSummaryComment } = __webpack_require__(788);
 
@@ -6050,14 +6049,6 @@ module.exports = {
   parse,
   percentage
 };
-
-
-/***/ }),
-
-/***/ 447:
-/***/ ((module) => {
-
-module.exports = eval("require")("./github");
 
 
 /***/ }),
