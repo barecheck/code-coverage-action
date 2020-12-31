@@ -3,7 +3,7 @@ const core = require('@actions/core');
 
 const lcov = require('./lcov');
 const { sendComment } = require('./github');
-const { checkCoverageRation } = require('./features/minCoverageRatio');
+const { checkMinimumRatio } = require('./features/minimumRatio');
 
 async function main() {
   const token = core.getInput('github-token');
@@ -39,7 +39,7 @@ async function main() {
   core.info(`Code coverage diff: ${diff}%`);
 
   sendComment(token, diff, comparePercentage);
-  checkCoverageRation(diff);
+  checkMinimumRatio(diff);
 
   core.setOutput('percentage', comparePercentage);
   core.setOutput('diff', diff);

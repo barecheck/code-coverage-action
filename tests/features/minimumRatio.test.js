@@ -10,28 +10,28 @@ const defaultMocks = {
 
 const minCoverageRatioMock = (mocks) => {
   const { getInput, info, setFailed } = { ...defaultMocks, ...mocks };
-  return proxyquire('../../src/features/minCoverageRatio', {
+  return proxyquire('../../src/features/minimumRatio', {
     '@actions/core': { getInput, info, setFailed }
   });
 };
 
 describe('eatures/minCoverageRatio', () => {
-  describe('checkCoverageRation', () => {
+  describe('checkMinimumRatio', () => {
     it("error shouldn't be thrown once feature is not enabled", () => {
       const minCoverageRatio = NaN;
       const coverageDiff = 0;
 
       const getInput = sinon
         .stub()
-        .withArgs('minimum-coverage-ratio')
+        .withArgs('minimum-ratio')
         .returns(minCoverageRatio);
       const setFailed = sinon.spy();
 
-      const { checkCoverageRation } = minCoverageRatioMock({
+      const { checkMinimumRatio } = minCoverageRatioMock({
         getInput,
         setFailed
       });
-      const res = checkCoverageRation(coverageDiff);
+      const res = checkMinimumRatio(coverageDiff);
 
       assert.isUndefined(res);
       assert.isFalse(setFailed.calledOnce);
@@ -43,15 +43,15 @@ describe('eatures/minCoverageRatio', () => {
 
       const getInput = sinon
         .stub()
-        .withArgs('minimum-coverage-ratio')
+        .withArgs('minimum-ratio')
         .returns(minCoverageRatio);
       const setFailed = sinon.spy();
 
-      const { checkCoverageRation } = minCoverageRatioMock({
+      const { checkMinimumRatio } = minCoverageRatioMock({
         getInput,
         setFailed
       });
-      const res = checkCoverageRation(coverageDiff);
+      const res = checkMinimumRatio(coverageDiff);
 
       assert.isUndefined(res);
       assert.isFalse(setFailed.calledOnce);
@@ -63,15 +63,15 @@ describe('eatures/minCoverageRatio', () => {
 
       const getInput = sinon
         .stub()
-        .withArgs('minimum-coverage-ratio')
+        .withArgs('minimum-ratio')
         .returns(minCoverageRatio);
       const setFailed = sinon.spy();
 
-      const { checkCoverageRation } = minCoverageRatioMock({
+      const { checkMinimumRatio } = minCoverageRatioMock({
         getInput,
         setFailed
       });
-      const res = checkCoverageRation(coverageDiff);
+      const res = checkMinimumRatio(coverageDiff);
 
       assert.isUndefined(res);
       assert.isTrue(setFailed.calledOnce);
