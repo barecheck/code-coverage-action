@@ -5908,15 +5908,21 @@ function wrappy (fn, cb) {
 const core = __webpack_require__(186);
 
 const checkCoverageRation = (coverageDiff) => {
-  const minCoverageRatio =
-    parseInt(core.getInput('minimum-coverage-ratio'), 10) || 0;
+  const minCoverageRatio = parseInt(
+    core.getInput('minimum-coverage-ratio'),
+    10
+  );
 
   console.log('minimum-coverage-ratio', minCoverageRatio);
 
-  const coverageDiffAlert = coverageDiff + minCoverageRatio;
+  if (minCoverageRatio) {
+    console.log('minimum-coverage-ratio', minCoverageRatio);
 
-  if (coverageDiffAlert < 0) {
-    throw new Error(`Your coverage is ${coverageDiffAlert}%`);
+    const coverageDiffAlert = coverageDiff + minCoverageRatio;
+
+    if (coverageDiffAlert < 0) {
+      throw new Error(`Your coverage is ${coverageDiffAlert}%`);
+    }
   }
 };
 

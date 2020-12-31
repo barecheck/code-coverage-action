@@ -56,4 +56,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           lcov-file: './coverage/lcov.info'
           base-lcov-file: './lcov.info'
-          minimum-coverage-ratio: 0
+          # minimum-coverage-ratio: 0
