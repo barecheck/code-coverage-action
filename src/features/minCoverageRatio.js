@@ -6,17 +6,16 @@ const checkCoverageRation = (coverageDiff) => {
     10
   );
 
-  console.log('minimum-coverage-ratio', minCoverageRatio);
+  core.info(`minimum-coverage-ratio: ${minCoverageRatio}`);
 
   if (minCoverageRatio) {
-    console.log('minimum-coverage-ratio', minCoverageRatio);
-
+    core.info(`minimum-coverage-ratio is enabled for this workflow`);
     const coverageDiffAlert = coverageDiff + minCoverageRatio;
 
     if (coverageDiffAlert < 0) {
-      throw new Error(`Your coverage is ${coverageDiffAlert}%`);
+      throw new Error('Code coverage is less than minimum code coverage ratio');
     }
-  }
+  } else core.info(`minimum-coverage-ratio is disabled for this workflow`);
 };
 
 module.exports = {

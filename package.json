@@ -23,7 +23,7 @@
     "build": "ncc build src/index.js --license licenses.txt",
     "lint": "eslint --max-warnings=0 src",
     "format": "prettier --write src",
-    "test": "mocha tests",
+    "test": "mocha 'tests/**/*.test.js'",
     "coverage": "nyc yarn test",
     "coverage-lcov": "nyc --reporter=lcov yarn test",
     "format-check": "prettier --check src",
