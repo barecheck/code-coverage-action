@@ -1,14 +1,21 @@
 const core = require('@actions/core');
 
 const checkCoverageRation = (coverageDiff) => {
-  const minCoverageRatio =
-    parseInt(core.getInput('minimum-coverage-ratio'), 10) || 0;
+  const minCoverageRatio = parseInt(
+    core.getInput('minimum-coverage-ratio'),
+    10
+  );
 
-  const coverageDiffAlert = coverageDiff + minCoverageRatio;
+  core.info(`minimum-coverage-ratio: ${minCoverageRatio}`);
 
-  if (coverageDiffAlert < 0) {
-    throw new Error(`Your coverage is ${coverageDiffAlert}%`);
-  }
+  if (minCoverageRatio >= 0) {
+    core.info(`minimum-coverage-ratio is enabled for this workflow`);
+    const coverageDiffAlert = coverageDiff + minCoverageRatio;
+
+    if (coverageDiffAlert < 0) {
+      core.setFailed('Code coverage is less than minimum code coverage ratio');
+    }
+  } else core.info(`minimum-coverage-ratio is disabled for this workflow`);
 };
 
 module.exports = {

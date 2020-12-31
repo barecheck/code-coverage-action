@@ -7,35 +7,41 @@ const { checkCoverageRation } = require('./features/minCoverageRatio');
 
 async function main() {
   const token = core.getInput('github-token');
-  const baseFile = core.getInput('lcov-file');
-  const headFile = core.getInput('head-lcov-file');
+  const compareFile = core.getInput('lcov-file');
+  const baseFile = core.getInput('base-lcov-file');
+  core.info(`lcov-file: ${compareFile}`);
+  core.info(`base-lcov-file: ${baseFile}`);
+
+  const compareFileRaw = fs.readFileSync(compareFile, 'utf8');
+
+  if (!compareFileRaw) {
+    core.info(`No coverage report found at '${compareFile}', exiting...`);
+    return;
+  }
 
   const baseFileRaw = fs.readFileSync(baseFile, 'utf8');
 
   if (!baseFileRaw) {
-    console.log(`No coverage report found at '${baseFile}', exiting...`);
+    core.info(`No coverage report found at '${baseFileRaw}', exiting...`);
     return;
   }
 
-  const headFileRaw = fs.readFileSync(headFile, 'utf8');
-
-  if (!headFileRaw) {
-    console.log(`No coverage report found at '${headFileRaw}', exiting...`);
-    return;
-  }
-
-  const headFileData = await lcov.parse(headFileRaw);
   const baseFileData = await lcov.parse(baseFileRaw);
+  const compareFileData = await lcov.parse(compareFileRaw);
 
-  const basePercentage = lcov.percentage(baseFileData).toFixed(2);
-  const headPercentage = lcov.percentage(headFileData).toFixed(2);
+  const comparePercentage = lcov.percentage(compareFileData);
+  core.info(`Compare branch code coverage: ${comparePercentage}%`);
 
-  const diff = basePercentage - headPercentage;
+  const basePercentage = lcov.percentage(baseFileData);
+  core.info(`Base branch code coverage: ${basePercentage}%`);
 
-  sendComment(token, diff, basePercentage);
+  const diff = (comparePercentage - basePercentage).toFixed(2);
+  core.info(`Code coverage diff: ${diff}%`);
+
+  sendComment(token, diff, comparePercentage);
   checkCoverageRation(diff);
 
-  core.setOutput('percentage', basePercentage);
+  core.setOutput('percentage', comparePercentage);
   core.setOutput('diff', diff);
 }
 

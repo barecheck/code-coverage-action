@@ -20,7 +20,7 @@ const percentage = (lcov) => {
     found += entry.lines.found;
   }
 
-  return (hit / found) * 100;
+  return ((hit / found) * 100).toFixed(2);
 };
 
 module.exports = {

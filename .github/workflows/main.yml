@@ -1,31 +1,18 @@
 name: Code Coverage
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
+on: [pull_request]
 
 jobs:
   base_branch_cov:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      #TODO: uncommend after merge to master
-      # with:
-      #   ref: master
+        with:
+          ref: ${{ github.base_ref }}
       - name: Use Node.js 12.13.1
         uses: actions/setup-node@v1
         with:
           node-version: 12.13.1
-      - name: Cache node modules
-        uses: actions/cache@v1
-        with:
-          path: node_modules
-          key: node_modules-v1-${{ hashFiles('yarn.lock') }}
-          # loading an older version is fine here, since it will get an npm install
-          restore-keys: |
-            node_modules-
 
       - name: Install dependencies
         run: yarn
@@ -48,14 +35,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.13.1
-      - name: Cache node modules
-        uses: actions/cache@v1
-        with:
-          path: node_modules
-          key: node_modules-v1-${{ hashFiles('yarn.lock') }}
-          # loading an older version is fine here, since it will get an npm install
-          restore-keys: |
-            node_modules-
 
       - name: Download math result for job 2
         uses: actions/download-artifact@v2
@@ -66,7 +45,7 @@ jobs:
         run: yarn
 
       - name: Run test coverage
-        run: yarn coverage-lcov
+        run: yarn coverage
 
       # Testing beta of code coverage checks
       # This part can be removed or optimized once barecheck code coverage will be out of beta
@@ -76,5 +55,5 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           lcov-file: './coverage/lcov.info'
-          head-lcov-file: './lcov.info'
+          base-lcov-file: './lcov.info'
           minimum-coverage-ratio: 0
