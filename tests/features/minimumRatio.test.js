@@ -15,7 +15,7 @@ const minCoverageRatioMock = (mocks) => {
   });
 };
 
-describe('eatures/minCoverageRatio', () => {
+describe('features/minCoverageRatio', () => {
   describe('checkMinimumRatio', () => {
     it("error shouldn't be thrown once feature is not enabled", () => {
       const minCoverageRatio = NaN;
