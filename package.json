@@ -32,8 +32,14 @@
     "type": "git",
     "url": "git+https://github.com/barecheck/code-coverage-action.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "code",
+    "coverage",
+    "github",
+    "github actions",
+    "CI"
+  ],
+  "author": "Barecheck",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/barecheck/code-coverage-action/issues"

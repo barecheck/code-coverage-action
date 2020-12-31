@@ -14,11 +14,13 @@ inputs:
   base-lcov-file:
     description: 'Base code coverage report to generate percentage diff'
     required: true
-    default: ''
-  minimum-coverage-ratio:
-    description: 'Minimum coverage ratio that would to be considered as a difference between based and head commits'
+    default: './coverage/lcov.info'
+  minimum-ratio:
+    description: 'Minimum code coverage ratio that would to be considered as a difference between based and head commits'
     required: false
-    default: ''
+  send-summary-comment:
+    description: 'Send Github Pull request comment with code coverage summary'
+    required: false
 outputs:
   percentage:
     description: 'Total Percentage coverage'
