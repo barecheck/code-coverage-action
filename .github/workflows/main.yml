@@ -13,14 +13,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.13.1
-      - name: Cache node modules
-        uses: actions/cache@v1
-        with:
-          path: node_modules
-          key: node_modules-v1-${{ hashFiles('yarn.lock') }}
-          # loading an older version is fine here, since it will get an npm install
-          restore-keys: |
-            node_modules-
 
       - name: Install dependencies
         run: yarn
@@ -43,14 +35,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.13.1
-      - name: Cache node modules
-        uses: actions/cache@v1
-        with:
-          path: node_modules
-          key: node_modules-v1-${{ hashFiles('yarn.lock') }}
-          # loading an older version is fine here, since it will get an npm install
-          restore-keys: |
-            node_modules-
 
       - name: Download math result for job 2
         uses: actions/download-artifact@v2
