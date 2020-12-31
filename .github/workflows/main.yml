@@ -18,7 +18,7 @@ jobs:
         run: yarn
 
       - name: Run test coverage
-        run: yarn coverage-lcov
+        run: yarn coverage
 
       - name: Upload code coverage for ref branch
         uses: actions/upload-artifact@v2
@@ -45,7 +45,7 @@ jobs:
         run: yarn
 
       - name: Run test coverage
-        run: yarn coverage-lcov
+        run: yarn coverage
 
       # Testing beta of code coverage checks
       # This part can be removed or optimized once barecheck code coverage will be out of beta
