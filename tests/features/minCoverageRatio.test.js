@@ -2,15 +2,16 @@ const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 const { assert } = require('chai');
 
-// TODO: create default @actions/core stub that might be reused through all tests
+const actionsCoreStub = require('../stubs/actionsCore.stub');
+
 const defaultMocks = {
-  info: sinon.spy()
+  ...actionsCoreStub
 };
 
 const minCoverageRatioMock = (mocks) => {
-  const { getInput, info } = { ...defaultMocks, ...mocks };
+  const { getInput, info, setFailed } = { ...defaultMocks, ...mocks };
   return proxyquire('../../src/features/minCoverageRatio', {
-    '@actions/core': { getInput, info }
+    '@actions/core': { getInput, info, setFailed }
   });
 };
 
@@ -24,43 +25,56 @@ describe('eatures/minCoverageRatio', () => {
         .stub()
         .withArgs('minimum-coverage-ratio')
         .returns(minCoverageRatio);
+      const setFailed = sinon.spy();
 
-      const { checkCoverageRation } = minCoverageRatioMock({ getInput });
+      const { checkCoverageRation } = minCoverageRatioMock({
+        getInput,
+        setFailed
+      });
       const res = checkCoverageRation(coverageDiff);
 
       assert.isUndefined(res);
+      assert.isFalse(setFailed.calledOnce);
     });
 
-    // it("error shouldn't be thrown once coverage diff is zero", () => {
-    //   const minCoverageRatio = 0;
-    //   const coverageDiff = 0;
+    it("error shouldn't be thrown once coverage diff is zero", () => {
+      const minCoverageRatio = 0;
+      const coverageDiff = 0;
 
-    //   const getInput = sinon
-    //     .stub()
-    //     .withArgs('minimum-coverage-ratio')
-    //     .returns(minCoverageRatio);
+      const getInput = sinon
+        .stub()
+        .withArgs('minimum-coverage-ratio')
+        .returns(minCoverageRatio);
+      const setFailed = sinon.spy();
 
-    //   const { checkCoverageRation } = minCoverageRatioMock({ getInput });
-    //   const res = checkCoverageRation(coverageDiff);
+      const { checkCoverageRation } = minCoverageRatioMock({
+        getInput,
+        setFailed
+      });
+      const res = checkCoverageRation(coverageDiff);
 
-    //   assert.isUndefined(res);
-    // });
+      assert.isUndefined(res);
+      assert.isFalse(setFailed.calledOnce);
+    });
 
-    // it('should thow error once coverage is less than minimum coverage ratio', () => {
-    //   const minCoverageRatio = 5;
-    //   const coverageDiff = -10;
+    it('should call setFailed once coverage is less than minimum coverage ratio', () => {
+      const minCoverageRatio = 5;
+      const coverageDiff = -10;
 
-    //   const getInput = sinon
-    //     .stub()
-    //     .withArgs('minimum-coverage-ratio')
-    //     .returns(minCoverageRatio);
+      const getInput = sinon
+        .stub()
+        .withArgs('minimum-coverage-ratio')
+        .returns(minCoverageRatio);
+      const setFailed = sinon.spy();
 
-    //   const { checkCoverageRation } = minCoverageRatioMock({ getInput });
+      const { checkCoverageRation } = minCoverageRatioMock({
+        getInput,
+        setFailed
+      });
+      const res = checkCoverageRation(coverageDiff);
 
-    //   assert.throws(
-    //     () => checkCoverageRation(coverageDiff),
-    //     'Code coverage is less than minimum code coverage ratio'
-    //   );
-    // });
+      assert.isUndefined(res);
+      assert.isTrue(setFailed.calledOnce);
+    });
   });
 });
