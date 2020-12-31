@@ -33,7 +33,7 @@ async function main() {
   const basePercentage = lcov.percentage(baseFileData);
   core.info(`Base branch code coverage: ${basePercentage}%`);
 
-  const diff = comparePercentage - basePercentage;
+  const diff = (comparePercentage - basePercentage).toFixed(2);
   core.info(`Code coverage diff: ${diff}%`);
 
   sendComment(token, diff, comparePercentage);
