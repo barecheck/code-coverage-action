@@ -5938,6 +5938,7 @@ const core = __webpack_require__(186);
 const sendSummaryComment = async (diff, totalCoverage) => {
   const githubToken = core.getInput('github-token');
   const sendSummaryComment = core.getInput('send-summary-comment');
+  console.log(sendSummaryComment);
 
   if (sendSummaryComment && github.context.payload.pull_request) {
     core.info(`send-summary-comment is enabled for this workflow`);
