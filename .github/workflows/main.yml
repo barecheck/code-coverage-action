@@ -57,4 +57,4 @@ jobs:
           lcov-file: './coverage/lcov.info'
           base-lcov-file: './lcov.info'
           minimum-ratio: 0
-          # send-summary-comment: true
+          send-summary-comment: true
