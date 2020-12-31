@@ -5971,6 +5971,8 @@ async function main() {
   const token = core.getInput('github-token');
   const compareFile = core.getInput('lcov-file');
   const baseFile = core.getInput('base-lcov-file');
+  core.info(`lcov-file: ${compareFile}`);
+  core.info(`base-lcov-file: ${baseFile}`);
 
   const compareFileRaw = fs.readFileSync(compareFile, 'utf8');
 
