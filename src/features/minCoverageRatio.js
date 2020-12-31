@@ -13,7 +13,7 @@ const checkCoverageRation = (coverageDiff) => {
     const coverageDiffAlert = coverageDiff + minCoverageRatio;
 
     if (coverageDiffAlert < 0) {
-      throw new Error('Code coverage is less than minimum code coverage ratio');
+      core.setFailed('Code coverage is less than minimum code coverage ratio');
     }
   } else core.info(`minimum-coverage-ratio is disabled for this workflow`);
 };
