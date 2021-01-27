@@ -1,11 +1,15 @@
 const fs = require('fs');
 const core = require('@actions/core');
+const gitChangedFiles = require('git-changed-files');
 
 const lcov = require('./lcov');
 const { checkMinimumRatio } = require('./features/minimumRatio');
 const { sendSummaryComment } = require('./features/sendSummaryComment');
 
 async function main() {
+  let committedGitFiles = await gitChangedFiles();
+  console.log(committedGitFiles);
+
   const compareFile = core.getInput('lcov-file');
   const baseFile = core.getInput('base-lcov-file');
   core.info(`lcov-file: ${compareFile}`);
