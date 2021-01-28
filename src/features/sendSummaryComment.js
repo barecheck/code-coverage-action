@@ -20,7 +20,7 @@ const getChangedFileNames = async () => {
       }
     );
 
-    return changedFiles.map(({ filename }) => filename);
+    return changedFiles.data.map(({ filename }) => filename);
   }
 };
 

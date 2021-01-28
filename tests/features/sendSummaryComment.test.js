@@ -10,7 +10,7 @@ const defaultMocks = {
     issues: {
       createComment: () => null
     },
-    request: () => []
+    request: () => ({ data: [] })
   },
   context: {}
 };
@@ -111,7 +111,7 @@ describe('features/sendSummaryComment', () => {
         issues: {
           createComment: sinon.spy()
         },
-        request: () => []
+        request: () => ({ data: [] })
       };
 
       const { sendSummaryComment } = sendSummaryCommentMock({
