@@ -6,11 +6,11 @@ const lcov = require('./lcov');
 const { checkMinimumRatio } = require('./features/minimumRatio');
 const {
   sendSummaryComment,
-  gitChangedFiles
+  getChangedFiles
 } = require('./features/sendSummaryComment');
 
 async function main() {
-  let files = await gitChangedFiles();
+  let files = await getChangedFiles();
   console.log(files);
 
   const compareFile = core.getInput('lcov-file');

@@ -5993,11 +5993,11 @@ const lcov = __webpack_require__(318);
 const { checkMinimumRatio } = __webpack_require__(324);
 const {
   sendSummaryComment,
-  gitChangedFiles
+  getChangedFiles
 } = __webpack_require__(788);
 
 async function main() {
-  let files = await gitChangedFiles();
+  let files = await getChangedFiles();
   console.log(files);
 
   const compareFile = core.getInput('lcov-file');
