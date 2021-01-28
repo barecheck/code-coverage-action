@@ -1,10 +1,7 @@
 const github = require('@actions/github');
 const core = require('@actions/core');
 
-const {
-  getUncoveredFilesLines,
-  getGroupedUncoveredFileLines
-} = require('../lcov');
+const { uncoveredFileLinesByFileNames } = require('../lcov');
 
 const getChangedFileNames = async () => {
   const githubToken = core.getInput('github-token');
@@ -38,18 +35,11 @@ const sendSummaryComment = async (diff, totalCoverage, compareFileData) => {
     const arrow = diff === 0 ? '' : diff < 0 ? '▾' : '▴';
 
     const changedFilesNames = await getChangedFileNames();
-    const uncoveredFileLines = getUncoveredFilesLines(
-      compareFileData
-    ).filter(({ file }) => changedFilesNames.includes(file));
-    const groupedUncoveredFileLines = getGroupedUncoveredFileLines(
-      uncoveredFileLines
-    );
-
-    console.log(
+    const uncoveredFileLines = uncoveredFileLinesByFileNames(
       changedFilesNames,
-      uncoveredFileLines,
-      groupedUncoveredFileLines
+      compareFileData
     );
+    console.log(uncoveredFileLines);
 
     await octokit.issues.createComment({
       repo: github.context.repo.repo,
@@ -62,5 +52,5 @@ const sendSummaryComment = async (diff, totalCoverage, compareFileData) => {
 
 module.exports = {
   sendSummaryComment,
-  getChangedFiles
+  getChangedFileNames
 };

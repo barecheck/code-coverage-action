@@ -77,11 +77,24 @@ const getGroupedUncoveredFileLines = (filesLines) => {
   });
 };
 
-const filterByChangedLines = () => {};
+const uncoveredFileLinesByFileNames = (fileNames, lcovData) => {
+  const uncoveredFileLines = getUncoveredFilesLines(
+    compareFileData
+  ).filter(({ file }) => fileNames.includes(file));
+
+  const groupedUncoveredFileLines = getGroupedUncoveredFileLines(
+    uncoveredFileLines
+  );
+
+  console.log(fileNames, uncoveredFileLines, groupedUncoveredFileLines);
+
+  return groupedUncoveredFileLines;
+};
 
 module.exports = {
   parse,
   percentage,
   getUncoveredFilesLines,
-  getGroupedUncoveredFileLines
+  getGroupedUncoveredFileLines,
+  uncoveredFileLinesByFileNames
 };

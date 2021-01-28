@@ -9,7 +9,8 @@ const defaultMocks = {
   octokit: {
     issues: {
       createComment: () => null
-    }
+    },
+    request: () => []
   },
   context: {}
 };
@@ -21,7 +22,8 @@ const sendSummaryCommentMock = (mocks) => {
   };
   return proxyquire('../../src/features/sendSummaryComment', {
     '@actions/core': { getInput, info },
-    '@actions/github': { getOctokit: () => octokit, context }
+    '@actions/github': { getOctokit: () => octokit, context },
+    '../lcov': { uncoveredFileLinesByFileNames: () => null }
   });
 };
 
@@ -48,7 +50,7 @@ describe('features/sendSummaryComment', () => {
         getInput,
         octokit
       });
-      await sendSummaryComment(coverageDiff, totalCoverage);
+      await sendSummaryComment(coverageDiff, totalCoverage, []);
 
       assert.isFalse(octokit.issues.createComment.calledOnce);
     });
@@ -78,7 +80,7 @@ describe('features/sendSummaryComment', () => {
         octokit,
         context
       });
-      await sendSummaryComment(coverageDiff, totalCoverage);
+      await sendSummaryComment(coverageDiff, totalCoverage, []);
 
       assert.isFalse(octokit.issues.createComment.calledOnce);
     });
@@ -108,7 +110,8 @@ describe('features/sendSummaryComment', () => {
       const octokit = {
         issues: {
           createComment: sinon.spy()
-        }
+        },
+        request: () => []
       };
 
       const { sendSummaryComment } = sendSummaryCommentMock({
@@ -116,7 +119,7 @@ describe('features/sendSummaryComment', () => {
         octokit,
         context
       });
-      await sendSummaryComment(coverageDiff, totalCoverage);
+      await sendSummaryComment(coverageDiff, totalCoverage, []);
 
       assert.isTrue(octokit.issues.createComment.calledOnce);
     });

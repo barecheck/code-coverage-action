@@ -5935,10 +5935,7 @@ module.exports = {
 const github = __webpack_require__(438);
 const core = __webpack_require__(186);
 
-const {
-  getUncoveredFilesLines,
-  getGroupedUncoveredFileLines
-} = __webpack_require__(318);
+const { uncoveredFileLinesByFileNames } = __webpack_require__(318);
 
 const getChangedFileNames = async () => {
   const githubToken = core.getInput('github-token');
@@ -5972,18 +5969,11 @@ const sendSummaryComment = async (diff, totalCoverage, compareFileData) => {
     const arrow = diff === 0 ? '' : diff < 0 ? '▾' : '▴';
 
     const changedFilesNames = await getChangedFileNames();
-    const uncoveredFileLines = getUncoveredFilesLines(
-      compareFileData
-    ).filter(({ file }) => changedFilesNames.includes(file));
-    const groupedUncoveredFileLines = getGroupedUncoveredFileLines(
-      uncoveredFileLines
-    );
-
-    console.log(
+    const uncoveredFileLines = uncoveredFileLinesByFileNames(
       changedFilesNames,
-      uncoveredFileLines,
-      groupedUncoveredFileLines
+      compareFileData
     );
+    console.log(uncoveredFileLines);
 
     await octokit.issues.createComment({
       repo: github.context.repo.repo,
@@ -5996,7 +5986,7 @@ const sendSummaryComment = async (diff, totalCoverage, compareFileData) => {
 
 module.exports = {
   sendSummaryComment,
-  getChangedFiles
+  getChangedFileNames
 };
 
 
@@ -6142,13 +6132,26 @@ const getGroupedUncoveredFileLines = (filesLines) => {
   });
 };
 
-const filterByChangedLines = () => {};
+const uncoveredFileLinesByFileNames = (fileNames, lcovData) => {
+  const uncoveredFileLines = getUncoveredFilesLines(
+    compareFileData
+  ).filter(({ file }) => fileNames.includes(file));
+
+  const groupedUncoveredFileLines = getGroupedUncoveredFileLines(
+    uncoveredFileLines
+  );
+
+  console.log(fileNames, uncoveredFileLines, groupedUncoveredFileLines);
+
+  return groupedUncoveredFileLines;
+};
 
 module.exports = {
   parse,
   percentage,
   getUncoveredFilesLines,
-  getGroupedUncoveredFileLines
+  getGroupedUncoveredFileLines,
+  uncoveredFileLinesByFileNames
 };
 
 
