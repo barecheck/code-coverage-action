@@ -5902,6 +5902,23 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 3257:
+/***/ ((module) => {
+
+const mergeFileLinesWithChangedFiles = (uncoveredFileLines, changedFiles) => {
+  return uncoveredFileLines.map((fileLines) => {
+    const { sha } = changedFiles.find(
+      ({ filename }) => filename === fileLines.file
+    );
+    return { ...fileLines, sha };
+  });
+};
+
+module.exports = { mergeFileLinesWithChangedFiles };
+
+
+/***/ }),
+
 /***/ 3324:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -5936,7 +5953,9 @@ const github = __webpack_require__(5438);
 const core = __webpack_require__(2186);
 
 const { uncoveredFileLinesByFileNames } = __webpack_require__(3318);
-const getChangedFilesNames = __webpack_require__(4659);
+const { mergeFileLinesWithChangedFiles } = __webpack_require__(3257);
+
+const getChangedFiles = __webpack_require__(397);
 const buildCommentDetails = __webpack_require__(3840);
 
 const sendSummaryComment = async (diff, totalCoverage, compareFileData) => {
@@ -5949,13 +5968,15 @@ const sendSummaryComment = async (diff, totalCoverage, compareFileData) => {
     const octokit = github.getOctokit(githubToken);
     const arrow = diff === 0 ? '' : diff < 0 ? '▾' : '▴';
 
-    const changedFilesNames = await getChangedFilesNames();
+    const changedFiles = await getChangedFiles();
     const uncoveredFileLines = uncoveredFileLinesByFileNames(
-      changedFilesNames,
+      changedFiles.map(({ filename }) => filename),
       compareFileData
     );
 
-    const commentDetailsMessage = buildCommentDetails(uncoveredFileLines);
+    const commentDetailsMessage = buildCommentDetails(
+      mergeFileLinesWithChangedFiles(uncoveredFileLines, changedFiles)
+    );
 
     await octokit.issues.createComment({
       repo: github.context.repo.repo,
@@ -5967,7 +5988,8 @@ const sendSummaryComment = async (diff, totalCoverage, compareFileData) => {
 };
 
 module.exports = {
-  sendSummaryComment
+  sendSummaryComment,
+  mergeFileLinesWithChangedFiles
 };
 
 
@@ -5978,18 +6000,16 @@ module.exports = {
 
 const github = __webpack_require__(5438);
 
-const buildTableRow = ({ file, lines }) => {
+const buildTableRow = ({ file, lines, sha }) => {
   console.log(github.context.payload);
   console.log(github.context);
 
   const repo = github.context.repo.repo;
   const owner = github.context.repo.owner;
   const pullRequestNumber = github.context.payload.pull_request.number;
-  // TODO: add file sha
-  const fileSha = '';
 
   const getChangesLink = (lines) =>
-    `https://github.com/${owner}/${repo}/pull/${pullRequestNumber}/files#diff-${fileSha}${lines}`;
+    `https://github.com/${owner}/${repo}/pull/${pullRequestNumber}/files#diff-${sha}${lines}`;
 
   const buildArrayLink = (lines) =>
     `<a href="${getChangesLink(`R${lines[0]}-R${lines[1]}`)}">
@@ -6023,14 +6043,14 @@ module.exports = buildDetails;
 
 /***/ }),
 
-/***/ 4659:
+/***/ 397:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 const github = __webpack_require__(5438);
 const getOctokitClient = __webpack_require__(9627);
 
 // TODO: add pagibated loop to grap all files
-const getChangedFileNames = async () => {
+const getChangedFiles = async () => {
   const octokit = getOctokitClient();
   const changedFiles = await octokit.request(
     'GET /repos/{owner}/{repo}/pulls/{pull_number}/files',
@@ -6041,10 +6061,10 @@ const getChangedFileNames = async () => {
     }
   );
 
-  return changedFiles.data.map(({ filename }) => filename);
+  return changedFiles.data;
 };
 
-module.exports = getChangedFileNames;
+module.exports = getChangedFiles;
 
 
 /***/ }),

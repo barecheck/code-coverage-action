@@ -2,7 +2,9 @@ const github = require('@actions/github');
 const core = require('@actions/core');
 
 const { uncoveredFileLinesByFileNames } = require('../lcov');
-const getChangedFilesNames = require('../github/getChangedFilesNames');
+const { mergeFileLinesWithChangedFiles } = require('../coverage');
+
+const getChangedFiles = require('../github/getChangedFiles');
 const buildCommentDetails = require('../github/comment/buildDetails');
 
 const sendSummaryComment = async (diff, totalCoverage, compareFileData) => {
@@ -15,13 +17,15 @@ const sendSummaryComment = async (diff, totalCoverage, compareFileData) => {
     const octokit = github.getOctokit(githubToken);
     const arrow = diff === 0 ? '' : diff < 0 ? '▾' : '▴';
 
-    const changedFilesNames = await getChangedFilesNames();
+    const changedFiles = await getChangedFiles();
     const uncoveredFileLines = uncoveredFileLinesByFileNames(
-      changedFilesNames,
+      changedFiles.map(({ filename }) => filename),
       compareFileData
     );
 
-    const commentDetailsMessage = buildCommentDetails(uncoveredFileLines);
+    const commentDetailsMessage = buildCommentDetails(
+      mergeFileLinesWithChangedFiles(uncoveredFileLines, changedFiles)
+    );
 
     await octokit.issues.createComment({
       repo: github.context.repo.repo,
@@ -33,5 +37,6 @@ const sendSummaryComment = async (diff, totalCoverage, compareFileData) => {
 };
 
 module.exports = {
-  sendSummaryComment
+  sendSummaryComment,
+  mergeFileLinesWithChangedFiles
 };

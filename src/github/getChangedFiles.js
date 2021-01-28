@@ -2,7 +2,7 @@ const github = require('@actions/github');
 const getOctokitClient = require('./getOctokitClient');
 
 // TODO: add pagibated loop to grap all files
-const getChangedFileNames = async () => {
+const getChangedFiles = async () => {
   const octokit = getOctokitClient();
   const changedFiles = await octokit.request(
     'GET /repos/{owner}/{repo}/pulls/{pull_number}/files',
@@ -13,7 +13,7 @@ const getChangedFileNames = async () => {
     }
   );
 
-  return changedFiles.data.map(({ filename }) => filename);
+  return changedFiles.data;
 };
 
-module.exports = getChangedFileNames;
+module.exports = getChangedFiles;

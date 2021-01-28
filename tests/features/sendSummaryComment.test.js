@@ -24,7 +24,7 @@ const sendSummaryCommentMock = (mocks) => {
     '@actions/core': { getInput, info },
     '@actions/github': { getOctokit: () => octokit, context },
     '../lcov': { uncoveredFileLinesByFileNames: () => [] },
-    '../github/getChangedFilesNames': () => null
+    '../github/getChangedFiles': () => []
   });
 };
 

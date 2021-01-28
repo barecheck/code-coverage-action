@@ -1,17 +1,15 @@
 const github = require('@actions/github');
 
-const buildTableRow = ({ file, lines }) => {
+const buildTableRow = ({ file, lines, sha }) => {
   console.log(github.context.payload);
   console.log(github.context);
 
   const repo = github.context.repo.repo;
   const owner = github.context.repo.owner;
   const pullRequestNumber = github.context.payload.pull_request.number;
-  // TODO: add file sha
-  const fileSha = '';
 
   const getChangesLink = (lines) =>
-    `https://github.com/${owner}/${repo}/pull/${pullRequestNumber}/files#diff-${fileSha}${lines}`;
+    `https://github.com/${owner}/${repo}/pull/${pullRequestNumber}/files#diff-${sha}${lines}`;
 
   const buildArrayLink = (lines) =>
     `<a href="${getChangesLink(`R${lines[0]}-R${lines[1]}`)}">
