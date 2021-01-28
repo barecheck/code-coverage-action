@@ -23,7 +23,8 @@ const sendSummaryCommentMock = (mocks) => {
   return proxyquire('../../src/features/sendSummaryComment', {
     '@actions/core': { getInput, info },
     '@actions/github': { getOctokit: () => octokit, context },
-    '../lcov': { uncoveredFileLinesByFileNames: () => [] }
+    '../lcov': { uncoveredFileLinesByFileNames: () => [] },
+    '../github/getChangedFilesNames': () => null
   });
 };
 
