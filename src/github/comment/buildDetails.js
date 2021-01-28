@@ -1,9 +1,24 @@
 const github = require('@actions/github');
 
 const buildTableRow = ({ file, lines }) => {
-  const buildArrayLink = (lines) => `<a href="/">${lines.join('-')}</a>`;
+  console.log(github.context.payload);
+  console.log(github.context);
 
-  const buildLink = (line) => `<a href="/">${line} </a>`;
+  const repo = github.context.repo.repo;
+  const owner = github.context.repo.owner;
+  const pullRequestNumber = github.context.payload.pull_request.number;
+  const sha = github.context.env.GITHUB_SHA;
+
+  const getChangesLink = (lines) =>
+    `https://github.com/${owner}/${repo}/pull/${pullRequestNumber}/files#diff-${sha}${lines}`;
+
+  const buildArrayLink = (lines) =>
+    `<a href="${getChangesLink(`R${lines[0]}-R${lines[1]}`)}">
+    ${lines.join('-')}
+    </a>`;
+
+  const buildLink = (line) =>
+    `<a href="${getChangesLink(`R${line}`)}">${line}</a>`;
 
   const buildUncoveredLines = (line) =>
     Array.isArray(line) ? buildArrayLink(line) : buildLink(line);
