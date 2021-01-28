@@ -1,12 +1,12 @@
 const github = require('@actions/github');
 
 const buildTableRow = ({ file, lines, github }) => {
-  console.log(github.context.payload);
-  console.log(github.context);
+  // console.log(github.context.payload);
+  // console.log(github.context);
 
-  const repo = github.context.repo.repo;
-  const owner = github.context.repo.owner;
-  const pullRequestNumber = github.context.payload.pull_request.number;
+  // const repo = github.context.repo.repo;
+  // const owner = github.context.repo.owner;
+  // const pullRequestNumber = github.context.payload.pull_request.number;
 
   const getChangesLink = (lines) => `${github.blob_url}${lines}`;
   // const getChangesLink = (lines) =>
