@@ -6034,7 +6034,10 @@ module.exports = getChangedFileNames;
 /***/ }),
 
 /***/ 9627:
-/***/ ((module) => {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const github = __webpack_require__(5438);
+const core = __webpack_require__(2186);
 
 const getOctokitClient = () => {
   const githubToken = core.getInput('github-token');
