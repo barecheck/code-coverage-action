@@ -5985,10 +5985,11 @@ const buildTableRow = ({ file, lines }) => {
   const repo = github.context.repo.repo;
   const owner = github.context.repo.owner;
   const pullRequestNumber = github.context.payload.pull_request.number;
-  const sha = github.context.env.GITHUB_SHA;
+  // TODO: add file sha
+  const fileSha = '';
 
   const getChangesLink = (lines) =>
-    `https://github.com/${owner}/${repo}/pull/${pullRequestNumber}/files#diff-${sha}${lines}`;
+    `https://github.com/${owner}/${repo}/pull/${pullRequestNumber}/files#diff-${fileSha}${lines}`;
 
   const buildArrayLink = (lines) =>
     `<a href="${getChangesLink(`R${lines[0]}-R${lines[1]}`)}">
