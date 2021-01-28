@@ -19,6 +19,28 @@ const sendSummaryComment = async (diff, totalCoverage) => {
     });
   }
 };
+
+const getChangedFiles = async () => {
+  const githubToken = core.getInput('github-token');
+
+  if (github.context.payload.pull_request) {
+    core.info(`get all github PR files`);
+
+    const octokit = github.getOctokit(githubToken);
+
+    const res = await octokit.request(
+      'GET /repos/{owner}/{repo}/pulls/{pull_number}/files',
+      {
+        repo: github.context.repo.repo,
+        owner: github.context.repo.owner,
+        pull_number: github.context.payload.pull_request.number
+      }
+    );
+
+    return res;
+  }
+};
 module.exports = {
-  sendSummaryComment
+  sendSummaryComment,
+  getChangedFiles
 };
