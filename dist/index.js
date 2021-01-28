@@ -5935,7 +5935,33 @@ module.exports = {
 const github = __webpack_require__(438);
 const core = __webpack_require__(186);
 
-const sendSummaryComment = async (diff, totalCoverage) => {
+const {
+  getUncoveredFilesLines,
+  getGroupedUncoveredFileLines
+} = __webpack_require__(318);
+
+const getChangedFileNames = async () => {
+  const githubToken = core.getInput('github-token');
+
+  if (github.context.payload.pull_request) {
+    core.info(`get all github PR files`);
+
+    const octokit = github.getOctokit(githubToken);
+
+    const changedFiles = await octokit.request(
+      'GET /repos/{owner}/{repo}/pulls/{pull_number}/files',
+      {
+        repo: github.context.repo.repo,
+        owner: github.context.repo.owner,
+        pull_number: github.context.payload.pull_request.number
+      }
+    );
+
+    return changedFiles.map(({ filename }) => filename);
+  }
+};
+
+const sendSummaryComment = async (diff, totalCoverage, compareFileData) => {
   const githubToken = core.getInput('github-token');
   const sendSummaryComment = core.getInput('send-summary-comment');
 
@@ -5944,6 +5970,20 @@ const sendSummaryComment = async (diff, totalCoverage) => {
 
     const octokit = github.getOctokit(githubToken);
     const arrow = diff === 0 ? '' : diff < 0 ? '▾' : '▴';
+
+    const changedFilesNames = await getChangedFileNames();
+    const uncoveredFileLines = getUncoveredFilesLines(
+      compareFileData
+    ).filter(({ file }) => changedFilesNames.includes(file));
+    const groupedUncoveredFileLines = getGroupedUncoveredFileLines(
+      uncoveredFileLines
+    );
+
+    console.log(
+      changedFilesNames,
+      uncoveredFileLines,
+      groupedUncoveredFileLines
+    );
 
     await octokit.issues.createComment({
       repo: github.context.repo.repo,
@@ -5954,26 +5994,6 @@ const sendSummaryComment = async (diff, totalCoverage) => {
   }
 };
 
-const getChangedFiles = async () => {
-  const githubToken = core.getInput('github-token');
-
-  if (github.context.payload.pull_request) {
-    core.info(`get all github PR files`);
-
-    const octokit = github.getOctokit(githubToken);
-
-    const res = await octokit.request(
-      'GET /repos/{owner}/{repo}/pulls/{pull_number}/files',
-      {
-        repo: github.context.repo.repo,
-        owner: github.context.repo.owner,
-        pull_number: github.context.payload.pull_request.number
-      }
-    );
-
-    return res;
-  }
-};
 module.exports = {
   sendSummaryComment,
   getChangedFiles
@@ -5991,15 +6011,9 @@ const github = __webpack_require__(438);
 
 const lcov = __webpack_require__(318);
 const { checkMinimumRatio } = __webpack_require__(324);
-const {
-  sendSummaryComment,
-  getChangedFiles
-} = __webpack_require__(788);
+const { sendSummaryComment } = __webpack_require__(788);
 
 async function main() {
-  let files = await getChangedFiles();
-  console.log(files);
-
   const compareFile = core.getInput('lcov-file');
   const baseFile = core.getInput('base-lcov-file');
   core.info(`lcov-file: ${compareFile}`);
@@ -6029,7 +6043,7 @@ async function main() {
   const diff = (comparePercentage - basePercentage).toFixed(2);
   core.info(`Code coverage diff: ${diff}%`);
 
-  await sendSummaryComment(diff, comparePercentage);
+  await sendSummaryComment(diff, comparePercentage, compareFileData);
   checkMinimumRatio(diff);
 
   core.setOutput('percentage', comparePercentage);

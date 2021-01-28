@@ -4,15 +4,9 @@ const github = require('@actions/github');
 
 const lcov = require('./lcov');
 const { checkMinimumRatio } = require('./features/minimumRatio');
-const {
-  sendSummaryComment,
-  getChangedFiles
-} = require('./features/sendSummaryComment');
+const { sendSummaryComment } = require('./features/sendSummaryComment');
 
 async function main() {
-  let files = await getChangedFiles();
-  console.log(files);
-
   const compareFile = core.getInput('lcov-file');
   const baseFile = core.getInput('base-lcov-file');
   core.info(`lcov-file: ${compareFile}`);
@@ -42,7 +36,7 @@ async function main() {
   const diff = (comparePercentage - basePercentage).toFixed(2);
   core.info(`Code coverage diff: ${diff}%`);
 
-  await sendSummaryComment(diff, comparePercentage);
+  await sendSummaryComment(diff, comparePercentage, compareFileData);
   checkMinimumRatio(diff);
 
   core.setOutput('percentage', comparePercentage);
