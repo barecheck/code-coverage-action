@@ -6034,7 +6034,7 @@ module.exports = getChangedFileNames;
 /***/ }),
 
 /***/ 9627:
-/***/ (() => {
+/***/ ((module) => {
 
 const getOctokitClient = () => {
   const githubToken = core.getInput('github-token');
@@ -6047,6 +6047,8 @@ const getOctokitClient = () => {
 
   return octokit;
 };
+
+module.exports = getOctokitClient;
 
 
 /***/ }),

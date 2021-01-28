@@ -9,3 +9,5 @@ const getOctokitClient = () => {
 
   return octokit;
 };
+
+module.exports = getOctokitClient;
