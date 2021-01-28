@@ -1,6 +1,6 @@
 const github = require('@actions/github');
 
-const buildTableRow = ({ file, lines, sha }) => {
+const buildTableRow = ({ file, lines, github }) => {
   console.log(github.context.payload);
   console.log(github.context);
 
@@ -8,8 +8,9 @@ const buildTableRow = ({ file, lines, sha }) => {
   const owner = github.context.repo.owner;
   const pullRequestNumber = github.context.payload.pull_request.number;
 
-  const getChangesLink = (lines) =>
-    `https://github.com/${owner}/${repo}/pull/${pullRequestNumber}/files#diff-${sha}${lines}`;
+  const getChangesLink = (lines) => `${github.blob_url}${lines}`;
+  // const getChangesLink = (lines) =>
+  // `https://github.com/${owner}/${repo}/pull/${pullRequestNumber}/files#diff-${sha}${lines}`;
 
   const buildArrayLink = (lines) =>
     `<a href="${getChangesLink(`R${lines[0]}-R${lines[1]}`)}">

@@ -27,7 +27,7 @@ describe('coverage', () => {
         {
           file: 'src/lcov.js',
           lines: [4, [6, 8], 10, [14, 15], 19],
-          sha: '5-6-7'
+          github: { sha: '5-6-7', filename: 'src/lcov.js' }
         }
       ]);
     });
