@@ -86,8 +86,6 @@ const uncoveredFileLinesByFileNames = (fileNames, lcovData) => {
     uncoveredFileLines
   );
 
-  console.log(fileNames, uncoveredFileLines, groupedUncoveredFileLines);
-
   return groupedUncoveredFileLines;
 };
 

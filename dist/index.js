@@ -5937,6 +5937,7 @@ const core = __webpack_require__(186);
 
 const { uncoveredFileLinesByFileNames } = __webpack_require__(318);
 
+// TODO: add pagibated loop to grap all files
 const getChangedFileNames = async () => {
   const githubToken = core.getInput('github-token');
 
@@ -5975,11 +5976,17 @@ const sendSummaryComment = async (diff, totalCoverage, compareFileData) => {
     );
     console.log(uncoveredFileLines);
 
+    const uncoveredLines = uncoveredFileLines.map(({ file, lines }) => {
+      const formatlines = (line) =>
+        Array.isArray(line) ? line.join('-') : line;
+      return `${file}: ${lines.map(formatlines).join(', ')}`;
+    });
+
     await octokit.issues.createComment({
       repo: github.context.repo.repo,
       owner: github.context.repo.owner,
       issue_number: github.context.payload.pull_request.number,
-      body: `<h3>Code coverage report</h3>Total: <b>${totalCoverage}%</b>:\n\nYour code coverage diff: <b>${diff}% ${arrow}</b>`
+      body: `<h3>Code coverage report</h3>Total: <b>${totalCoverage}%</b>:\n\nYour code coverage diff: <b>${diff}% ${arrow}</b>\n\n${uncoveredLines}`
     });
   }
 };
@@ -6140,8 +6147,6 @@ const uncoveredFileLinesByFileNames = (fileNames, lcovData) => {
   const groupedUncoveredFileLines = getGroupedUncoveredFileLines(
     uncoveredFileLines
   );
-
-  console.log(fileNames, uncoveredFileLines, groupedUncoveredFileLines);
 
   return groupedUncoveredFileLines;
 };
