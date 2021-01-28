@@ -35,7 +35,7 @@ describe('github/comment/buildDetails', () => {
 
     assert.deepEqual(
       details,
-      '<details><summary>Coverage Report</summary><table><tbody><tr><th>File</th><th>Uncovered Lines</th></tr><tr><td><a href="/">src/test.js </a></td><td><a href="/">4 </a>, <a href="/">6-8</a>, <a href="/">10 </a>, <a href="/">14-15</a>, <a href="/">19 </a></td></tr>,<tr><td><a href="/">src/test2.js </a></td><td><a href="/">101 </a></td></tr></tbody></table></details>'
+      '<details><summary>Coverage Report</summary><table><tbody><tr><th>File</th><th>Uncovered Lines</th></tr><tr><td><a href="/">src/test.js </a></td><td><a href="/">4 </a>, <a href="/">6-8</a>, <a href="/">10 </a>, <a href="/">14-15</a>, <a href="/">19 </a></td></tr><tr><td><a href="/">src/test2.js </a></td><td><a href="/">101 </a></td></tr></tbody></table></details>'
     );
   });
 });

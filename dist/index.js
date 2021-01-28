@@ -5996,7 +5996,7 @@ const buildDetails = (fileLines) => {
   const summary = '<summary>Coverage Report</summary>';
 
   const tableHeader = '<tr><th>File</th><th>Uncovered Lines</th></tr>';
-  const tableBody = fileLines.map(buildTableRow);
+  const tableBody = fileLines.map(buildTableRow).join('');
   const table = `<table><tbody>${tableHeader}${tableBody}</tbody></table>`;
 
   return `<details>${summary}${table}</details>`;
