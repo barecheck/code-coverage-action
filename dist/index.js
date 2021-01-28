@@ -6134,7 +6134,7 @@ const getGroupedUncoveredFileLines = (filesLines) => {
 
 const uncoveredFileLinesByFileNames = (fileNames, lcovData) => {
   const uncoveredFileLines = getUncoveredFilesLines(
-    compareFileData
+    lcovData
   ).filter(({ file }) => fileNames.includes(file));
 
   const groupedUncoveredFileLines = getGroupedUncoveredFileLines(
