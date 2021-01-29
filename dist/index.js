@@ -5902,6 +5902,18 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 4570:
+/***/ ((module) => {
+
+const commentTitle = 'Barecheck - Code coverage report';
+
+module.exports = {
+  commentTitle
+};
+
+
+/***/ }),
+
 /***/ 3257:
 /***/ ((module) => {
 
@@ -5952,45 +5964,82 @@ module.exports = {
 const github = __webpack_require__(5438);
 const core = __webpack_require__(2186);
 
-const { uncoveredFileLinesByFileNames } = __webpack_require__(3318);
-const { mergeFileLinesWithChangedFiles } = __webpack_require__(3257);
-
+const { commentTitle } = __webpack_require__(4570);
 const getChangedFiles = __webpack_require__(397);
-const buildCommentDetails = __webpack_require__(3840);
+const createOrUpdateComment = __webpack_require__(8646);
+const buildBody = __webpack_require__(681);
 
-const sendSummaryComment = async (diff, totalCoverage, compareFileData) => {
+const sendSummaryComment = async (
+  coverageDiff,
+  totalCoverage,
+  compareFileData
+) => {
   const githubToken = core.getInput('github-token');
   const sendSummaryComment = core.getInput('send-summary-comment');
 
   if (sendSummaryComment && github.context.payload.pull_request) {
     core.info(`send-summary-comment is enabled for this workflow`);
 
-    const octokit = github.getOctokit(githubToken);
-    const arrow = diff === 0 ? '' : diff < 0 ? '▾' : '▴';
-
     const changedFiles = await getChangedFiles();
-    const uncoveredFileLines = uncoveredFileLinesByFileNames(
-      changedFiles.map(({ filename }) => filename),
+
+    const body = buildBody(
+      changedFiles,
+      coverageDiff,
+      totalCoverage,
       compareFileData
     );
 
-    const commentDetailsMessage = buildCommentDetails(
-      mergeFileLinesWithChangedFiles(uncoveredFileLines, changedFiles)
-    );
-
-    await octokit.issues.createComment({
-      repo: github.context.repo.repo,
-      owner: github.context.repo.owner,
-      issue_number: github.context.payload.pull_request.number,
-      body: `<h3>Barecheck - Code coverage report</h3>Total: <b>${totalCoverage}%</b>:\n\nYour code coverage diff: <b>${diff}% ${arrow}</b>\n\n${commentDetailsMessage}`
-    });
+    // we can add an option how comments should be added create | update | none
+    await createOrUpdateComment(commentTitle, body);
   }
 };
 
 module.exports = {
-  sendSummaryComment,
-  mergeFileLinesWithChangedFiles
+  sendSummaryComment
 };
+
+
+/***/ }),
+
+/***/ 681:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const { commentTitle } = __webpack_require__(4570);
+const { uncoveredFileLinesByFileNames } = __webpack_require__(3318);
+const { mergeFileLinesWithChangedFiles } = __webpack_require__(3257);
+
+const buildCommentDetails = __webpack_require__(3840);
+
+const buildBody = (
+  changedFiles,
+  coverageDiff,
+  totalCoverage,
+  compareFileData
+) => {
+  const uncoveredFileLines = uncoveredFileLinesByFileNames(
+    changedFiles.map(({ filename }) => filename),
+    compareFileData
+  );
+
+  const fileLinesWithChangedFiles = mergeFileLinesWithChangedFiles(
+    uncoveredFileLines,
+    changedFiles
+  );
+
+  const commentDetailsMessage = buildCommentDetails(fileLinesWithChangedFiles);
+
+  const trendArrow = coverageDiff === 0 ? '' : coverageDiff < 0 ? '▾' : '▴';
+  const header = commentTitle;
+  const descTotal = `Total: <b>${totalCoverage}%</b>`;
+  const descCoverageDiff = `Your code coverage diff: <b>${coverageDiff}% ${trendArrow}</b>`;
+  const description = `${descTotal}\n\n${descCoverageDiff}`;
+
+  const body = `<h3>${header}</h3>${description}\n\n${commentDetailsMessage}`;
+
+  return body;
+};
+
+module.exports = buildBody;
 
 
 /***/ }),
@@ -6033,6 +6082,86 @@ const buildDetails = (fileLines) => {
 };
 
 module.exports = buildDetails;
+
+
+/***/ }),
+
+/***/ 436:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const github = __webpack_require__(5438);
+const getOctokitClient = __webpack_require__(9627);
+
+/**
+ * Creates Github comments based on received params
+ *  */
+const createComment = async (body) => {
+  const octokit = getOctokitClient();
+
+  const res = await octokit.issues.createComment({
+    repo: github.context.repo.repo,
+    owner: github.context.repo.owner,
+    issue_number: github.context.payload.pull_request.number,
+    body
+  });
+
+  return res;
+};
+
+module.exports = createComment;
+
+
+/***/ }),
+
+/***/ 8646:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const createComment = __webpack_require__(436);
+const updateComment = __webpack_require__(5695);
+const findComment = __webpack_require__(1714);
+
+/**
+ * Create or Update Github comment based if part of comment found
+ */
+const createOrUpdateComment = async (findCommentText, body) => {
+  const comment = await findComment(findCommentText);
+
+  return comment ? updateComment(comment.id, body) : createComment(body);
+};
+
+module.exports = createOrUpdateComment;
+
+
+/***/ }),
+
+/***/ 1714:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const github = __webpack_require__(5438);
+const getOctokitClient = __webpack_require__(9627);
+
+/**
+ * Find Github comment based received part of text
+ *  */
+const findComment = async (bodyText) => {
+  const octokit = getOctokitClient();
+
+  const { data } = await octokit.request(
+    'GET /repos/{owner}/{repo}/issues/{issue_number}/comments',
+    {
+      repo: github.context.repo.repo,
+      owner: github.context.repo.owner,
+      issue_number: github.context.payload.pull_request.number,
+      per_page: 100
+    }
+  );
+
+  const comment = data.find(({ body }) => body.includes(bodyText));
+
+  return comment;
+};
+
+module.exports = findComment;
 
 
 /***/ }),
@@ -6086,6 +6215,36 @@ const getOctokitClient = () => {
 };
 
 module.exports = getOctokitClient;
+
+
+/***/ }),
+
+/***/ 5695:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const github = __webpack_require__(5438);
+const getOctokitClient = __webpack_require__(9627);
+
+/**
+ * Updates Github comments based on received params
+ *  */
+const updateComment = async (commentId, body) => {
+  const octokit = getOctokitClient();
+
+  const { data } = await octokit.request(
+    'PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}',
+    {
+      repo: github.context.repo.repo,
+      owner: github.context.repo.owner,
+      comment_id: commentId,
+      body
+    }
+  );
+
+  return data;
+};
+
+module.exports = updateComment;
 
 
 /***/ }),
