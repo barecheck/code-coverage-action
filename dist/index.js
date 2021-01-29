@@ -5902,6 +5902,18 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 4570:
+/***/ ((module) => {
+
+const commentTitle = 'Barecheck - Code coverage report';
+
+module.exports = {
+  commentTitle
+};
+
+
+/***/ }),
+
 /***/ 3257:
 /***/ ((module) => {
 
@@ -5952,6 +5964,7 @@ module.exports = {
 const github = __webpack_require__(5438);
 const core = __webpack_require__(2186);
 
+const { commentTitle } = __webpack_require__(4570);
 const getChangedFiles = __webpack_require__(397);
 const createOrUpdateComment = __webpack_require__(8646);
 const buildBody = __webpack_require__(681);
@@ -5977,7 +5990,7 @@ const sendSummaryComment = async (
     );
 
     // we can add an option how comments should be added create | update | none
-    await createOrUpdateComment('Barecheck', body);
+    await createOrUpdateComment(commentTitle, body);
   }
 };
 
@@ -5991,6 +6004,7 @@ module.exports = {
 /***/ 681:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+const { commentTitle } = __webpack_require__(4570);
 const { uncoveredFileLinesByFileNames } = __webpack_require__(3318);
 const { mergeFileLinesWithChangedFiles } = __webpack_require__(3257);
 
@@ -6015,7 +6029,7 @@ const buildBody = (
   const commentDetailsMessage = buildCommentDetails(fileLinesWithChangedFiles);
 
   const trendArrow = coverageDiff === 0 ? '' : coverageDiff < 0 ? '▾' : '▴';
-  const header = 'Barecheck - Code coverage report';
+  const header = commentTitle;
   const descTotal = `Total: <b>${totalCoverage}%</b>`;
   const descCoverageDiff = `Your code coverage diff: <b>${coverageDiff}% ${trendArrow}</b>`;
   const description = `${descTotal}\n\n${descCoverageDiff}`;
@@ -6144,8 +6158,6 @@ const findComment = async (bodyText) => {
 
   const comment = data.find(({ body }) => body.includes(bodyText));
 
-  console.log(comment);
-
   return comment;
 };
 
@@ -6218,7 +6230,6 @@ const getOctokitClient = __webpack_require__(9627);
  *  */
 const updateComment = async (commentId, body) => {
   const octokit = getOctokitClient();
-  console.log('commentId', commentId);
 
   const { data } = await octokit.request(
     'PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}',
@@ -6230,7 +6241,6 @@ const updateComment = async (commentId, body) => {
     }
   );
 
-  console.log('updated', commentId, body);
   return data;
 };
 

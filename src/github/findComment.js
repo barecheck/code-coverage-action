@@ -19,8 +19,6 @@ const findComment = async (bodyText) => {
 
   const comment = data.find(({ body }) => body.includes(bodyText));
 
-  console.log(comment);
-
   return comment;
 };
 

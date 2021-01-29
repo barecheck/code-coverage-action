@@ -1,6 +1,7 @@
 const github = require('@actions/github');
 const core = require('@actions/core');
 
+const { commentTitle } = require('../config');
 const getChangedFiles = require('../github/getChangedFiles');
 const createOrUpdateComment = require('../github/createOrUpdateComment');
 const buildBody = require('../github/comment/buildBody');
@@ -26,7 +27,7 @@ const sendSummaryComment = async (
     );
 
     // we can add an option how comments should be added create | update | none
-    await createOrUpdateComment('Barecheck', body);
+    await createOrUpdateComment(commentTitle, body);
   }
 };
 

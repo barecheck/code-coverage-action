@@ -115,7 +115,7 @@ describe('features/sendSummaryComment', () => {
 
       assert.isTrue(createOrUpdateComment.calledOnce);
       assert.deepEqual(createOrUpdateComment.firstCall.args, [
-        'Barecheck',
+        'Barecheck - Code coverage report',
         body
       ]);
     });

@@ -1,3 +1,4 @@
+const { commentTitle } = require('../../config');
 const { uncoveredFileLinesByFileNames } = require('../../lcov');
 const { mergeFileLinesWithChangedFiles } = require('../../coverage');
 
@@ -22,7 +23,7 @@ const buildBody = (
   const commentDetailsMessage = buildCommentDetails(fileLinesWithChangedFiles);
 
   const trendArrow = coverageDiff === 0 ? '' : coverageDiff < 0 ? '▾' : '▴';
-  const header = 'Barecheck - Code coverage report';
+  const header = commentTitle;
   const descTotal = `Total: <b>${totalCoverage}%</b>`;
   const descCoverageDiff = `Your code coverage diff: <b>${coverageDiff}% ${trendArrow}</b>`;
   const description = `${descTotal}\n\n${descCoverageDiff}`;
