@@ -7,7 +7,7 @@ const actionsCoreStub = require('../stubs/actionsCore.stub');
 const defaultMocks = {
   ...actionsCoreStub,
   getChangedFiles: () => [],
-  createComment: () => true,
+  createOrUpdateComment: () => true,
   buildBody: () => '',
   context: {}
 };
@@ -18,7 +18,7 @@ const sendSummaryCommentMock = (mocks) => {
     info,
     context,
     getChangedFiles,
-    createComment,
+    createOrUpdateComment,
     buildBody
   } = {
     ...defaultMocks,
@@ -28,20 +28,20 @@ const sendSummaryCommentMock = (mocks) => {
     '@actions/core': { getInput, info },
     '@actions/github': { context },
     '../github/getChangedFiles': getChangedFiles,
-    '../github/createComment': createComment,
+    '../github/createOrUpdateComment': createOrUpdateComment,
     '../github/comment/buildBody': buildBody
   });
 };
 
 describe('features/sendSummaryComment', () => {
   describe('sendSummaryComment', () => {
-    it("github.createComment shouldn't be called", async () => {
+    it("github.createOrUpdateComment shouldn't be called", async () => {
       const sendSummaryCommentInput = false;
       const githubTokenInput = '1-2-3';
       const coverageDiff = 0;
       const totalCoverage = 0;
 
-      const createComment = sinon.spy();
+      const createOrUpdateComment = sinon.spy();
       const getInput = sinon.stub();
       getInput
         .withArgs('send-summary-comment')
@@ -50,14 +50,14 @@ describe('features/sendSummaryComment', () => {
 
       const { sendSummaryComment } = sendSummaryCommentMock({
         getInput,
-        createComment
+        createOrUpdateComment
       });
       await sendSummaryComment(coverageDiff, totalCoverage, []);
 
-      assert.isFalse(createComment.calledOnce);
+      assert.isFalse(createOrUpdateComment.calledOnce);
     });
 
-    it("github.createComment shouldn't be called for not pull request events", async () => {
+    it("github.createOrUpdateComment shouldn't be called for not pull request events", async () => {
       const sendSummaryCommentInput = true;
       const githubTokenInput = '1-2-3';
       const coverageDiff = 0;
@@ -66,7 +66,7 @@ describe('features/sendSummaryComment', () => {
         payload: {}
       };
 
-      const createComment = sinon.spy();
+      const createOrUpdateComment = sinon.spy();
       const getInput = sinon.stub();
       getInput
         .withArgs('send-summary-comment')
@@ -75,15 +75,15 @@ describe('features/sendSummaryComment', () => {
 
       const { sendSummaryComment } = sendSummaryCommentMock({
         getInput,
-        createComment,
+        createOrUpdateComment,
         context
       });
       await sendSummaryComment(coverageDiff, totalCoverage, []);
 
-      assert.isFalse(createComment.calledOnce);
+      assert.isFalse(createOrUpdateComment.calledOnce);
     });
 
-    it('github.createComment should be called once', async () => {
+    it('github.createOrUpdateComment should be called once', async () => {
       const sendSummaryCommentInput = true;
       const githubTokenInput = '1-2-3';
       const coverageDiff = 12;
@@ -97,7 +97,7 @@ describe('features/sendSummaryComment', () => {
         }
       };
 
-      const createComment = sinon.spy();
+      const createOrUpdateComment = sinon.spy();
       const buildBody = sinon.stub().returns(body);
       const getInput = sinon.stub();
       getInput
@@ -107,14 +107,17 @@ describe('features/sendSummaryComment', () => {
 
       const { sendSummaryComment } = sendSummaryCommentMock({
         getInput,
-        createComment,
+        createOrUpdateComment,
         context,
         buildBody
       });
       await sendSummaryComment(coverageDiff, totalCoverage, []);
 
-      assert.isTrue(createComment.calledOnce);
-      assert.deepEqual(createComment.firstCall.args, [body]);
+      assert.isTrue(createOrUpdateComment.calledOnce);
+      assert.deepEqual(createOrUpdateComment.firstCall.args, [
+        'Barecheck',
+        body
+      ]);
     });
 
     it('buildBody should be called with proper args', async () => {
@@ -133,7 +136,7 @@ describe('features/sendSummaryComment', () => {
         }
       };
 
-      const createComment = sinon.spy();
+      const createOrUpdateComment = sinon.spy();
       const buildBody = sinon.stub().returns(body);
       const getChangedFiles = sinon.stub().returns(changedFiles);
       const getInput = sinon.stub();
@@ -144,11 +147,12 @@ describe('features/sendSummaryComment', () => {
 
       const { sendSummaryComment } = sendSummaryCommentMock({
         getInput,
-        createComment,
+        createOrUpdateComment,
         context,
         buildBody,
         getChangedFiles
       });
+
       await sendSummaryComment(coverageDiff, totalCoverage, compareFileData);
 
       assert.isTrue(buildBody.calledOnce);

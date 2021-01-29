@@ -5953,7 +5953,7 @@ const github = __webpack_require__(5438);
 const core = __webpack_require__(2186);
 
 const getChangedFiles = __webpack_require__(397);
-const createComment = __webpack_require__(436);
+const createOrUpdateComment = __webpack_require__(8646);
 const buildBody = __webpack_require__(681);
 
 const sendSummaryComment = async (
@@ -5977,7 +5977,7 @@ const sendSummaryComment = async (
     );
 
     // we can add an option how comments should be added create | update | none
-    await createComment(body);
+    await createOrUpdateComment('Barecheck', body);
   }
 };
 
@@ -6099,6 +6099,58 @@ module.exports = createComment;
 
 /***/ }),
 
+/***/ 8646:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const createComment = __webpack_require__(436);
+const updateComment = __webpack_require__(5695);
+const findComment = __webpack_require__(1714);
+
+/**
+ * Create or Update Github comment based if part of comment found
+ */
+const createOrUpdateComment = async (findCommentText, body) => {
+  const comment = await findComment(findCommentText);
+
+  return comment ? updateComment(comment.id, body) : createComment(body);
+};
+
+module.exports = createOrUpdateComment;
+
+
+/***/ }),
+
+/***/ 1714:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const github = __webpack_require__(5438);
+const getOctokitClient = __webpack_require__(9627);
+
+/**
+ * Find Github comment based received part of text
+ *  */
+const findComment = async (bodyText) => {
+  const octokit = getOctokitClient();
+
+  const { data } = await octokit.request(
+    'GET /repos/{owner}/{repo}/pulls/comments',
+    {
+      repo: github.context.repo.repo,
+      owner: github.context.repo.owner,
+      per_page: 100
+    }
+  );
+
+  const comment = data.find(({ body }) => body.includes(bodyText));
+
+  return comment;
+};
+
+module.exports = findComment;
+
+
+/***/ }),
+
 /***/ 397:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -6148,6 +6200,36 @@ const getOctokitClient = () => {
 };
 
 module.exports = getOctokitClient;
+
+
+/***/ }),
+
+/***/ 5695:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const github = __webpack_require__(5438);
+const getOctokitClient = __webpack_require__(9627);
+
+/**
+ * Updates Github comments based on received params
+ *  */
+const updateComment = async (commentId, body) => {
+  const octokit = getOctokitClient();
+
+  const { data } = await octokit.request(
+    'PATCH /repos/{owner}/{repo}/pulls/comments/{comment_id}',
+    {
+      repo: github.context.repo.repo,
+      owner: github.context.repo.owner,
+      comment_id: commentId,
+      body
+    }
+  );
+
+  return data;
+};
+
+module.exports = updateComment;
 
 
 /***/ }),
