@@ -24,11 +24,13 @@ describe('github/findComment', () => {
     const body = 'not match';
     const repo = 'tesstRepo';
     const owner = 'testOwner';
+    const pullNumber = 123;
 
     const findCommentRes = { data: [{ body }] };
     const github = {
       context: {
-        repo: { repo, owner }
+        repo: { repo, owner },
+        payload: { pull_request: { number: pullNumber } }
       }
     };
 
@@ -40,10 +42,11 @@ describe('github/findComment', () => {
 
     assert.isTrue(octokitClient.request.calledOnce);
     assert.deepEqual(octokitClient.request.firstCall.args, [
-      'GET /repos/{owner}/{repo}/issues/comments',
+      'GET /repos/{owner}/{repo}/issues/{issue_number}/comments',
       {
         repo,
         owner,
+        issue_number: 123,
         per_page: 100
       }
     ]);
@@ -55,11 +58,13 @@ describe('github/findComment', () => {
     const body = 'some text';
     const repo = 'tesstRepo';
     const owner = 'testOwner';
+    const pullNumber = 123;
 
     const findCommentRes = { data: [{ body }] };
     const github = {
       context: {
-        repo: { repo, owner }
+        repo: { repo, owner },
+        payload: { pull_request: { number: pullNumber } }
       }
     };
 
@@ -71,10 +76,11 @@ describe('github/findComment', () => {
 
     assert.isTrue(octokitClient.request.calledOnce);
     assert.deepEqual(octokitClient.request.firstCall.args, [
-      'GET /repos/{owner}/{repo}/issues/comments',
+      'GET /repos/{owner}/{repo}/issues/{issue_number}/comments',
       {
         repo,
         owner,
+        issue_number: 123,
         per_page: 100
       }
     ]);
