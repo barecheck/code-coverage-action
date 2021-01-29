@@ -155,6 +155,7 @@ describe('features/sendSummaryComment', () => {
       assert.deepEqual(buildBody.firstCall.args, [
         changedFiles,
         coverageDiff,
+        totalCoverage,
         compareFileData
       ]);
     });

@@ -5968,7 +5968,13 @@ const sendSummaryComment = async (
     core.info(`send-summary-comment is enabled for this workflow`);
 
     const changedFiles = await getChangedFiles();
-    const body = buildBody(changedFiles, coverageDiff, compareFileData);
+
+    const body = buildBody(
+      changedFiles,
+      coverageDiff,
+      totalCoverage,
+      compareFileData
+    );
 
     // we can add an option how comments should be added create | update | none
     await createComment(body);
