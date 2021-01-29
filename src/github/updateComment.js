@@ -18,6 +18,7 @@ const updateComment = async (commentId, body) => {
     }
   );
 
+  console.log('updated', commentId, body);
   return data;
 };
 
