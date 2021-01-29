@@ -5982,7 +5982,7 @@ const sendSummaryComment = async (diff, totalCoverage, compareFileData) => {
       repo: github.context.repo.repo,
       owner: github.context.repo.owner,
       issue_number: github.context.payload.pull_request.number,
-      body: `<h3>Code coverage report</h3>Total: <b>${totalCoverage}%</b>:\n\nYour code coverage diff: <b>${diff}% ${arrow}</b>\n\n${commentDetailsMessage}`
+      body: `<h3>Barecheck - Code coverage report</h3>Total: <b>${totalCoverage}%</b>:\n\nYour code coverage diff: <b>${diff}% ${arrow}</b>\n\n${commentDetailsMessage}`
     });
   }
 };
@@ -6021,9 +6021,9 @@ const buildTableRow = ({ file, lines, github }) => {
 };
 
 const buildDetails = (fileLines) => {
-  const summary = '<summary>Coverage Report</summary>';
+  const summary = '<summary>Uncovered files and lines</summary>';
 
-  const tableHeader = '<tr><th>File</th><th>Uncovered Lines</th></tr>';
+  const tableHeader = '<tr><th>File</th><th>Lines</th></tr>';
   const tableBody = fileLines.map(buildTableRow).join('');
   const table = `<table><tbody>${tableHeader}${tableBody}</tbody></table>`;
 
