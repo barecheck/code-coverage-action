@@ -6,6 +6,7 @@ const getOctokitClient = require('./getOctokitClient');
  *  */
 const updateComment = async (commentId, body) => {
   const octokit = getOctokitClient();
+  console.log('commentId', commentId);
 
   const { data } = await octokit.request(
     'PATCH /repos/{owner}/{repo}/pulls/comments/{comment_id}',

@@ -8,7 +8,6 @@ const findComment = require('./findComment');
 const createOrUpdateComment = async (findCommentText, body) => {
   const comment = await findComment(findCommentText);
 
-  console.log('id', comment.id);
   return comment ? updateComment(comment.id, body) : createComment(body);
 };
 
