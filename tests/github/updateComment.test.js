@@ -40,7 +40,7 @@ describe('github/updateComment', () => {
 
     assert.isTrue(octokitClient.request.calledOnce);
     assert.deepEqual(octokitClient.request.firstCall.args, [
-      'PATCH /repos/{owner}/{repo}/pulls/comments/{comment_id}',
+      'PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}',
       {
         repo,
         owner,

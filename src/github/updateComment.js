@@ -9,7 +9,7 @@ const updateComment = async (commentId, body) => {
   console.log('commentId', commentId);
 
   const { data } = await octokit.request(
-    'PATCH /repos/{owner}/{repo}/pulls/comments/{comment_id}',
+    'PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}',
     {
       repo: github.context.repo.repo,
       owner: github.context.repo.owner,
