@@ -5996,35 +5996,24 @@ module.exports = {
 /***/ }),
 
 /***/ 3840:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-const github = __webpack_require__(5438);
+/***/ ((module) => {
 
 const buildTableRow = ({ file, lines, github }) => {
-  // console.log(github.context.payload);
-  // console.log(github.context);
-
-  // const repo = github.context.repo.repo;
-  // const owner = github.context.repo.owner;
-  // const pullRequestNumber = github.context.payload.pull_request.number;
-
   const getChangesLink = (lines) => `${github.blob_url}${lines}`;
-  // const getChangesLink = (lines) =>
+  // TODO: find a way to get diff patch
   // `https://github.com/${owner}/${repo}/pull/${pullRequestNumber}/files#diff-${sha}${lines}`;
 
   const buildArrayLink = (lines) =>
-    `<a href="${getChangesLink(`R${lines[0]}-R${lines[1]}`)}">
-    ${lines.join('-')}
-    </a>`;
+    `<a href="${getChangesLink(`#L${lines[0]}-L${lines[1]}`)}">${lines.join('-')}</a>`;
 
   const buildLink = (line) =>
-    `<a href="${getChangesLink(`R${line}`)}">${line}</a>`;
+    `<a href="${getChangesLink(`#L${line}`)}">${line}</a>`;
 
   const buildUncoveredLines = (line) =>
     Array.isArray(line) ? buildArrayLink(line) : buildLink(line);
 
   const formattedlines = lines.map(buildUncoveredLines).join(', ');
-  const formattedFile = `<a href="/">${file} </a>`;
+  const formattedFile = `<a href="${getChangesLink('')}">${file}</a>`;
 
   return `<tr><td>${formattedFile}</td><td>${formattedlines}</td></tr>`;
 };
