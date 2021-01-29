@@ -31,7 +31,7 @@ const sendSummaryComment = async (diff, totalCoverage, compareFileData) => {
       repo: github.context.repo.repo,
       owner: github.context.repo.owner,
       issue_number: github.context.payload.pull_request.number,
-      body: `<h3>Code coverage report</h3>Total: <b>${totalCoverage}%</b>:\n\nYour code coverage diff: <b>${diff}% ${arrow}</b>\n\n${commentDetailsMessage}`
+      body: `<h3>Barecheck - Code coverage report</h3>Total: <b>${totalCoverage}%</b>:\n\nYour code coverage diff: <b>${diff}% ${arrow}</b>\n\n${commentDetailsMessage}`
     });
   }
 };

@@ -21,9 +21,9 @@ const buildTableRow = ({ file, lines, github }) => {
 };
 
 const buildDetails = (fileLines) => {
-  const summary = '<summary>Coverage Report</summary>';
+  const summary = '<summary>Uncovered files and lines</summary>';
 
-  const tableHeader = '<tr><th>File</th><th>Uncovered Lines</th></tr>';
+  const tableHeader = '<tr><th>File</th><th>Lines</th></tr>';
   const tableBody = fileLines.map(buildTableRow).join('');
   const table = `<table><tbody>${tableHeader}${tableBody}</tbody></table>`;
 
