@@ -6003,9 +6003,11 @@ const buildTableRow = ({ file, lines, github }) => {
   // TODO: find a way to get diff patch
   // `https://github.com/${owner}/${repo}/pull/${pullRequestNumber}/files#diff-${sha}${lines}`;
 
-  const buildArrayLink = (lines) =>
-    `<a href="${getChangesLink(`#L${lines[0]}-L${lines[1]}`)}">${lines.join('-')}</a>`;
-
+  const buildArrayLink = (lines) => {
+    const href = getChangesLink(`#L${lines[0]}-L${lines[1]}`);
+    const text = lines.join('-');
+    return `<a href="${href}">${text}</a>`;
+  };
   const buildLink = (line) =>
     `<a href="${getChangesLink(`#L${line}`)}">${line}</a>`;
 
