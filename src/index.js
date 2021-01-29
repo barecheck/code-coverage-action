@@ -1,5 +1,6 @@
 const fs = require('fs');
 const core = require('@actions/core');
+const github = require('@actions/github');
 
 const lcov = require('./lcov');
 const { checkMinimumRatio } = require('./features/minimumRatio');
@@ -35,7 +36,7 @@ async function main() {
   const diff = (comparePercentage - basePercentage).toFixed(2);
   core.info(`Code coverage diff: ${diff}%`);
 
-  await sendSummaryComment(diff, comparePercentage);
+  await sendSummaryComment(diff, comparePercentage, compareFileData);
   checkMinimumRatio(diff);
 
   core.setOutput('percentage', comparePercentage);
