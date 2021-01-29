@@ -5952,45 +5952,74 @@ module.exports = {
 const github = __webpack_require__(5438);
 const core = __webpack_require__(2186);
 
-const { uncoveredFileLinesByFileNames } = __webpack_require__(3318);
-const { mergeFileLinesWithChangedFiles } = __webpack_require__(3257);
-
 const getChangedFiles = __webpack_require__(397);
-const buildCommentDetails = __webpack_require__(3840);
+const createComment = __webpack_require__(436);
+const buildBody = __webpack_require__(681);
 
-const sendSummaryComment = async (diff, totalCoverage, compareFileData) => {
+const sendSummaryComment = async (
+  coverageDiff,
+  totalCoverage,
+  compareFileData
+) => {
   const githubToken = core.getInput('github-token');
   const sendSummaryComment = core.getInput('send-summary-comment');
 
   if (sendSummaryComment && github.context.payload.pull_request) {
     core.info(`send-summary-comment is enabled for this workflow`);
 
-    const octokit = github.getOctokit(githubToken);
-    const arrow = diff === 0 ? '' : diff < 0 ? '▾' : '▴';
-
     const changedFiles = await getChangedFiles();
-    const uncoveredFileLines = uncoveredFileLinesByFileNames(
-      changedFiles.map(({ filename }) => filename),
-      compareFileData
-    );
+    const body = buildBody(changedFiles, coverageDiff, compareFileData);
 
-    const commentDetailsMessage = buildCommentDetails(
-      mergeFileLinesWithChangedFiles(uncoveredFileLines, changedFiles)
-    );
-
-    await octokit.issues.createComment({
-      repo: github.context.repo.repo,
-      owner: github.context.repo.owner,
-      issue_number: github.context.payload.pull_request.number,
-      body: `<h3>Barecheck - Code coverage report</h3>Total: <b>${totalCoverage}%</b>:\n\nYour code coverage diff: <b>${diff}% ${arrow}</b>\n\n${commentDetailsMessage}`
-    });
+    // we can add an option how comments should be added create | update | none
+    await createComment(body);
   }
 };
 
 module.exports = {
-  sendSummaryComment,
-  mergeFileLinesWithChangedFiles
+  sendSummaryComment
 };
+
+
+/***/ }),
+
+/***/ 681:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const { uncoveredFileLinesByFileNames } = __webpack_require__(3318);
+const { mergeFileLinesWithChangedFiles } = __webpack_require__(3257);
+
+const buildCommentDetails = __webpack_require__(3840);
+
+const buildBody = async (
+  changedFiles,
+  coverageDiff,
+  totalCoverage,
+  compareFileData
+) => {
+  const uncoveredFileLines = uncoveredFileLinesByFileNames(
+    changedFiles.map(({ filename }) => filename),
+    compareFileData
+  );
+
+  const fileLinesWithChangedFiles = mergeFileLinesWithChangedFiles(
+    uncoveredFileLines,
+    changedFiles
+  );
+
+  const commentDetailsMessage = buildCommentDetails(fileLinesWithChangedFiles);
+
+  const trendArrow = coverageDiff === 0 ? '' : coverageDiff < 0 ? '▾' : '▴';
+  const header = 'Barecheck - Code coverage report';
+  const descTotal = `Total: <b>${totalCoverage}%</b>`;
+  const descCoverageDiff = `Your code coverage diff: <b>${coverageDiff}% ${trendArrow}</b>`;
+  const description = `${descTotal}\n\n${descCoverageDiff}`;
+
+  const body = `<h3>${header}</h3>${description}\n\n${commentDetailsMessage}`;
+
+  return body;
+};
+
+module.exports = buildBody;
 
 
 /***/ }),
@@ -6033,6 +6062,33 @@ const buildDetails = (fileLines) => {
 };
 
 module.exports = buildDetails;
+
+
+/***/ }),
+
+/***/ 436:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const github = __webpack_require__(5438);
+const getOctokitClient = __webpack_require__(9627);
+
+/**
+ * Creates Github comments based on received params
+ *  */
+const createComment = async (body) => {
+  const octokit = getOctokitClient();
+
+  const res = await octokit.issues.createComment({
+    repo: github.context.repo.repo,
+    owner: github.context.repo.owner,
+    issue_number: github.context.payload.pull_request.number,
+    body
+  });
+
+  return res;
+};
+
+module.exports = createComment;
 
 
 /***/ }),

@@ -6,57 +6,58 @@ const actionsCoreStub = require('../stubs/actionsCore.stub');
 
 const defaultMocks = {
   ...actionsCoreStub,
-  octokit: {
-    issues: {
-      createComment: () => null
-    },
-    request: () => ({ data: [] })
-  },
+  getChangedFiles: () => [],
+  createComment: () => true,
+  buildBody: () => '',
   context: {}
 };
 
 const sendSummaryCommentMock = (mocks) => {
-  const { getInput, info, setFailed, octokit, context } = {
+  const {
+    getInput,
+    info,
+    context,
+    getChangedFiles,
+    createComment,
+    buildBody
+  } = {
     ...defaultMocks,
     ...mocks
   };
   return proxyquire('../../src/features/sendSummaryComment', {
     '@actions/core': { getInput, info },
-    '@actions/github': { getOctokit: () => octokit, context },
-    '../lcov': { uncoveredFileLinesByFileNames: () => [] },
-    '../github/getChangedFiles': () => []
+    '@actions/github': { context },
+    '../github/getChangedFiles': getChangedFiles,
+    '../github/createComment': createComment,
+    '../github/comment/buildBody': buildBody
   });
 };
 
 describe('features/sendSummaryComment', () => {
   describe('sendSummaryComment', () => {
-    it("octokit.issues.createComment shouldn't be called", async () => {
+    it("github.createComment shouldn't be called", async () => {
       const sendSummaryCommentInput = false;
       const githubTokenInput = '1-2-3';
       const coverageDiff = 0;
       const totalCoverage = 0;
 
+      const createComment = sinon.spy();
       const getInput = sinon.stub();
       getInput
         .withArgs('send-summary-comment')
         .returns(sendSummaryCommentInput);
       getInput.withArgs('github-token').returns(githubTokenInput);
-      const octokit = {
-        issues: {
-          createComment: sinon.spy()
-        }
-      };
 
       const { sendSummaryComment } = sendSummaryCommentMock({
         getInput,
-        octokit
+        createComment
       });
       await sendSummaryComment(coverageDiff, totalCoverage, []);
 
-      assert.isFalse(octokit.issues.createComment.calledOnce);
+      assert.isFalse(createComment.calledOnce);
     });
 
-    it("octokit.issues.createComment shouldn't be called for not pull request events", async () => {
+    it("github.createComment shouldn't be called for not pull request events", async () => {
       const sendSummaryCommentInput = true;
       const githubTokenInput = '1-2-3';
       const coverageDiff = 0;
@@ -65,64 +66,97 @@ describe('features/sendSummaryComment', () => {
         payload: {}
       };
 
+      const createComment = sinon.spy();
       const getInput = sinon.stub();
       getInput
         .withArgs('send-summary-comment')
         .returns(sendSummaryCommentInput);
       getInput.withArgs('github-token').returns(githubTokenInput);
-      const octokit = {
-        issues: {
-          createComment: sinon.spy()
-        }
-      };
 
       const { sendSummaryComment } = sendSummaryCommentMock({
         getInput,
-        octokit,
+        createComment,
         context
       });
       await sendSummaryComment(coverageDiff, totalCoverage, []);
 
-      assert.isFalse(octokit.issues.createComment.calledOnce);
+      assert.isFalse(createComment.calledOnce);
     });
 
-    it('octokit.issues.createComment should be called once', async () => {
+    it('github.createComment should be called once', async () => {
       const sendSummaryCommentInput = true;
       const githubTokenInput = '1-2-3';
       const coverageDiff = 12;
       const totalCoverage = 65;
+      const body = 'test body';
       const context = {
         payload: {
           pull_request: {
             number: 123
           }
-        },
-        repo: {
-          repo: 'test repo',
-          owner: 'owner repo'
         }
       };
 
+      const createComment = sinon.spy();
+      const buildBody = sinon.stub().returns(body);
       const getInput = sinon.stub();
       getInput
         .withArgs('send-summary-comment')
         .returns(sendSummaryCommentInput);
       getInput.withArgs('github-token').returns(githubTokenInput);
-      const octokit = {
-        issues: {
-          createComment: sinon.spy()
-        },
-        request: () => ({ data: [] })
-      };
 
       const { sendSummaryComment } = sendSummaryCommentMock({
         getInput,
-        octokit,
-        context
+        createComment,
+        context,
+        buildBody
       });
       await sendSummaryComment(coverageDiff, totalCoverage, []);
 
-      assert.isTrue(octokit.issues.createComment.calledOnce);
+      assert.isTrue(createComment.calledOnce);
+      assert.deepEqual(createComment.firstCall.args, [body]);
+    });
+
+    it('buildBody should be called with proper args', async () => {
+      const sendSummaryCommentInput = true;
+      const githubTokenInput = '1-2-3';
+      const coverageDiff = 12;
+      const totalCoverage = 65;
+      const body = 'test body';
+      const changedFiles = [{ file: 'test.txt' }];
+      const compareFileData = [{ test: 1 }];
+      const context = {
+        payload: {
+          pull_request: {
+            number: 123
+          }
+        }
+      };
+
+      const createComment = sinon.spy();
+      const buildBody = sinon.stub().returns(body);
+      const getChangedFiles = sinon.stub().returns(changedFiles);
+      const getInput = sinon.stub();
+      getInput
+        .withArgs('send-summary-comment')
+        .returns(sendSummaryCommentInput);
+      getInput.withArgs('github-token').returns(githubTokenInput);
+
+      const { sendSummaryComment } = sendSummaryCommentMock({
+        getInput,
+        createComment,
+        context,
+        buildBody,
+        getChangedFiles
+      });
+      await sendSummaryComment(coverageDiff, totalCoverage, compareFileData);
+
+      assert.isTrue(buildBody.calledOnce);
+      assert.deepEqual(buildBody.firstCall.args, [
+        changedFiles,
+        coverageDiff,
+        compareFileData
+      ]);
     });
   });
 });
