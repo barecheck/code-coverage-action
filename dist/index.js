@@ -6021,6 +6021,8 @@ const buildTableRow = ({ file, lines, github }) => {
 };
 
 const buildDetails = (fileLines) => {
+  if (fileLines.length === 0) return '✅ All code changes are covered';
+
   const summary = '<summary>Uncovered files and lines</summary>';
 
   const tableHeader = '<tr><th>File</th><th>Lines</th></tr>';
@@ -6041,7 +6043,10 @@ module.exports = buildDetails;
 const github = __webpack_require__(5438);
 const getOctokitClient = __webpack_require__(9627);
 
-// TODO: add pagibated loop to grap all files
+/**
+ * Returns first 100 files that were changed
+ * TODO: decide if we need to show more than that in the details report
+ *  */
 const getChangedFiles = async () => {
   const octokit = getOctokitClient();
   const changedFiles = await octokit.request(
@@ -6049,7 +6054,8 @@ const getChangedFiles = async () => {
     {
       repo: github.context.repo.repo,
       owner: github.context.repo.owner,
-      pull_number: github.context.payload.pull_request.number
+      pull_number: github.context.payload.pull_request.number,
+      per_page: 100
     }
   );
 
