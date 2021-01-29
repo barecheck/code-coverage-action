@@ -1,7 +1,10 @@
 const github = require('@actions/github');
 const getOctokitClient = require('./getOctokitClient');
 
-// TODO: add pagibated loop to grap all files
+/**
+ * Returns first 100 files that were changed
+ * TODO: decide if we need to show more than that in the details report
+ *  */
 const getChangedFiles = async () => {
   const octokit = getOctokitClient();
   const changedFiles = await octokit.request(
@@ -9,7 +12,8 @@ const getChangedFiles = async () => {
     {
       repo: github.context.repo.repo,
       owner: github.context.repo.owner,
-      pull_number: github.context.payload.pull_request.number
+      pull_number: github.context.payload.pull_request.number,
+      per_page: 100
     }
   );
 

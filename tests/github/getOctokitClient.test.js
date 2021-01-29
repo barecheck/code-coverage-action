@@ -33,4 +33,14 @@ describe('github/getOctokitClient', () => {
     assert.isFalse(getOctokit.calledOnce);
     assert.isTrue(getInput.calledOnce);
   });
+
+  it('should return octokit client', async () => {
+    const octokit = { test: 1 };
+    const getInput = sinon.stub().returns('32332223');
+    const getOctokit = sinon.stub().returns(octokit);
+
+    const getOctokitClient = getOctokitClientMock({ getInput, getOctokit });
+
+    assert.equal(getOctokitClient(), octokit);
+  });
 });
