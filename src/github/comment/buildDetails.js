@@ -21,6 +21,8 @@ const buildTableRow = ({ file, lines, github }) => {
 };
 
 const buildDetails = (fileLines) => {
+  if (fileLines.length === 0) return '✅ All code changes are covered';
+
   const summary = '<summary>Uncovered files and lines</summary>';
 
   const tableHeader = '<tr><th>File</th><th>Lines</th></tr>';
