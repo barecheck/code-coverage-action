@@ -5996,7 +5996,7 @@ const { mergeFileLinesWithChangedFiles } = __webpack_require__(3257);
 
 const buildCommentDetails = __webpack_require__(3840);
 
-const buildBody = async (
+const buildBody = (
   changedFiles,
   coverageDiff,
   totalCoverage,

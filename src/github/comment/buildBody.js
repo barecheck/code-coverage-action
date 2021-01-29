@@ -3,7 +3,7 @@ const { mergeFileLinesWithChangedFiles } = require('../../coverage');
 
 const buildCommentDetails = require('./buildDetails');
 
-const buildBody = async (
+const buildBody = (
   changedFiles,
   coverageDiff,
   totalCoverage,
