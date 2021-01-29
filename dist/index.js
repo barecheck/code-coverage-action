@@ -6133,7 +6133,7 @@ const findComment = async (bodyText) => {
   const octokit = getOctokitClient();
 
   const { data } = await octokit.request(
-    'GET /repos/{owner}/{repo}/pulls/comments',
+    'GET /repos/{owner}/{repo}/issues/comments',
     {
       repo: github.context.repo.repo,
       owner: github.context.repo.owner,

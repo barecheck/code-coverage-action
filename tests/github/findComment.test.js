@@ -40,7 +40,7 @@ describe('github/findComment', () => {
 
     assert.isTrue(octokitClient.request.calledOnce);
     assert.deepEqual(octokitClient.request.firstCall.args, [
-      'GET /repos/{owner}/{repo}/pulls/comments',
+      'GET /repos/{owner}/{repo}/issues/comments',
       {
         repo,
         owner,
@@ -71,7 +71,7 @@ describe('github/findComment', () => {
 
     assert.isTrue(octokitClient.request.calledOnce);
     assert.deepEqual(octokitClient.request.firstCall.args, [
-      'GET /repos/{owner}/{repo}/pulls/comments',
+      'GET /repos/{owner}/{repo}/issues/comments',
       {
         repo,
         owner,
