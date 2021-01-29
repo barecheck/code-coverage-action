@@ -6112,6 +6112,7 @@ const findComment = __webpack_require__(1714);
 const createOrUpdateComment = async (findCommentText, body) => {
   const comment = await findComment(findCommentText);
 
+  console.log('id', comment.id);
   return comment ? updateComment(comment.id, body) : createComment(body);
 };
 
@@ -6141,9 +6142,9 @@ const findComment = async (bodyText) => {
     }
   );
 
-  console.log(data);
-
   const comment = data.find(({ body }) => body.includes(bodyText));
+
+  console.log(comment);
 
   return comment;
 };
