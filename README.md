@@ -77,7 +77,7 @@ jobs:
       #  Compares two code coverage files and generates report as a comment
       - name: Generate Code Coverage report
         id: code-coverage
-        uses: barecheck/code-coverage-action@v0.1-beta.1
+        uses: barecheck/code-coverage-action@v0.2.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           lcov-file: './coverage/lcov.info'
