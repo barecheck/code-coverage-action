@@ -40,7 +40,7 @@ jobs:
         with:
           insertApiKey: ${{ secrets.NEW_RELIC_METRICS_API_KEY }}
           accountId: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
-          region: EU
+          region: EN
           application: codeCoverageAction
           metricName: codeCoverage
           metricValue: ${{ steps.code_coverage.outputs.percentage }}
