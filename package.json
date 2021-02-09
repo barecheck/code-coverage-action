@@ -11,7 +11,7 @@
   "devDependencies": {
     "@vercel/ncc": "^0.26.1",
     "chai": "^4.3.0",
-    "eslint": "^7.16.0",
+    "eslint": "^7.19.0",
     "eslint-plugin-import": "^2.22.1",
     "mocha": "^8.2.1",
     "nyc": "^15.1.0",
