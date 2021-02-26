@@ -2,6 +2,8 @@
 
 GitHub Action that generates coverage reports
 
+![code coverage report](./docs/img/barecheck-comment.png)
+
 ## Usage
 
 To integrate with this Github Action, you can just use following configuration in your already created workflow. As a result you will get Github Pull request comment with total code coverage
