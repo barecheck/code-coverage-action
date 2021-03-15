@@ -9,7 +9,7 @@
     "lcov-parse": "^1.0.0"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.26.2",
+    "@vercel/ncc": "^0.27.0",
     "chai": "^4.3.4",
     "eslint": "^7.22.0",
     "eslint-plugin-import": "^2.22.1",
