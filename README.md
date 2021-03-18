@@ -38,10 +38,10 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.base_ref }}
-      - name: Use Node.js 12.13.1
+      - name: Use Node.js 14.16.0
         uses: actions/setup-node@v1
         with:
-          node-version: 12.13.1
+          node-version: 14.16.0
 
       - name: Install dependencies
         run: yarn
@@ -60,10 +60,10 @@ jobs:
     needs: base_branch_cov
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 12.13.1
+      - name: Use Node.js 14.16.0
         uses: actions/setup-node@v1
         with:
-          node-version: 12.13.1
+          node-version: 14.16.0
 
       - name: Download code coverage report from base branch
         uses: actions/download-artifact@v2
