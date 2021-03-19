@@ -1,6 +1,6 @@
-const createComment = require('./createComment');
-const updateComment = require('./updateComment');
-const findComment = require('./findComment');
+const createComment = require("./createComment");
+const updateComment = require("./updateComment");
+const findComment = require("./findComment");
 
 /**
  * Create or Update Github comment based if part of comment found

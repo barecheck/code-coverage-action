@@ -1,4 +1,4 @@
-const sinon = require('sinon');
+const sinon = require("sinon");
 
 const actionsCoreStub = {
   info: sinon.spy(),

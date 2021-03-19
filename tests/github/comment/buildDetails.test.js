@@ -1,33 +1,32 @@
-const proxyquire = require('proxyquire');
-const sinon = require('sinon');
-const { assert } = require('chai');
+const proxyquire = require("proxyquire");
+const { assert } = require("chai");
 
 const defaultMocks = {
   context: {}
 };
 
 const getBuildDetailsMock = (mocks) => {
-  const { getInput, info, setFailed, octokit, context } = {
+  const { context } = {
     ...defaultMocks,
     ...mocks
   };
-  return proxyquire('../../../src/github/comment/buildDetails', {
-    '@actions/github': { context }
+  return proxyquire("../../../src/github/comment/buildDetails", {
+    "@actions/github": { context }
   });
 };
 
-describe('github/comment/buildDetails', () => {
-  it('should return details block with formatted content', async () => {
+describe("github/comment/buildDetails", () => {
+  it("should return details block with formatted content", async () => {
     const fileLines = [
       {
-        file: 'src/test.js',
+        file: "src/test.js",
         lines: [4, [6, 8], 10, [14, 15], 19],
-        github: { blob_url: 'github/test.txt' }
+        github: { blob_url: "github/test.txt" }
       },
       {
-        file: 'src/test2.js',
+        file: "src/test2.js",
         lines: [101],
-        github: { blob_url: 'github/test2.txt' }
+        github: { blob_url: "github/test2.txt" }
       }
     ];
 
@@ -41,13 +40,13 @@ describe('github/comment/buildDetails', () => {
     );
   });
 
-  it('success message should be returned once all files covered', async () => {
+  it("success message should be returned once all files covered", async () => {
     const fileLines = [];
 
     const buildDetails = getBuildDetailsMock();
 
     const details = buildDetails(fileLines);
 
-    assert.deepEqual(details, '✅ All code changes are covered');
+    assert.deepEqual(details, "✅ All code changes are covered");
   });
 });

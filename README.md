@@ -14,7 +14,7 @@ To integrate with this Github Action, you can just use following configuration i
   uses: barecheck/code-coverage-action@v0.1-beta.1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
-    lcov-file: './coverage/lcov.info'
+    lcov-file: "./coverage/lcov.info"
     send-summary-comment: true
 ```
 
@@ -82,8 +82,8 @@ jobs:
         uses: barecheck/code-coverage-action@v0.2.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          lcov-file: './coverage/lcov.info'
-          base-lcov-file: './lcov.info'
+          lcov-file: "./coverage/lcov.info"
+          base-lcov-file: "./lcov.info"
           minimum-ratio: 0 # Fails Github action once code coverage is decreasing
           send-summary-comment: true
 ```

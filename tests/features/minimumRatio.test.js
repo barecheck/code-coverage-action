@@ -1,8 +1,8 @@
-const proxyquire = require('proxyquire');
-const sinon = require('sinon');
-const { assert } = require('chai');
+const proxyquire = require("proxyquire");
+const sinon = require("sinon");
+const { assert } = require("chai");
 
-const actionsCoreStub = require('../stubs/actionsCore.stub');
+const actionsCoreStub = require("../stubs/actionsCore.stub");
 
 const defaultMocks = {
   ...actionsCoreStub
@@ -10,20 +10,20 @@ const defaultMocks = {
 
 const minCoverageRatioMock = (mocks) => {
   const { getInput, info, setFailed } = { ...defaultMocks, ...mocks };
-  return proxyquire('../../src/features/minimumRatio', {
-    '@actions/core': { getInput, info, setFailed }
+  return proxyquire("../../src/features/minimumRatio", {
+    "@actions/core": { getInput, info, setFailed }
   });
 };
 
-describe('features/minCoverageRatio', () => {
-  describe('checkMinimumRatio', () => {
+describe("features/minCoverageRatio", () => {
+  describe("checkMinimumRatio", () => {
     it("error shouldn't be thrown once feature is not enabled", () => {
       const minCoverageRatio = NaN;
       const coverageDiff = 0;
 
       const getInput = sinon
         .stub()
-        .withArgs('minimum-ratio')
+        .withArgs("minimum-ratio")
         .returns(minCoverageRatio);
       const setFailed = sinon.spy();
 
@@ -43,7 +43,7 @@ describe('features/minCoverageRatio', () => {
 
       const getInput = sinon
         .stub()
-        .withArgs('minimum-ratio')
+        .withArgs("minimum-ratio")
         .returns(minCoverageRatio);
       const setFailed = sinon.spy();
 
@@ -57,13 +57,13 @@ describe('features/minCoverageRatio', () => {
       assert.isFalse(setFailed.calledOnce);
     });
 
-    it('should call setFailed once coverage is less than minimum coverage ratio', () => {
+    it("should call setFailed once coverage is less than minimum coverage ratio", () => {
       const minCoverageRatio = 5;
       const coverageDiff = -10;
 
       const getInput = sinon
         .stub()
-        .withArgs('minimum-ratio')
+        .withArgs("minimum-ratio")
         .returns(minCoverageRatio);
       const setFailed = sinon.spy();
 
