@@ -1,6 +1,6 @@
 {
   "name": "code-coverage-action",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "GitHub Action that posts coverage as comment in Pull request",
   "main": "src/index.js",
   "dependencies": {
