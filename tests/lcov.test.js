@@ -1,13 +1,12 @@
-const proxyquire = require('proxyquire');
-const sinon = require('sinon');
-const { assert } = require('chai');
+const proxyquire = require("proxyquire");
+const { assert } = require("chai");
 
 const {
   percentage,
   getUncoveredFilesLines,
   getGroupedUncoveredFileLines,
   uncoveredFileLinesByFileNames
-} = require('../src/lcov');
+} = require("../src/lcov");
 
 const defaultMocks = {
   lcov: () => null
@@ -16,14 +15,14 @@ const defaultMocks = {
 const lcovMock = (mocks) => {
   const { lcov } = { ...defaultMocks, ...mocks };
 
-  return proxyquire('../src/lcov', {
-    'lcov-parse': lcov
+  return proxyquire("../src/lcov", {
+    "lcov-parse": lcov
   });
 };
 
-describe('lcov', () => {
-  describe('parse', () => {
-    it('should resolve promise with lcov result', async () => {
+describe("lcov", () => {
+  describe("parse", () => {
+    it("should resolve promise with lcov result", async () => {
       const lcovRes = { test: 2 };
       const lcovFileData = { someData: 43 };
 
@@ -38,10 +37,9 @@ describe('lcov', () => {
       assert.deepEqual(res, lcovRes);
     });
 
-    it('should reject error from lcov lib', async () => {
-      const lcovRes = { test: 2 };
+    it("should reject error from lcov lib", async () => {
       const lcovFileData = { someData: 43 };
-      const exprectedErr = new Error('something went wrong');
+      const exprectedErr = new Error("something went wrong");
 
       const lcov = (data, cb) => {
         assert.equal(lcovFileData, data);
@@ -51,16 +49,16 @@ describe('lcov', () => {
       const { parse } = lcovMock({ lcov });
 
       try {
-        const res = await parse(lcovFileData);
-        assert.fail('exception should be thrown');
+        await parse(lcovFileData);
+        assert.fail("exception should be thrown");
       } catch (err) {
         assert.deepEqual(err, exprectedErr);
       }
     });
   });
 
-  describe('percentage', () => {
-    it('should return percentage based on received lines', () => {
+  describe("percentage", () => {
+    it("should return percentage based on received lines", () => {
       const parsedLcovFile = [
         {
           lines: {
@@ -84,10 +82,10 @@ describe('lcov', () => {
 
       const res = percentage(parsedLcovFile);
 
-      assert.deepEqual(res, '50.00');
+      assert.deepEqual(res, "50.00");
     });
 
-    it('result should be fixed to 2 symbols after comma', () => {
+    it("result should be fixed to 2 symbols after comma", () => {
       const parsedLcovFile = [
         {
           lines: {
@@ -105,12 +103,12 @@ describe('lcov', () => {
 
       const res = percentage(parsedLcovFile);
 
-      assert.deepEqual(res, '42.62');
+      assert.deepEqual(res, "42.62");
     });
   });
 
-  describe('getUncoveredFilesLines', () => {
-    it('should return uncovered lines with file', () => {
+  describe("getUncoveredFilesLines", () => {
+    it("should return uncovered lines with file", () => {
       const lcovData = [
         {
           lines: {
@@ -135,7 +133,7 @@ describe('lcov', () => {
               { line: 26, hit: 1 }
             ]
           },
-          file: 'src/lcov.js'
+          file: "src/lcov.js"
         }
       ];
 
@@ -143,20 +141,20 @@ describe('lcov', () => {
 
       assert.deepEqual(res, [
         {
-          file: 'src/lcov.js',
+          file: "src/lcov.js",
           lines: [4, 5, 6, 7, 8, 10]
         }
       ]);
     });
 
-    it('should return empty array', () => {
+    it("should return empty array", () => {
       const lcovData = [];
       const res = getUncoveredFilesLines(lcovData);
 
       assert.isEmpty(res);
     });
 
-    it('should return empty array once all lines are covered', () => {
+    it("should return empty array once all lines are covered", () => {
       const lcovData = [
         {
           lines: {
@@ -167,7 +165,7 @@ describe('lcov', () => {
               { line: 3, hit: 2 }
             ]
           },
-          file: 'src/lcov.js'
+          file: "src/lcov.js"
         }
       ];
       const res = getUncoveredFilesLines(lcovData);
@@ -176,11 +174,11 @@ describe('lcov', () => {
     });
   });
 
-  describe('getGroupedUncoveredFileLines', () => {
-    it('should return grouped lines array', () => {
+  describe("getGroupedUncoveredFileLines", () => {
+    it("should return grouped lines array", () => {
       const filesLines = [
         {
-          file: 'src/lcov.js',
+          file: "src/lcov.js",
           lines: [4, 5, 6, 7, 8, 10]
         }
       ];
@@ -188,16 +186,16 @@ describe('lcov', () => {
       const res = getGroupedUncoveredFileLines(filesLines);
       assert.deepEqual(res, [
         {
-          file: 'src/lcov.js',
+          file: "src/lcov.js",
           lines: [[4, 8], 10]
         }
       ]);
     });
 
-    it('should return grouped lines array along with single values', () => {
+    it("should return grouped lines array along with single values", () => {
       const filesLines = [
         {
-          file: 'src/lcov.js',
+          file: "src/lcov.js",
           lines: [4, 5, 6, 7, 8, 10, 14, 15]
         }
       ];
@@ -205,16 +203,16 @@ describe('lcov', () => {
       const res = getGroupedUncoveredFileLines(filesLines);
       assert.deepEqual(res, [
         {
-          file: 'src/lcov.js',
+          file: "src/lcov.js",
           lines: [[4, 8], 10, [14, 15]]
         }
       ]);
     });
 
-    it('should return grouped lines array along with single values at the end', () => {
+    it("should return grouped lines array along with single values at the end", () => {
       const filesLines = [
         {
-          file: 'src/lcov.js',
+          file: "src/lcov.js",
           lines: [4, 6, 7, 8, 10, 14, 15, 19]
         }
       ];
@@ -222,15 +220,15 @@ describe('lcov', () => {
       const res = getGroupedUncoveredFileLines(filesLines);
       assert.deepEqual(res, [
         {
-          file: 'src/lcov.js',
+          file: "src/lcov.js",
           lines: [4, [6, 8], 10, [14, 15], 19]
         }
       ]);
     });
   });
 
-  describe('uncoveredFileLinesByFileNames', () => {
-    it('should filter by filename and return grouped values', () => {
+  describe("uncoveredFileLinesByFileNames", () => {
+    it("should filter by filename and return grouped values", () => {
       const lcovData = [
         {
           lines: {
@@ -244,7 +242,7 @@ describe('lcov', () => {
               { line: 8, hit: 3 }
             ]
           },
-          file: 'src/test.js'
+          file: "src/test.js"
         },
         {
           lines: {
@@ -255,16 +253,16 @@ describe('lcov', () => {
               { line: 3, hit: 2 }
             ]
           },
-          file: 'src/test2.js'
+          file: "src/test2.js"
         }
       ];
-      const fileNames = ['src/test.js'];
+      const fileNames = ["src/test.js"];
 
       const res = uncoveredFileLinesByFileNames(fileNames, lcovData);
 
       assert.deepEqual(res, [
         {
-          file: 'src/test.js',
+          file: "src/test.js",
           lines: [[1, 2], 5, 7]
         }
       ]);

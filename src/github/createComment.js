@@ -1,5 +1,5 @@
-const github = require('@actions/github');
-const getOctokitClient = require('./getOctokitClient');
+const github = require("@actions/github");
+const getOctokitClient = require("./getOctokitClient");
 
 /**
  * Creates Github comments based on received params

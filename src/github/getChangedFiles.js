@@ -1,5 +1,5 @@
-const github = require('@actions/github');
-const getOctokitClient = require('./getOctokitClient');
+const github = require("@actions/github");
+const getOctokitClient = require("./getOctokitClient");
 
 /**
  * Returns first 100 files that were changed
@@ -8,7 +8,7 @@ const getOctokitClient = require('./getOctokitClient');
 const getChangedFiles = async () => {
   const octokit = getOctokitClient();
   const changedFiles = await octokit.request(
-    'GET /repos/{owner}/{repo}/pulls/{pull_number}/files',
+    "GET /repos/{owner}/{repo}/pulls/{pull_number}/files",
     {
       repo: github.context.repo.repo,
       owner: github.context.repo.owner,

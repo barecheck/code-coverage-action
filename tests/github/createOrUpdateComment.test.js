@@ -1,6 +1,6 @@
-const proxyquire = require('proxyquire');
-const sinon = require('sinon');
-const { assert } = require('chai');
+const proxyquire = require("proxyquire");
+const sinon = require("sinon");
+const { assert } = require("chai");
 
 const defaultMocks = {
   createComment: () => null,
@@ -13,20 +13,18 @@ const createOrUpdateCommentMock = (mocks) => {
     ...defaultMocks,
     ...mocks
   };
-  return proxyquire('../../src/github/createOrUpdateComment', {
-    './createComment': createComment,
-    './updateComment': updateComment,
-    './findComment': findComment
+  return proxyquire("../../src/github/createOrUpdateComment", {
+    "./createComment": createComment,
+    "./updateComment": updateComment,
+    "./findComment": findComment
   });
 };
 
-describe('github/createOrUpdateComment', () => {
-  it('updateComment should be called once', async () => {
-    const findCommentText = 'find text';
-    const updateCommentRes = { test: 1 };
+describe("github/createOrUpdateComment", () => {
+  it("updateComment should be called once", async () => {
+    const findCommentText = "find text";
     const findCommentRes = { id: 5 };
-    const createCommentRes = { test: 2 };
-    const body = 'body';
+    const body = "body";
 
     const findComment = sinon.stub().returns(findCommentRes);
     const updateComment = sinon.stub().returns(findCommentRes);
@@ -38,7 +36,7 @@ describe('github/createOrUpdateComment', () => {
       createComment
     });
 
-    const res = await createOrUpdateComment(findCommentText, body);
+    await createOrUpdateComment(findCommentText, body);
 
     assert.isTrue(findComment.calledOnce);
     assert.isTrue(updateComment.calledOnce);
@@ -46,12 +44,10 @@ describe('github/createOrUpdateComment', () => {
     assert.deepEqual(updateComment.firstCall.args, [findCommentRes.id, body]);
   });
 
-  it('createComment should be called once', async () => {
-    const findCommentText = 'find text';
-    const updateCommentRes = { test: 1 };
+  it("createComment should be called once", async () => {
+    const findCommentText = "find text";
     const findCommentRes = undefined;
-    const createCommentRes = { test: 2 };
-    const body = 'body';
+    const body = "body";
 
     const findComment = sinon.stub().returns(findCommentRes);
     const updateComment = sinon.stub().returns(findCommentRes);
@@ -63,7 +59,7 @@ describe('github/createOrUpdateComment', () => {
       createComment
     });
 
-    const res = await createOrUpdateComment(findCommentText, body);
+    await createOrUpdateComment(findCommentText, body);
 
     assert.isTrue(findComment.calledOnce);
     assert.isTrue(createComment.calledOnce);

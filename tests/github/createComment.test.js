@@ -1,6 +1,6 @@
-const proxyquire = require('proxyquire');
-const sinon = require('sinon');
-const { assert } = require('chai');
+const proxyquire = require("proxyquire");
+const sinon = require("sinon");
+const { assert } = require("chai");
 
 const defaultMocks = {
   github: () => ({ context: {} }),
@@ -12,17 +12,17 @@ const createCommentMock = (mocks) => {
     ...defaultMocks,
     ...mocks
   };
-  return proxyquire('../../src/github/createComment', {
-    './getOctokitClient': () => octokitClient,
-    '@actions/github': github
+  return proxyquire("../../src/github/createComment", {
+    "./getOctokitClient": () => octokitClient,
+    "@actions/github": github
   });
 };
 
-describe('github/createComment', () => {
-  it('octokit.issues.createComment should be called once', async () => {
-    const body = 'some body';
-    const repo = 'tesstRepo';
-    const owner = 'testOwner';
+describe("github/createComment", () => {
+  it("octokit.issues.createComment should be called once", async () => {
+    const body = "some body";
+    const repo = "tesstRepo";
+    const owner = "testOwner";
     const pullNumber = 123;
 
     const createCommentRes = { test: 1 };

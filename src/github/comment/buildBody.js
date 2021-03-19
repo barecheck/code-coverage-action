@@ -1,8 +1,8 @@
-const { commentTitle } = require('../../config');
-const { uncoveredFileLinesByFileNames } = require('../../lcov');
-const { mergeFileLinesWithChangedFiles } = require('../../coverage');
+const { commentTitle } = require("../../config");
+const { uncoveredFileLinesByFileNames } = require("../../lcov");
+const { mergeFileLinesWithChangedFiles } = require("../../coverage");
 
-const buildCommentDetails = require('./buildDetails');
+const buildCommentDetails = require("./buildDetails");
 
 const buildBody = (
   changedFiles,
@@ -22,7 +22,8 @@ const buildBody = (
 
   const commentDetailsMessage = buildCommentDetails(fileLinesWithChangedFiles);
 
-  const trendArrow = coverageDiff === 0 ? '' : coverageDiff < 0 ? '▾' : '▴';
+  const coverageDiffOutput = coverageDiff < 0 ? "▾" : "▴";
+  const trendArrow = coverageDiff === 0 ? "" : coverageDiffOutput;
   const header = commentTitle;
   const descTotal = `Total: <b>${totalCoverage}%</b>`;
   const descCoverageDiff = `Your code coverage diff: <b>${coverageDiff}% ${trendArrow}</b>`;

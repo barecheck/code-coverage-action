@@ -1,24 +1,24 @@
-const lcov = require('lcov-parse');
+const lcov = require("lcov-parse");
 
-const parse = (data) => {
-  return new Promise(function (resolve, reject) {
-    lcov(data, function (err, res) {
+const parse = (data) =>
+  new Promise((resolve, reject) =>
+    lcov(data, (err, res) => {
       if (err) {
         reject(err);
         return;
       }
       resolve(res);
-    });
-  });
-};
+    })
+  );
 
-const percentage = (lcov) => {
+const percentage = (lcovData) => {
   let hit = 0;
   let found = 0;
-  for (const entry of lcov) {
+
+  lcovData.forEach((entry) => {
     hit += entry.lines.hit;
     found += entry.lines.found;
-  }
+  });
 
   return ((hit / found) * 100).toFixed(2);
 };
@@ -26,7 +26,7 @@ const percentage = (lcov) => {
 const getUncoveredFilesLines = (lcovData) => {
   const response = [];
 
-  for (const fileData of lcovData) {
+  lcovData.forEach((fileData) => {
     const lines = fileData.lines.details
       .filter(({ hit }) => hit === 0)
       .map(({ line }) => line);
@@ -37,13 +37,13 @@ const getUncoveredFilesLines = (lcovData) => {
         lines
       });
     }
-  }
+  });
 
   return response;
 };
 
-const getGroupedUncoveredFileLines = (filesLines) => {
-  return filesLines.map(({ file, lines }) => {
+const getGroupedUncoveredFileLines = (filesLines) =>
+  filesLines.map(({ file, lines }) => {
     const groupedLines = [];
     let previousLine = null;
     let startLine = null;
@@ -53,11 +53,13 @@ const getGroupedUncoveredFileLines = (filesLines) => {
         startLine !== previousLine ? [startLine, previousLine] : previousLine
       );
 
+    // eslint-disable-next-line no-restricted-syntax
     for (const line of lines) {
       // initialize first element
       if (startLine === null) {
         startLine = line;
         previousLine = line;
+        // eslint-disable-next-line no-continue
         continue;
       }
 
@@ -75,7 +77,6 @@ const getGroupedUncoveredFileLines = (filesLines) => {
 
     return { file, lines: groupedLines };
   });
-};
 
 const uncoveredFileLinesByFileNames = (fileNames, lcovData) => {
   const uncoveredFileLines = getUncoveredFilesLines(
