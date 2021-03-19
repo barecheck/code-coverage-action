@@ -1,10 +1,4 @@
 module.exports = {
-  env: {
-    commonjs: true,
-    es2021: true
-  },
-  parserOptions: {
-    ecmaVersion: 12
-  },
+  extends: ["eslint-config-barecheck-base"],
   rules: {}
 };
