@@ -4,7 +4,7 @@
   "description": "GitHub Action that posts coverage as comment in Pull request",
   "main": "src/index.js",
   "dependencies": {
-    "@actions/core": "^1.2.6",
+    "@actions/core": "^1.2.7",
     "@actions/github": "^4.0.0",
     "lcov-parse": "^1.0.0"
   },
