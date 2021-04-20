@@ -6,6 +6,9 @@ const { checkMinimumRatio } = require("./features/minimumRatio");
 const { sendSummaryComment } = require("./features/sendSummaryComment");
 
 async function main() {
+  core.info(
+    "::error file={index.js},line={9},col={1}::{Line should be covered with tests}"
+  );
   const compareFile = core.getInput("lcov-file");
   const baseFile = core.getInput("base-lcov-file");
   core.info(`lcov-file: ${compareFile}`);
