@@ -6319,7 +6319,7 @@ const { sendSummaryComment } = __nccwpck_require__(7788);
 
 async function main() {
   core.info(
-    "::error file={src/index.js},line={9},col={1}::{Line should be covered with tests}"
+    "::error file={src/index.js},line={9}::Line should be covered with tests"
   );
   const compareFile = core.getInput("lcov-file");
   const baseFile = core.getInput("base-lcov-file");
