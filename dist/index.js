@@ -6321,7 +6321,8 @@ async function main() {
   const test = 1;
   // eslint-disable-next-line no-console
   console.log("::warning file=src/index.js,line=10,col=5::coverage error");
-  core.info("file=src/index.js,line=11,col=5::coverage error 2");
+  core.warning("::warning file=src/index.js,line=11,col=5::coverage error 2");
+  core.info("::warning file=src/index.js,line=11,col=5::coverage error 3");
 
   const compareFile = core.getInput("lcov-file");
   const baseFile = core.getInput("base-lcov-file");
