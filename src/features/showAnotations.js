@@ -11,6 +11,9 @@ const showAnotations = async (compareFileData) => {
     core.info("Show anotations feature enabled");
     const changedFiles = await getChangedFiles();
 
+    // eslint-disable-next-line no-console
+    console.log(changedFiles);
+
     const uncoveredFileLines = uncoveredFileLinesByFileNames(
       changedFiles.map(({ filename }) => filename),
       compareFileData
