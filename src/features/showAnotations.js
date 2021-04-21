@@ -21,18 +21,18 @@ const showAnotations = async (compareFileData) => {
       changedFiles
     );
 
-    // eslint-disable-next-line no-console
-    console.log(fileLinesWithChangedFiles);
-
     fileLinesWithChangedFiles.forEach(({ file, lines }) => {
-      lines.forEach((line) => {
-        const message = Array.isArray(line)
-          ? `file=${file},line=${line[0]}::Lines ${line[0]}-${line[1]} are not covered with tests`
-          : `file=${file},line=${line}::Line ${line} is not covered with tests`;
-        console.log(message);
+      const formattedLines = lines
+        .map((line) => (Array.isArray(line) ? line.join("-") : line))
+        .join(", ");
 
-        core.info(`::${showAnotationsInput} ${message}`);
-      });
+      // line=${line[0]}
+      const message = `file=${file}::Lines ${formattedLines} are not covered with tests`;
+
+      // eslint-disable-next-line no-console
+      console.log(message);
+
+      core.info(`::${showAnotationsInput} ${message}`);
     });
   }
 };
