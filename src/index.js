@@ -8,9 +8,9 @@ const { showAnotations } = require("./features/showAnotations");
 
 async function main() {
   // eslint-disable-next-line no-console
-  console.log("::warning file=src/index.js,line=10,col=5::coverage error");
-  core.warning("::warning file=src/index.js,line=11,col=5::coverage error 2");
-  core.info("::warning file=src/index.js,line=11,col=5::coverage error 3");
+  // console.log("::warning file=src/index.js,line=10,col=5::coverage error");
+  // core.warning("::warning file=src/index.js,line=11,col=5::coverage error 2");
+  // core.info("::warning file=src/index.js,line=11,col=5::coverage error 3");
 
   const compareFile = core.getInput("lcov-file");
   const baseFile = core.getInput("base-lcov-file");
