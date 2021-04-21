@@ -6319,10 +6319,10 @@ const { sendSummaryComment } = __nccwpck_require__(7788);
 
 async function main() {
   const test = 1;
+  // eslint-disable-next-line no-console
+  console.log("::warning file=src/index.js,line=10,col=5::coverage error");
+  core.info("file=src/index.js,line=11,col=5::coverage error 2");
 
-  core.info(
-    "::error file={/home/runner/work/code-coverage-action/code-coverage-action/src/index.js},line={12}::Line should be covered with tests"
-  );
   const compareFile = core.getInput("lcov-file");
   const baseFile = core.getInput("base-lcov-file");
   core.info(`lcov-file: ${compareFile}`);
