@@ -6022,10 +6022,10 @@ module.exports = {
 const github = __nccwpck_require__(5438);
 const core = __nccwpck_require__(2186);
 const getChangedFiles = __nccwpck_require__(397);
-const { commentTitle } = __nccwpck_require__(4570);
-
 const createOrUpdateComment = __nccwpck_require__(8646);
 const buildBody = __nccwpck_require__(681);
+
+const { commentTitle } = __nccwpck_require__(4570);
 
 const sendSummaryComment = async (
   coverageDiff,
@@ -6037,7 +6037,7 @@ const sendSummaryComment = async (
   if (sendSummaryCommentInput && github.context.payload.pull_request) {
     core.info(`send-summary-comment is enabled for this workflow`);
 
-    const changedFiles = getChangedFiles();
+    const changedFiles = await getChangedFiles();
 
     const body = buildBody(
       changedFiles,
@@ -6073,6 +6073,9 @@ const showAnotations = async (compareFileData) => {
   if (showAnotationsInput) {
     core.info("Show anotations feature enabled");
     const changedFiles = await getChangedFiles();
+
+    // eslint-disable-next-line no-console
+    console.log(changedFiles);
 
     const uncoveredFileLines = uncoveredFileLinesByFileNames(
       changedFiles.map(({ filename }) => filename),
@@ -6394,7 +6397,7 @@ async function main() {
 
   await sendSummaryComment(diff, comparePercentage, compareFileData);
   checkMinimumRatio(diff);
-  showAnotations(compareFileData);
+  await showAnotations(compareFileData);
 
   core.setOutput("percentage", comparePercentage);
   core.setOutput("diff", diff);
