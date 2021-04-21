@@ -6089,12 +6089,12 @@ const showAnotations = async (compareFileData) => {
         .map((line) => (Array.isArray(line) ? line.join("-") : line))
         .join(", ");
 
-      // line=${line[0]}
-      const message = `file=${file}::Lines ${formattedLines} are not covered with tests`;
+      // TODO: compare lines that added in this PR to be sure we not mentioning old ones
+      const message = `file=${file}::${formattedLines} lines are not covered with tests`;
 
-      // eslint-disable-next-line no-console
-      console.log(message);
-
+      // NOTE: consider an option to show lines directly by attaching 'line' param
+      // Need to fix the issue where we consider 'empty line' as covered line
+      // Empty lines should not interapt uncovered interval
       core.info(`::${showAnotationsInput} ${message}`);
     });
   }
@@ -6497,6 +6497,8 @@ const getUncoveredFilesLines = (lcovData) => {
   return response;
 };
 
+// TODO: this function is interapted by empty lines
+// Need to find a way how we can avoid this in order to keep the whole interval
 const getGroupedUncoveredFileLines = (filesLines) =>
   filesLines.map(({ file, lines }) => {
     const groupedLines = [];
