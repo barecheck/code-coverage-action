@@ -6058,6 +6058,27 @@ module.exports = {
 
 /***/ }),
 
+/***/ 641:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const core = __nccwpck_require__(2186);
+const { getShowAnotations } = __nccwpck_require__(6);
+
+const showAnotations = async () => {
+  const showAnotationsInput = getShowAnotations();
+
+  if (showAnotationsInput) {
+    core.info("Show anotations feature enabled");
+  }
+};
+
+module.exports = {
+  showAnotations
+};
+
+
+/***/ }),
+
 /***/ 681:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -6316,9 +6337,9 @@ const core = __nccwpck_require__(2186);
 const lcov = __nccwpck_require__(3318);
 const { checkMinimumRatio } = __nccwpck_require__(3324);
 const { sendSummaryComment } = __nccwpck_require__(7788);
+const { showAnotations } = __nccwpck_require__(641);
 
 async function main() {
-  const test = 1;
   // eslint-disable-next-line no-console
   console.log("::warning file=src/index.js,line=10,col=5::coverage error");
   core.warning("::warning file=src/index.js,line=11,col=5::coverage error 2");
@@ -6355,6 +6376,7 @@ async function main() {
 
   await sendSummaryComment(diff, comparePercentage, compareFileData);
   checkMinimumRatio(diff);
+  showAnotations();
 
   core.setOutput("percentage", comparePercentage);
   core.setOutput("diff", diff);
@@ -6366,6 +6388,36 @@ try {
   core.info(err);
   core.setFailed(err.message);
 }
+
+
+/***/ }),
+
+/***/ 6:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const core = __nccwpck_require__(2186);
+
+const getShowAnotations = () => {
+  const availableAnotations = ["warning", "error"];
+
+  const showAnotations = core.getInput("show-anotations");
+
+  if (showAnotations === "") return false;
+
+  if (!availableAnotations.includes(showAnotations)) {
+    throw new Error(
+      `'show-anotations' param should be empty or one of the following options ${availableAnotations.join(
+        ","
+      )}`
+    );
+  }
+
+  return showAnotations;
+};
+
+module.exports = {
+  getShowAnotations
+};
 
 
 /***/ }),

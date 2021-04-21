@@ -4,9 +4,9 @@ const core = require("@actions/core");
 const lcov = require("./lcov");
 const { checkMinimumRatio } = require("./features/minimumRatio");
 const { sendSummaryComment } = require("./features/sendSummaryComment");
+const { showAnotations } = require("./features/showAnotations");
 
 async function main() {
-  const test = 1;
   // eslint-disable-next-line no-console
   console.log("::warning file=src/index.js,line=10,col=5::coverage error");
   core.warning("::warning file=src/index.js,line=11,col=5::coverage error 2");
@@ -43,6 +43,7 @@ async function main() {
 
   await sendSummaryComment(diff, comparePercentage, compareFileData);
   checkMinimumRatio(diff);
+  showAnotations();
 
   core.setOutput("percentage", comparePercentage);
   core.setOutput("diff", diff);
