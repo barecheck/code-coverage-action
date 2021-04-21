@@ -1,13 +1,12 @@
 const github = require("@actions/github");
 const core = require("@actions/core");
-
+const getChangedFiles = require("../github/getChangedFiles");
 const { commentTitle } = require("../config");
 
 const createOrUpdateComment = require("../github/createOrUpdateComment");
 const buildBody = require("../github/comment/buildBody");
 
 const sendSummaryComment = async (
-  changedFiles,
   coverageDiff,
   totalCoverage,
   compareFileData
@@ -17,7 +16,7 @@ const sendSummaryComment = async (
   if (sendSummaryCommentInput && github.context.payload.pull_request) {
     core.info(`send-summary-comment is enabled for this workflow`);
 
-
+    const changedFiles = getChangedFiles();
 
     const body = buildBody(
       changedFiles,

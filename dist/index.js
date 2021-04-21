@@ -6021,14 +6021,13 @@ module.exports = {
 
 const github = __nccwpck_require__(5438);
 const core = __nccwpck_require__(2186);
-
+const getChangedFiles = __nccwpck_require__(397);
 const { commentTitle } = __nccwpck_require__(4570);
 
 const createOrUpdateComment = __nccwpck_require__(8646);
 const buildBody = __nccwpck_require__(681);
 
 const sendSummaryComment = async (
-  changedFiles,
   coverageDiff,
   totalCoverage,
   compareFileData
@@ -6038,7 +6037,7 @@ const sendSummaryComment = async (
   if (sendSummaryCommentInput && github.context.payload.pull_request) {
     core.info(`send-summary-comment is enabled for this workflow`);
 
-
+    const changedFiles = getChangedFiles();
 
     const body = buildBody(
       changedFiles,
