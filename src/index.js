@@ -7,7 +7,7 @@ const { sendSummaryComment } = require("./features/sendSummaryComment");
 
 async function main() {
   const test = 1;
-  core.info("Started");
+  core.warning("file=src/index.js,line=10,col=5::coverage error");
 
   const compareFile = core.getInput("lcov-file");
   const baseFile = core.getInput("base-lcov-file");
