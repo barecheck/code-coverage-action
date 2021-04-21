@@ -6083,6 +6083,10 @@ const showAnotations = async (compareFileData) => {
       uncoveredFileLines,
       changedFiles
     );
+
+    // eslint-disable-next-line no-console
+    console.log(fileLinesWithChangedFiles);
+
     fileLinesWithChangedFiles.forEach(({ file, lines }) => {
       lines.forEach((line) => {
         const message = Array.isArray(line)
