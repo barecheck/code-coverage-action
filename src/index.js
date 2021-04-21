@@ -6,6 +6,8 @@ const { checkMinimumRatio } = require("./features/minimumRatio");
 const { sendSummaryComment } = require("./features/sendSummaryComment");
 
 async function main() {
+  const test = 1;
+
   core.info(
     "::error file={src/index.js},line={9}::Line should be covered with tests"
   );
