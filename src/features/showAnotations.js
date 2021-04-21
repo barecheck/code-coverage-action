@@ -23,8 +23,8 @@ const showAnotations = async (compareFileData) => {
     fileLinesWithChangedFiles.forEach(({ file, lines }) => {
       lines.forEach((line) => {
         const message = Array.isArray(line)
-          ? `::${showAnotationsInput} file=${file},line=${line[0]}::Lines ${line[0]}-${line[1]} are not covered`
-          : `::${showAnotationsInput} file=${file},line=${line}::Line ${line} is not covered`;
+          ? `::${showAnotationsInput} file=${file},line=${line[0]}::Lines ${line[0]}-${line[1]} are not covered with tests`
+          : `::${showAnotationsInput} file=${file},line=${line}::Line ${line} is not covered with tests`;
 
         core.info(message);
       });
