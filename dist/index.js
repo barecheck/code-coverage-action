@@ -6368,11 +6368,6 @@ const { sendSummaryComment } = __nccwpck_require__(7788);
 const { showAnotations } = __nccwpck_require__(641);
 
 async function main() {
-  // eslint-disable-next-line no-console
-  // console.log("::warning file=src/index.js,line=10,col=5::coverage error");
-  // core.warning("::warning file=src/index.js,line=11,col=5::coverage error 2");
-  // core.info("::warning file=src/index.js,line=11,col=5::coverage error 3");
-
   const compareFile = core.getInput("lcov-file");
   const baseFile = core.getInput("base-lcov-file");
   core.info(`lcov-file: ${compareFile}`);
