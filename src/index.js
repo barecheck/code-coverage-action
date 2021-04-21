@@ -7,7 +7,8 @@ const { sendSummaryComment } = require("./features/sendSummaryComment");
 
 async function main() {
   const test = 1;
-  core.warning("file=src/index.js,line=10,col=5::coverage error");
+  // eslint-disable-next-line no-console
+  console.log("::warning file=src/index.js,line=10,col=5::coverage error");
 
   const compareFile = core.getInput("lcov-file");
   const baseFile = core.getInput("base-lcov-file");
