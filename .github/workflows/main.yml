@@ -42,7 +42,7 @@ jobs:
           name: ref-lcov.info
 
       - name: TEST error
-        run: echo "::warning file=src/index.js,line=9,col=5::coverage error"
+        run: echo "::warning file=src/index.js,line=10,col=5::coverage error"
 
       - name: Install dependencies
         run: yarn
