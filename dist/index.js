@@ -6023,11 +6023,12 @@ const github = __nccwpck_require__(5438);
 const core = __nccwpck_require__(2186);
 
 const { commentTitle } = __nccwpck_require__(4570);
-const getChangedFiles = __nccwpck_require__(397);
+
 const createOrUpdateComment = __nccwpck_require__(8646);
 const buildBody = __nccwpck_require__(681);
 
 const sendSummaryComment = async (
+  changedFiles,
   coverageDiff,
   totalCoverage,
   compareFileData
@@ -6037,7 +6038,7 @@ const sendSummaryComment = async (
   if (sendSummaryCommentInput && github.context.payload.pull_request) {
     core.info(`send-summary-comment is enabled for this workflow`);
 
-    const changedFiles = await getChangedFiles();
+
 
     const body = buildBody(
       changedFiles,
@@ -6062,13 +6063,31 @@ module.exports = {
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const core = __nccwpck_require__(2186);
+const getChangedFiles = __nccwpck_require__(397);
+const { uncoveredFileLinesByFileNames } = __nccwpck_require__(3318);
+const { mergeFileLinesWithChangedFiles } = __nccwpck_require__(3257);
 const { getShowAnotations } = __nccwpck_require__(6);
 
-const showAnotations = async () => {
+const showAnotations = async (compareFileData) => {
   const showAnotationsInput = getShowAnotations();
 
   if (showAnotationsInput) {
     core.info("Show anotations feature enabled");
+    const changedFiles = await getChangedFiles();
+
+    const uncoveredFileLines = uncoveredFileLinesByFileNames(
+      changedFiles.map(({ filename }) => filename),
+      compareFileData
+    );
+
+    const fileLinesWithChangedFiles = mergeFileLinesWithChangedFiles(
+      uncoveredFileLines,
+      changedFiles
+    );
+    fileLinesWithChangedFiles.forEach((element) => {
+      // eslint-disable-next-line no-console
+      console.log(element);
+    });
   }
 };
 
@@ -6376,7 +6395,7 @@ async function main() {
 
   await sendSummaryComment(diff, comparePercentage, compareFileData);
   checkMinimumRatio(diff);
-  showAnotations();
+  showAnotations(compareFileData);
 
   core.setOutput("percentage", comparePercentage);
   core.setOutput("diff", diff);

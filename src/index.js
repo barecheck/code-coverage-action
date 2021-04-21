@@ -43,7 +43,7 @@ async function main() {
 
   await sendSummaryComment(diff, comparePercentage, compareFileData);
   checkMinimumRatio(diff);
-  showAnotations();
+  showAnotations(compareFileData);
 
   core.setOutput("percentage", comparePercentage);
   core.setOutput("diff", diff);
