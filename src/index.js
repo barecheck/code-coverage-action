@@ -6,24 +6,16 @@ const { checkMinimumRatio } = require("./features/minimumRatio");
 const { sendSummaryComment } = require("./features/sendSummaryComment");
 const { showAnnotations } = require("./features/showAnnotations");
 
-async function main() {
-  const compareFile = core.getInput("lcov-file");
-  const baseFile = core.getInput("base-lcov-file");
-  core.info(`lcov-file: ${compareFile}`);
-  core.info(`base-lcov-file: ${baseFile}`);
+const runFeatures = async (diff, comparePercentage, compareFileData) => {
+  await sendSummaryComment(diff, comparePercentage, compareFileData);
+  checkMinimumRatio(diff);
+  await showAnnotations(compareFileData);
 
-  const compareFileRaw = fs.readFileSync(compareFile, "utf8");
-  if (!compareFileRaw) {
-    core.info(`No coverage report found at '${compareFile}', exiting...`);
-    return;
-  }
+  core.setOutput("percentage", comparePercentage);
+  core.setOutput("diff", diff);
+};
 
-  const baseFileRaw = fs.readFileSync(baseFile, "utf8");
-  if (!baseFileRaw) {
-    core.info(`No coverage report found at '${baseFileRaw}', exiting...`);
-    return;
-  }
-
+const runCodeCoverage = async (baseFileRaw, compareFileRaw) => {
   const baseFileData = await lcov.parse(baseFileRaw);
   const compareFileData = await lcov.parse(compareFileRaw);
 
@@ -36,12 +28,24 @@ async function main() {
   const diff = (comparePercentage - basePercentage).toFixed(2);
   core.info(`Code coverage diff: ${diff}%`);
 
-  await sendSummaryComment(diff, comparePercentage, compareFileData);
-  checkMinimumRatio(diff);
-  await showAnnotations(compareFileData);
+  await runFeatures(diff, comparePercentage, compareFileData);
+};
 
-  core.setOutput("percentage", comparePercentage);
-  core.setOutput("diff", diff);
+async function main() {
+  const compareFile = core.getInput("lcov-file");
+  const baseFile = core.getInput("base-lcov-file");
+  core.info(`lcov-file: ${compareFile}`);
+  core.info(`base-lcov-file: ${baseFile}`);
+
+  const compareFileRaw = fs.readFileSync(compareFile, "utf8");
+  if (!compareFileRaw)
+    throw new Error(`No coverage report found at '${compareFile}', exiting...`);
+
+  const baseFileRaw = fs.readFileSync(baseFile, "utf8");
+  if (!baseFileRaw)
+    throw new Error(`No coverage report found at '${baseFileRaw}', exiting...`);
+
+  await runCodeCoverage(baseFileRaw, compareFileRaw);
 }
 
 try {
