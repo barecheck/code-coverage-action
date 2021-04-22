@@ -21,8 +21,8 @@ inputs:
   send-summary-comment:
     description: "Send Github Pull request comment with code coverage summary"
     required: false
-  show-anotations:
-    description: "Shows anotations with uncovered lines in the review. Options: warning|error"
+  show-annotations:
+    description: "Shows annotations with uncovered lines in the review. Options: warning|error"
     default: ""
     required: false
 outputs:

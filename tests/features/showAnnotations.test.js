@@ -10,9 +10,9 @@ const defaultMocks = {
   mergeFileLinesWithChangedFiles: () => null
 };
 
-const showAnotationsMock = (mocks) => {
+const showAnnotationsMock = (mocks) => {
   const {
-    showAnotationsInput,
+    showAnnotationsInput,
     getChangedFiles,
     uncoveredFileLinesByFileNames,
     mergeFileLinesWithChangedFiles,
@@ -23,33 +23,33 @@ const showAnotationsMock = (mocks) => {
     ...defaultMocks,
     ...mocks
   };
-  return proxyquire("../../src/features/showAnotations", {
+  return proxyquire("../../src/features/showAnnotations", {
     "@actions/core": { getInput, info, setFailed },
     "../github/getChangedFiles": getChangedFiles,
     "../lcov": { uncoveredFileLinesByFileNames },
     "../coverage": { mergeFileLinesWithChangedFiles },
-    "../input": { getShowAnotations: () => showAnotationsInput }
+    "../input": { getShowAnnotations: () => showAnnotationsInput }
   });
 };
 
-describe("features/showAnotations", () => {
-  describe("showAnotations", () => {
+describe("features/showAnnotations", () => {
+  describe("showAnnotations", () => {
     it("any logic should not be called once flag is False", async () => {
-      const showAnotationsInput = false;
+      const showAnnotationsInput = false;
       const compareFileData = [];
       const getChangedFiles = sinon.spy();
-      const { showAnotations } = showAnotationsMock({
-        showAnotationsInput,
+      const { showAnnotations } = showAnnotationsMock({
+        showAnnotationsInput,
         getChangedFiles
       });
 
-      await showAnotations(compareFileData);
+      await showAnnotations(compareFileData);
 
       assert.isFalse(getChangedFiles.calledOnce);
     });
 
     it("core.info should be called once for single line warning", async () => {
-      const showAnotationsInput = "warning";
+      const showAnnotationsInput = "warning";
       const compareFileData = [];
       const filename = "src/tets.js";
       const line = 2;
@@ -64,15 +64,15 @@ describe("features/showAnotations", () => {
       ]);
       const info = sinon.spy();
 
-      const { showAnotations } = showAnotationsMock({
-        showAnotationsInput,
+      const { showAnnotations } = showAnnotationsMock({
+        showAnnotationsInput,
         getChangedFiles,
         uncoveredFileLinesByFileNames,
         mergeFileLinesWithChangedFiles,
         info
       });
 
-      await showAnotations(compareFileData);
+      await showAnnotations(compareFileData);
 
       assert.isTrue(getChangedFiles.calledOnce);
       assert.isTrue(uncoveredFileLinesByFileNames.calledOnce);
@@ -84,7 +84,7 @@ describe("features/showAnotations", () => {
     });
 
     it("core.info should be called once for multilines line warning", async () => {
-      const showAnotationsInput = "warning";
+      const showAnnotationsInput = "warning";
       const compareFileData = [];
       const filename = "src/tets.js";
 
@@ -98,15 +98,15 @@ describe("features/showAnotations", () => {
       ]);
       const info = sinon.spy();
 
-      const { showAnotations } = showAnotationsMock({
-        showAnotationsInput,
+      const { showAnnotations } = showAnnotationsMock({
+        showAnnotationsInput,
         getChangedFiles,
         uncoveredFileLinesByFileNames,
         mergeFileLinesWithChangedFiles,
         info
       });
 
-      await showAnotations(compareFileData);
+      await showAnnotations(compareFileData);
 
       assert.isTrue(getChangedFiles.calledOnce);
       assert.isTrue(uncoveredFileLinesByFileNames.calledOnce);

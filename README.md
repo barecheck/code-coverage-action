@@ -86,5 +86,5 @@ jobs:
           base-lcov-file: "./lcov.info"
           minimum-ratio: 0 # Fails Github action once code coverage is decreasing
           send-summary-comment: true
-          show-anotations: "warning" # Possible options warning|error
+          show-annotations: "warning" # Possible options warning|error
 ```

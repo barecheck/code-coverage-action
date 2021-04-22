@@ -1,23 +1,23 @@
 const core = require("@actions/core");
 
-const getShowAnotations = () => {
-  const availableAnotations = ["warning", "error"];
+const getShowAnnotations = () => {
+  const availableAnnotations = ["warning", "error"];
 
-  const showAnotations = core.getInput("show-anotations");
+  const showAnnotations = core.getInput("show-annotations");
 
-  if (showAnotations === "") return false;
+  if (showAnnotations === "") return false;
 
-  if (!availableAnotations.includes(showAnotations)) {
+  if (!availableAnnotations.includes(showAnnotations)) {
     throw new Error(
-      `'show-anotations' param should be empty or one of the following options ${availableAnotations.join(
+      `'show-annotations' param should be empty or one of the following options ${availableAnnotations.join(
         ","
       )}`
     );
   }
 
-  return showAnotations;
+  return showAnnotations;
 };
 
 module.exports = {
-  getShowAnotations
+  getShowAnnotations
 };

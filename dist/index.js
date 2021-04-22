@@ -6058,20 +6058,20 @@ module.exports = {
 
 /***/ }),
 
-/***/ 641:
+/***/ 3360:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const core = __nccwpck_require__(2186);
 const getChangedFiles = __nccwpck_require__(397);
 const { uncoveredFileLinesByFileNames } = __nccwpck_require__(3318);
 const { mergeFileLinesWithChangedFiles } = __nccwpck_require__(3257);
-const { getShowAnotations } = __nccwpck_require__(6);
+const { getShowAnnotations } = __nccwpck_require__(6);
 
-const showAnotations = async (compareFileData) => {
-  const showAnotationsInput = getShowAnotations();
+const showAnnotations = async (compareFileData) => {
+  const showAnnotationsInput = getShowAnnotations();
 
-  if (showAnotationsInput) {
-    core.info("Show anotations feature enabled");
+  if (showAnnotationsInput) {
+    core.info("Show annotations feature enabled");
     const changedFiles = await getChangedFiles();
 
     const uncoveredFileLines = uncoveredFileLinesByFileNames(
@@ -6089,19 +6089,18 @@ const showAnotations = async (compareFileData) => {
         .map((line) => (Array.isArray(line) ? line.join("-") : line))
         .join(", ");
 
-      // TODO: compare lines that added in this PR to be sure we not mentioning old ones
       const message = `file=${file}::${formattedLines} lines are not covered with tests`;
 
       // NOTE: consider an option to show lines directly by attaching 'line' param
       // Need to fix the issue where we consider 'empty line' as covered line
       // Empty lines should not interapt uncovered interval
-      core.info(`::${showAnotationsInput} ${message}`);
+      core.info(`::${showAnnotationsInput} ${message}`);
     });
   }
 };
 
 module.exports = {
-  showAnotations
+  showAnnotations
 };
 
 
@@ -6365,7 +6364,7 @@ const core = __nccwpck_require__(2186);
 const lcov = __nccwpck_require__(3318);
 const { checkMinimumRatio } = __nccwpck_require__(3324);
 const { sendSummaryComment } = __nccwpck_require__(7788);
-const { showAnotations } = __nccwpck_require__(641);
+const { showAnnotations } = __nccwpck_require__(3360);
 
 async function main() {
   const compareFile = core.getInput("lcov-file");
@@ -6399,7 +6398,7 @@ async function main() {
 
   await sendSummaryComment(diff, comparePercentage, compareFileData);
   checkMinimumRatio(diff);
-  await showAnotations(compareFileData);
+  await showAnnotations(compareFileData);
 
   core.setOutput("percentage", comparePercentage);
   core.setOutput("diff", diff);
@@ -6420,26 +6419,26 @@ try {
 
 const core = __nccwpck_require__(2186);
 
-const getShowAnotations = () => {
-  const availableAnotations = ["warning", "error"];
+const getShowAnnotations = () => {
+  const availableAnnotations = ["warning", "error"];
 
-  const showAnotations = core.getInput("show-anotations");
+  const showAnnotations = core.getInput("show-annotations");
 
-  if (showAnotations === "") return false;
+  if (showAnnotations === "") return false;
 
-  if (!availableAnotations.includes(showAnotations)) {
+  if (!availableAnnotations.includes(showAnnotations)) {
     throw new Error(
-      `'show-anotations' param should be empty or one of the following options ${availableAnotations.join(
+      `'show-annotations' param should be empty or one of the following options ${availableAnnotations.join(
         ","
       )}`
     );
   }
 
-  return showAnotations;
+  return showAnnotations;
 };
 
 module.exports = {
-  getShowAnotations
+  getShowAnnotations
 };
 
 
