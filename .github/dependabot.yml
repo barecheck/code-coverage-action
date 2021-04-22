@@ -10,4 +10,4 @@ updates:
     schedule:
       interval: "daily"
     reviewers:
-      melnychukvitaliy
+      - melnychukvitaliy
