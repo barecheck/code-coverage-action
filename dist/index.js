@@ -1,4 +1,3 @@
-module.exports =
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
@@ -198,6 +197,7 @@ exports.getInput = getInput;
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function setOutput(name, value) {
+    process.stdout.write(os.EOL);
     command_1.issueCommand('set-output', { name }, value);
 }
 exports.setOutput = setOutput;
@@ -6115,6 +6115,23 @@ const { mergeFileLinesWithChangedFiles } = __nccwpck_require__(3257);
 
 const buildCommentDetails = __nccwpck_require__(3840);
 
+const buildFullMessage = (
+  coverageDiff,
+  totalCoverage,
+  commentDetailsMessage
+) => {
+  const coverageDiffOutput = coverageDiff < 0 ? "▾" : "▴";
+  const trendArrow = coverageDiff === 0 ? "" : coverageDiffOutput;
+  const header = commentTitle;
+  const descTotal = `Total: <b>${totalCoverage}%</b>`;
+  const descCoverageDiff = `Your code coverage diff: <b>${coverageDiff}% ${trendArrow}</b>`;
+  const description = `${descTotal}\n\n${descCoverageDiff}`;
+
+  const body = `<h3>${header}</h3>${description}\n\n${commentDetailsMessage}`;
+
+  return body;
+};
+
 const buildBody = (
   changedFiles,
   coverageDiff,
@@ -6133,14 +6150,11 @@ const buildBody = (
 
   const commentDetailsMessage = buildCommentDetails(fileLinesWithChangedFiles);
 
-  const coverageDiffOutput = coverageDiff < 0 ? "▾" : "▴";
-  const trendArrow = coverageDiff === 0 ? "" : coverageDiffOutput;
-  const header = commentTitle;
-  const descTotal = `Total: <b>${totalCoverage}%</b>`;
-  const descCoverageDiff = `Your code coverage diff: <b>${coverageDiff}% ${trendArrow}</b>`;
-  const description = `${descTotal}\n\n${descCoverageDiff}`;
-
-  const body = `<h3>${header}</h3>${description}\n\n${commentDetailsMessage}`;
+  const body = buildFullMessage(
+    coverageDiff,
+    totalCoverage,
+    commentDetailsMessage
+  );
 
   return body;
 };
@@ -6355,65 +6369,6 @@ module.exports = updateComment;
 
 /***/ }),
 
-/***/ 4351:
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const fs = __nccwpck_require__(5747);
-const core = __nccwpck_require__(2186);
-
-const lcov = __nccwpck_require__(3318);
-const { checkMinimumRatio } = __nccwpck_require__(3324);
-const { sendSummaryComment } = __nccwpck_require__(7788);
-const { showAnnotations } = __nccwpck_require__(3360);
-
-async function main() {
-  const compareFile = core.getInput("lcov-file");
-  const baseFile = core.getInput("base-lcov-file");
-  core.info(`lcov-file: ${compareFile}`);
-  core.info(`base-lcov-file: ${baseFile}`);
-
-  const compareFileRaw = fs.readFileSync(compareFile, "utf8");
-  if (!compareFileRaw) {
-    core.info(`No coverage report found at '${compareFile}', exiting...`);
-    return;
-  }
-
-  const baseFileRaw = fs.readFileSync(baseFile, "utf8");
-  if (!baseFileRaw) {
-    core.info(`No coverage report found at '${baseFileRaw}', exiting...`);
-    return;
-  }
-
-  const baseFileData = await lcov.parse(baseFileRaw);
-  const compareFileData = await lcov.parse(compareFileRaw);
-
-  const comparePercentage = lcov.percentage(compareFileData);
-  core.info(`Compare branch code coverage: ${comparePercentage}%`);
-
-  const basePercentage = lcov.percentage(baseFileData);
-  core.info(`Base branch code coverage: ${basePercentage}%`);
-
-  const diff = (comparePercentage - basePercentage).toFixed(2);
-  core.info(`Code coverage diff: ${diff}%`);
-
-  await sendSummaryComment(diff, comparePercentage, compareFileData);
-  checkMinimumRatio(diff);
-  await showAnnotations(compareFileData);
-
-  core.setOutput("percentage", comparePercentage);
-  core.setOutput("diff", diff);
-}
-
-try {
-  main();
-} catch (err) {
-  core.info(err);
-  core.setFailed(err.message);
-}
-
-
-/***/ }),
-
 /***/ 6:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -6494,6 +6449,7 @@ const getUncoveredFilesLines = (lcovData) => {
 // TODO: this function is interapted by empty lines
 // Need to find a way how we can avoid this in order to keep the whole interval
 const getGroupedUncoveredFileLines = (filesLines) =>
+  // eslint-disable-next-line max-statements
   filesLines.map(({ file, lines }) => {
     const groupedLines = [];
     let previousLine = null;
@@ -6672,8 +6628,9 @@ module.exports = require("zlib");;
 /******/ 	// The require function
 /******/ 	function __nccwpck_require__(moduleId) {
 /******/ 		// Check if module is in cache
-/******/ 		if(__webpack_module_cache__[moduleId]) {
-/******/ 			return __webpack_module_cache__[moduleId].exports;
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
@@ -6698,10 +6655,69 @@ module.exports = require("zlib");;
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
-/******/ 	__nccwpck_require__.ab = __dirname + "/";/************************************************************************/
-/******/ 	// module exports must be returned from runtime so entry inlining is disabled
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	return __nccwpck_require__(4351);
+/******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+(() => {
+const fs = __nccwpck_require__(5747);
+const core = __nccwpck_require__(2186);
+
+const lcov = __nccwpck_require__(3318);
+const { checkMinimumRatio } = __nccwpck_require__(3324);
+const { sendSummaryComment } = __nccwpck_require__(7788);
+const { showAnnotations } = __nccwpck_require__(3360);
+
+const runFeatures = async (diff, comparePercentage, compareFileData) => {
+  await sendSummaryComment(diff, comparePercentage, compareFileData);
+  checkMinimumRatio(diff);
+  await showAnnotations(compareFileData);
+
+  core.setOutput("percentage", comparePercentage);
+  core.setOutput("diff", diff);
+};
+
+const runCodeCoverage = async (baseFileRaw, compareFileRaw) => {
+  const baseFileData = await lcov.parse(baseFileRaw);
+  const compareFileData = await lcov.parse(compareFileRaw);
+
+  const comparePercentage = lcov.percentage(compareFileData);
+  core.info(`Compare branch code coverage: ${comparePercentage}%`);
+
+  const basePercentage = lcov.percentage(baseFileData);
+  core.info(`Base branch code coverage: ${basePercentage}%`);
+
+  const diff = (comparePercentage - basePercentage).toFixed(2);
+  core.info(`Code coverage diff: ${diff}%`);
+
+  await runFeatures(diff, comparePercentage, compareFileData);
+};
+
+async function main() {
+  const compareFile = core.getInput("lcov-file");
+  const baseFile = core.getInput("base-lcov-file");
+  core.info(`lcov-file: ${compareFile}`);
+  core.info(`base-lcov-file: ${baseFile}`);
+
+  const compareFileRaw = fs.readFileSync(compareFile, "utf8");
+  if (!compareFileRaw)
+    throw new Error(`No coverage report found at '${compareFile}', exiting...`);
+
+  const baseFileRaw = fs.readFileSync(baseFile, "utf8");
+  if (!baseFileRaw)
+    throw new Error(`No coverage report found at '${baseFileRaw}', exiting...`);
+
+  await runCodeCoverage(baseFileRaw, compareFileRaw);
+}
+
+try {
+  main();
+} catch (err) {
+  core.info(err);
+  core.setFailed(err.message);
+}
+
+})();
+
+module.exports = __webpack_exports__;
 /******/ })()
 ;
