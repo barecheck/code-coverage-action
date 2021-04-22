@@ -58,3 +58,4 @@ jobs:
           base-lcov-file: "./lcov.info"
           minimum-ratio: 0
           send-summary-comment: true
+          show-anotations: "warning"

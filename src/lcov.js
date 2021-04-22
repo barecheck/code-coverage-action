@@ -42,6 +42,8 @@ const getUncoveredFilesLines = (lcovData) => {
   return response;
 };
 
+// TODO: this function is interapted by empty lines
+// Need to find a way how we can avoid this in order to keep the whole interval
 const getGroupedUncoveredFileLines = (filesLines) =>
   filesLines.map(({ file, lines }) => {
     const groupedLines = [];

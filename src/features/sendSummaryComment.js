@@ -1,10 +1,10 @@
 const github = require("@actions/github");
 const core = require("@actions/core");
-
-const { commentTitle } = require("../config");
 const getChangedFiles = require("../github/getChangedFiles");
 const createOrUpdateComment = require("../github/createOrUpdateComment");
 const buildBody = require("../github/comment/buildBody");
+
+const { commentTitle } = require("../config");
 
 const sendSummaryComment = async (
   coverageDiff,
