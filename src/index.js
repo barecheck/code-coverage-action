@@ -4,7 +4,7 @@ const core = require("@actions/core");
 const lcov = require("./lcov");
 const { checkMinimumRatio } = require("./features/minimumRatio");
 const { sendSummaryComment } = require("./features/sendSummaryComment");
-const { showAnotations } = require("./features/showAnotations");
+const { showAnnotations } = require("./features/showAnnotations");
 
 async function main() {
   const compareFile = core.getInput("lcov-file");
@@ -38,7 +38,7 @@ async function main() {
 
   await sendSummaryComment(diff, comparePercentage, compareFileData);
   checkMinimumRatio(diff);
-  await showAnotations(compareFileData);
+  await showAnnotations(compareFileData);
 
   core.setOutput("percentage", comparePercentage);
   core.setOutput("diff", diff);

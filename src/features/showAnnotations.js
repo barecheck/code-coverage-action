@@ -2,14 +2,13 @@ const core = require("@actions/core");
 const getChangedFiles = require("../github/getChangedFiles");
 const { uncoveredFileLinesByFileNames } = require("../lcov");
 const { mergeFileLinesWithChangedFiles } = require("../coverage");
-const { getShowAnotations } = require("../input");
+const { getShowAnnotations } = require("../input");
 
-// TODO: annotations
-const showAnotations = async (compareFileData) => {
-  const showAnotationsInput = getShowAnotations();
+const showAnnotations = async (compareFileData) => {
+  const showAnnotationsInput = getShowAnnotations();
 
-  if (showAnotationsInput) {
-    core.info("Show anotations feature enabled");
+  if (showAnnotationsInput) {
+    core.info("Show annotations feature enabled");
     const changedFiles = await getChangedFiles();
 
     const uncoveredFileLines = uncoveredFileLinesByFileNames(
@@ -32,11 +31,11 @@ const showAnotations = async (compareFileData) => {
       // NOTE: consider an option to show lines directly by attaching 'line' param
       // Need to fix the issue where we consider 'empty line' as covered line
       // Empty lines should not interapt uncovered interval
-      core.info(`::${showAnotationsInput} ${message}`);
+      core.info(`::${showAnnotationsInput} ${message}`);
     });
   }
 };
 
 module.exports = {
-  showAnotations
+  showAnnotations
 };

@@ -17,13 +17,13 @@ const inputMock = (mocks) => {
 };
 
 describe("input", () => {
-  describe("getShowAnotations", () => {
+  describe("getShowAnnotations", () => {
     it("should return False once input is empty", () => {
-      const getInput = sinon.stub().withArgs("show-anotations").returns("");
+      const getInput = sinon.stub().withArgs("show-annotations").returns("");
 
-      const { getShowAnotations } = inputMock({ getInput });
+      const { getShowAnnotations } = inputMock({ getInput });
 
-      const res = getShowAnotations();
+      const res = getShowAnnotations();
 
       assert.isFalse(res);
     });
@@ -32,12 +32,12 @@ describe("input", () => {
       const expectedRes = "warning";
       const getInput = sinon
         .stub()
-        .withArgs("show-anotations")
+        .withArgs("show-annotations")
         .returns(expectedRes);
 
-      const { getShowAnotations } = inputMock({ getInput });
+      const { getShowAnnotations } = inputMock({ getInput });
 
-      const res = getShowAnotations();
+      const res = getShowAnnotations();
 
       assert.equal(res, expectedRes);
     });
@@ -46,12 +46,12 @@ describe("input", () => {
       const expectedRes = "error";
       const getInput = sinon
         .stub()
-        .withArgs("show-anotations")
+        .withArgs("show-annotations")
         .returns(expectedRes);
 
-      const { getShowAnotations } = inputMock({ getInput });
+      const { getShowAnnotations } = inputMock({ getInput });
 
-      const res = getShowAnotations();
+      const res = getShowAnnotations();
 
       assert.equal(res, expectedRes);
     });
@@ -59,14 +59,14 @@ describe("input", () => {
     it("should throw error once value is not one of the allowed", () => {
       const getInput = sinon
         .stub()
-        .withArgs("show-anotations")
+        .withArgs("show-annotations")
         .returns("undefined");
 
-      const { getShowAnotations } = inputMock({ getInput });
+      const { getShowAnnotations } = inputMock({ getInput });
 
       assert.throws(
-        () => getShowAnotations(),
-        "'show-anotations' param should be empty or one of the following options warning,error"
+        () => getShowAnnotations(),
+        "'show-annotations' param should be empty or one of the following options warning,error"
       );
     });
   });
