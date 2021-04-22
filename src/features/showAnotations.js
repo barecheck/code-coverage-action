@@ -4,6 +4,7 @@ const { uncoveredFileLinesByFileNames } = require("../lcov");
 const { mergeFileLinesWithChangedFiles } = require("../coverage");
 const { getShowAnotations } = require("../input");
 
+// TODO: annotations
 const showAnotations = async (compareFileData) => {
   const showAnotationsInput = getShowAnotations();
 
@@ -26,7 +27,6 @@ const showAnotations = async (compareFileData) => {
         .map((line) => (Array.isArray(line) ? line.join("-") : line))
         .join(", ");
 
-      // TODO: compare lines that added in this PR to be sure we not mentioning old ones
       const message = `file=${file}::${formattedLines} lines are not covered with tests`;
 
       // NOTE: consider an option to show lines directly by attaching 'line' param
