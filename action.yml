@@ -20,10 +20,11 @@ inputs:
     required: false
   send-summary-comment:
     description: "Send Github Pull request comment with code coverage summary"
+    default: ""
     required: false
   show-annotations:
     description: "Shows annotations with uncovered lines in the review. Options: warning|error"
-    default: ""
+    default: "warning"
     required: false
 outputs:
   percentage:

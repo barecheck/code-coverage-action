@@ -15,12 +15,24 @@ To integrate with this Github Action, you can just use following configuration i
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     lcov-file: "./coverage/lcov.info"
+    base-lcov-file: "./coverage/base-lcov.info"
     send-summary-comment: true
+    show-annotations: "warning"
 ```
 
 ## Arguments
 
-All available input args described in `./action.yml`.
+## Inputs
+
+| Key                    | Required | Default   | Description                                                                                                       |
+| ---------------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------- |
+| `github-token`         | **yes**  | -         | Your Github token that would be used to send summary comment                                                      |
+| `lcov-file`            | **yes**  | -         | Lcov.info file that was generated after your test coverage command                                                |
+| `base-lcov-file`       | **yes**  | -         | Lcov.info file that would be used for code coverage                                                               |
+| `send-summary-comment` | **no**   | true      | Option to send Github code coverage comment based on the changes that were made in PR                             |
+| `show-annotations`     | **no**   | 'warning' | Option to enable Github anotation that would show uncovered files in review tab. Options: ' ' \| warning \| error |
+| comparison             |
+| `minimum-ratio`        | **no**   | 'warning' | Lcov.info file that would be used for code coverage comparison                                                    |
 
 ## Workflow Example
 
