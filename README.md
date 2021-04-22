@@ -4,6 +4,12 @@ GitHub Action that generates coverage reports
 
 ![code coverage report](./docs/img/barecheck-comment.png)
 
+## Show annotations
+
+As a part of code coverage report action also enable an ability to show annotations along with changed lines to keep control what is covered with tests without interapting review process
+
+![show annotations](./docs/img/show-annotations.png)
+
 ## Usage
 
 To integrate with this Github Action, you can just use following configuration in your already created workflow. As a result you will get Github Pull request comment with total code coverage
