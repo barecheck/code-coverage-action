@@ -76,5 +76,27 @@ describe("features/minCoverageRatio", () => {
       assert.isUndefined(res);
       assert.isTrue(setFailed.calledOnce);
     });
+
+    it("setFailed should be called if coverageDiff is string", () => {
+      const minCoverageRatio = 11;
+      const coverageDiff = "-10";
+
+      const getInput = sinon
+        .stub()
+        .withArgs("minimum-ratio")
+        .returns(minCoverageRatio);
+
+      const setFailed = sinon.spy();
+
+      const { checkMinimumRatio } = minCoverageRatioMock({
+        getInput,
+        setFailed
+      });
+
+      const res = checkMinimumRatio(coverageDiff);
+
+      assert.isUndefined(res);
+      assert.isFalse(setFailed.calledOnce);
+    });
   });
 });
