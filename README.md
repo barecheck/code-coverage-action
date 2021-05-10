@@ -17,7 +17,7 @@ To integrate with this Github Action, you can just use following configuration i
 ```yml
 - name: Generate Code Coverage report
   id: code-coverage
-  uses: barecheck/code-coverage-action@0.3.1
+  uses: barecheck/code-coverage-action@0.3.2
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     lcov-file: "./coverage/lcov.info"
@@ -96,7 +96,7 @@ jobs:
       #  Compares two code coverage files and generates report as a comment
       - name: Generate Code Coverage report
         id: code-coverage
-        uses: barecheck/code-coverage-action@v0.3.1
+        uses: barecheck/code-coverage-action@v0.3.2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           lcov-file: "./coverage/lcov.info"
