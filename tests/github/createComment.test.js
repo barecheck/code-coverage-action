@@ -34,15 +34,17 @@ describe("github/createComment", () => {
     };
 
     const octokitClient = {
-      issues: { createComment: sinon.stub().returns(createCommentRes) }
+      rest: {
+        issues: { createComment: sinon.stub().returns(createCommentRes) }
+      }
     };
 
     const createComment = createCommentMock({ octokitClient, github });
 
     const res = await createComment(body);
 
-    assert.isTrue(octokitClient.issues.createComment.calledOnce);
-    assert.deepEqual(octokitClient.issues.createComment.firstCall.args, [
+    assert.isTrue(octokitClient.rest.issues.createComment.calledOnce);
+    assert.deepEqual(octokitClient.rest.issues.createComment.firstCall.args, [
       {
         repo,
         owner,

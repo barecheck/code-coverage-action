@@ -7,7 +7,7 @@ const getOctokitClient = require("./getOctokitClient");
 const createComment = async (body) => {
   const octokit = getOctokitClient();
 
-  const res = await octokit.issues.createComment({
+  const res = await octokit.rest.issues.createComment({
     repo: github.context.repo.repo,
     owner: github.context.repo.owner,
     issue_number: github.context.payload.pull_request.number,
