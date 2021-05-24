@@ -105,3 +105,15 @@ jobs:
           send-summary-comment: true
           show-annotations: "warning" # Possible options warning|error
 ```
+
+
+## Contributing
+
+- Clone this repository
+- Use current node.js version `nvm use` or `nvm install`
+- Run `yarn install`
+- Develop feature/fix 
+- Run `yarn build`
+- Commit changes including `./dist/index.js` bundle
+- Create Pull request
+
