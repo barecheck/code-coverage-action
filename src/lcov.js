@@ -82,12 +82,13 @@ const getGroupedUncoveredFileLines = (filesLines) =>
   });
 
 const uncoveredFileLinesByFileNames = (fileNames, lcovData) => {
-  const uncoveredFileLines = getUncoveredFilesLines(lcovData).filter(
-    ({ file }) => fileNames.includes(file)
-  );
+  const uncoveredFileLines = getUncoveredFilesLines(
+    lcovData
+  ).filter(({ file }) => fileNames.includes(file));
 
-  const groupedUncoveredFileLines =
-    getGroupedUncoveredFileLines(uncoveredFileLines);
+  const groupedUncoveredFileLines = getGroupedUncoveredFileLines(
+    uncoveredFileLines
+  );
 
   return groupedUncoveredFileLines;
 };
