@@ -3,6 +3,7 @@ const { uncoveredFileLinesByFileNames } = require("../../lcov");
 const { mergeFileLinesWithChangedFiles } = require("../../coverage");
 
 const buildCommentDetails = require("./buildDetails");
+const generateTreeMap = require("../../features/generateTreeMap");
 
 const buildFullMessage = (
   coverageDiff,
@@ -15,8 +16,9 @@ const buildFullMessage = (
   const descTotal = `Total: <b>${totalCoverage}%</b>`;
   const descCoverageDiff = `Your code coverage diff: <b>${coverageDiff}% ${trendArrow}</b>`;
   const description = `${descTotal}\n\n${descCoverageDiff}`;
+  const treeMap = generateTreeMap();
 
-  const body = `<h3>${header}</h3>${description}\n\n${commentDetailsMessage}`;
+  const body = `<h3>${header}</h3>${description}\n${treeMap}\n\n${commentDetailsMessage}`;
 
   return body;
 };
