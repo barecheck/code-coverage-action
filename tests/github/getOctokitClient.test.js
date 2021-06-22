@@ -3,27 +3,30 @@ const sinon = require("sinon");
 const { assert } = require("chai");
 
 const defaultMocks = {
-  getInput: () => null,
+  getGithubToken: () => null,
   getOctokit: () => null
 };
 
 const getOctokitClientMock = (mocks) => {
-  const { getInput, getOctokit } = {
+  const { getGithubToken, getOctokit } = {
     ...defaultMocks,
     ...mocks
   };
   return proxyquire("../../src/github/getOctokitClient", {
     "@actions/github": { getOctokit },
-    "@actions/core": { getInput }
+    "../input": { getGithubToken }
   });
 };
 
 describe("github/getOctokitClient", () => {
   it("should throw error once token is undefined", async () => {
-    const getInput = sinon.stub().returns(false);
+    const getGithubToken = sinon.stub().returns(false);
     const getOctokit = sinon.spy();
 
-    const getOctokitClient = getOctokitClientMock({ getInput, getOctokit });
+    const getOctokitClient = getOctokitClientMock({
+      getGithubToken,
+      getOctokit
+    });
 
     assert.throws(
       () => getOctokitClient(),
@@ -31,15 +34,18 @@ describe("github/getOctokitClient", () => {
     );
 
     assert.isFalse(getOctokit.calledOnce);
-    assert.isTrue(getInput.calledOnce);
+    assert.isTrue(getGithubToken.calledOnce);
   });
 
   it("should return octokit client", async () => {
     const octokit = { test: 1 };
-    const getInput = sinon.stub().returns("32332223");
+    const getGithubToken = sinon.stub().returns("32332223");
     const getOctokit = sinon.stub().returns(octokit);
 
-    const getOctokitClient = getOctokitClientMock({ getInput, getOctokit });
+    const getOctokitClient = getOctokitClientMock({
+      getGithubToken,
+      getOctokit
+    });
 
     assert.equal(getOctokitClient(), octokit);
   });

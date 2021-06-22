@@ -1,8 +1,13 @@
 const github = require("@actions/github");
-const core = require("@actions/core");
+
+const { getGithubToken, getBarecheckGithubAppToken } = require("../input");
 
 const getOctokitClient = () => {
-  const githubToken = core.getInput("github-token");
+  const githubToken = getGithubToken();
+  const barecheckGithubAppToken = getBarecheckGithubAppToken();
+
+  // eslint-disable-next-line no-console
+  console.log(barecheckGithubAppToken);
 
   if (!githubToken) {
     throw new Error("github-token property is required");
