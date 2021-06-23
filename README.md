@@ -8,7 +8,7 @@ GitHub Action that generates coverage reports
 
 1. Install [Barecheck Application](https://github.com/apps/barecheck)
 2. Copy the token provided on the authorization confirmation page and [add it to your build environment](https://docs.github.com/en/actions/reference/environment-variables) as LHCI_GITHUB_APP_TOKEN
-3. Create Github Actions worfkflow fron the [example](https://github.com/barecheck/code-coverage-action#workflow-example)
+3. Create Github Actions worrkflow from the [example](https://github.com/barecheck/code-coverage-action#workflow-example)
 
 ## Show annotations
 
