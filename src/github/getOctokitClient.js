@@ -1,14 +1,32 @@
 const github = require("@actions/github");
-const core = require("@actions/core");
 
-const getOctokitClient = () => {
-  const githubToken = core.getInput("github-token");
+const { getGithubToken, getBarecheckGithubAppToken } = require("../input");
+const { createGithubAccessToken } = require("../services/barecheckApi");
 
-  if (!githubToken) {
-    throw new Error("github-token property is required");
+let githubAccessToken = null;
+
+const createNewAccessToken = async (barecheckGithubAppToken) => {
+  const { token } = await createGithubAccessToken(barecheckGithubAppToken);
+
+  return token;
+};
+
+const getOctokitClient = async () => {
+  const githubToken = getGithubToken();
+  const barecheckGithubAppToken = getBarecheckGithubAppToken();
+
+  if (barecheckGithubAppToken) {
+    if (!githubAccessToken)
+      githubAccessToken = await createNewAccessToken(barecheckGithubAppToken);
+  } else {
+    if (!githubToken) {
+      throw new Error("github-token property is required");
+    }
+
+    githubAccessToken = githubToken;
   }
 
-  const octokit = github.getOctokit(githubToken);
+  const octokit = github.getOctokit(githubAccessToken);
 
   return octokit;
 };

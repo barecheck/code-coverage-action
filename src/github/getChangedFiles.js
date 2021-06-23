@@ -6,7 +6,7 @@ const getOctokitClient = require("./getOctokitClient");
  * TODO: decide if we need to show more than that in the details report
  *  */
 const getChangedFiles = async () => {
-  const octokit = getOctokitClient();
+  const octokit = await getOctokitClient();
   const changedFiles = await octokit.request(
     "GET /repos/{owner}/{repo}/pulls/{pull_number}/files",
     {

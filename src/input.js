@@ -18,6 +18,12 @@ const getShowAnnotations = () => {
   return showAnnotations;
 };
 
+const getGithubToken = () => core.getInput("github-token");
+
+const getBarecheckGithubAppToken = () => process.env.BARECHECK_GITHUB_APP_TOKEN;
+
 module.exports = {
-  getShowAnnotations
+  getShowAnnotations,
+  getGithubToken,
+  getBarecheckGithubAppToken
 };
