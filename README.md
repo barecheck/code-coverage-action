@@ -2,13 +2,18 @@
 
 GitHub Action that generates coverage reports
 
-![code coverage report](./docs/img/barecheck-comment.png)
+![code coverage report success](./docs/img/barecheck-comment-success.png)
 
 ## Show annotations
 
 As a part of code coverage report action also enable an ability to show annotations along with changed lines to keep control what is covered with tests without interapting review process
 
 ![show annotations](./docs/img/show-annotations.png)
+
+## Show uncovered files
+
+In the rea; world, it's hard to get 100% code coverage and keep it all the time. Instead of showing you all uncovered files Barecheck show only the ones you have changed.
+![code coverage report](./docs/img/barecheck-comment-fail.png)
 
 ## Usage
 
