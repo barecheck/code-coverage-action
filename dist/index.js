@@ -10024,11 +10024,15 @@ const showAnnotations = async (compareFileData) => {
     );
 
     fileLinesWithChangedFiles.forEach(({ file, lines }) => {
-      const formattedLines = lines
-        .map((line) => (Array.isArray(line) ? line.join("-") : line))
-        .join(", ");
+      const linesToDisplay = lines.map((line) =>
+        Array.isArray(line) ? line.join("-") : line
+      );
 
-      const message = `file=${file}::${formattedLines} lines are not covered with tests`;
+      const linesWord = linesToDisplay.length === 1 ? "line is" : "lines are";
+
+      const formattedLines = linesToDisplay.join(", ");
+
+      const message = `file=${file}::${formattedLines} ${linesWord} not covered with tests`;
 
       // NOTE: consider an option to show lines directly by attaching 'line' param
       // Need to fix the issue where we consider 'empty line' as covered line

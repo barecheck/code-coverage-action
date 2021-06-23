@@ -99,7 +99,7 @@ jobs:
         id: code-coverage
         uses: barecheck/code-coverage-action@v0.3.3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
           lcov-file: "./coverage/lcov.info"
           base-lcov-file: "./lcov.info"
           minimum-ratio: 0 # Fails Github action once code coverage is decreasing
