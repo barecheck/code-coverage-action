@@ -10503,7 +10503,7 @@ const createGithubAccessToken = async (githubAppToken) => {
   console.log(data);
   // TODO: check if success
 
-  return data.createGithubAccessToken;
+  return data.data.createGithubAccessToken;
 };
 
 module.exports = {
