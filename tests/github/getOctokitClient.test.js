@@ -4,17 +4,25 @@ const { assert } = require("chai");
 
 const defaultMocks = {
   getGithubToken: () => null,
-  getOctokit: () => null
+  getBarecheckGithubAppToken: () => undefined,
+  getOctokit: () => null,
+  createGithubAccessToken: () => null
 };
 
 const getOctokitClientMock = (mocks) => {
-  const { getGithubToken, getOctokit } = {
+  const {
+    getGithubToken,
+    getOctokit,
+    getBarecheckGithubAppToken,
+    createGithubAccessToken
+  } = {
     ...defaultMocks,
     ...mocks
   };
   return proxyquire("../../src/github/getOctokitClient", {
     "@actions/github": { getOctokit },
-    "../input": { getGithubToken }
+    "../input": { getGithubToken, getBarecheckGithubAppToken },
+    "../services/barecheckApi": { createGithubAccessToken }
   });
 };
 
@@ -28,13 +36,13 @@ describe("github/getOctokitClient", () => {
       getOctokit
     });
 
-    assert.throws(
-      () => getOctokitClient(),
-      "github-token property is required"
-    );
-
-    assert.isFalse(getOctokit.calledOnce);
-    assert.isTrue(getGithubToken.calledOnce);
+    try {
+      await getOctokitClient();
+      assert.fail("getOctokitClient should throiw an error");
+    } catch (e) {
+      assert.isFalse(getOctokit.calledOnce);
+      assert.isTrue(getGithubToken.calledOnce);
+    }
   });
 
   it("should return octokit client", async () => {
@@ -47,6 +55,33 @@ describe("github/getOctokitClient", () => {
       getOctokit
     });
 
-    assert.equal(getOctokitClient(), octokit);
+    assert.equal(await getOctokitClient(), octokit);
+  });
+
+  it("should call `createGithubAccessToken` with `barecheckGithubAppToken`", async () => {
+    const octokit = { test: 1 };
+    const barecheckGithubAppToken = "test-api-token:123";
+    const getGithubToken = sinon.stub().returns(false);
+    const createGithubAccessToken = sinon.stub().returns({});
+    const getOctokit = sinon.stub().returns(octokit);
+    const getBarecheckGithubAppToken = sinon
+      .stub()
+      .returns(barecheckGithubAppToken);
+
+    const getOctokitClient = getOctokitClientMock({
+      getGithubToken,
+      getBarecheckGithubAppToken,
+      createGithubAccessToken,
+      getOctokit
+    });
+
+    await getOctokitClient();
+
+    assert.isTrue(getOctokit.calledOnce);
+    assert.isTrue(getBarecheckGithubAppToken.calledOnce);
+    assert.isTrue(createGithubAccessToken.calledOnce);
+    assert.deepEqual(createGithubAccessToken.firstCall.args, [
+      barecheckGithubAppToken
+    ]);
   });
 });

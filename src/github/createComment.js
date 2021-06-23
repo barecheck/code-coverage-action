@@ -5,7 +5,7 @@ const getOctokitClient = require("./getOctokitClient");
  * Creates Github comments based on received params
  *  */
 const createComment = async (body) => {
-  const octokit = getOctokitClient();
+  const octokit = await getOctokitClient();
 
   const res = await octokit.rest.issues.createComment({
     repo: github.context.repo.repo,
