@@ -70,4 +70,19 @@ describe("input", () => {
       );
     });
   });
+  describe("getBarecheckGithubAppToken", () => {
+    it("should returnvalue from getInput core function", () => {
+      const expectedRes = "token:124";
+      const getInput = sinon
+        .stub()
+        .withArgs("barecheck-github-app-token")
+        .returns(expectedRes);
+
+      const { getBarecheckGithubAppToken } = inputMock({ getInput });
+
+      const res = getBarecheckGithubAppToken();
+
+      assert.equal(res, expectedRes);
+    });
+  });
 });

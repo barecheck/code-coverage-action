@@ -2,13 +2,18 @@
 
 GitHub Action that generates coverage reports
 
-![code coverage report](./docs/img/barecheck-comment.png)
+![code coverage report success](./docs/img/barecheck-comment-success.png)
 
 ## Show annotations
 
 As a part of code coverage report action also enable an ability to show annotations along with changed lines to keep control what is covered with tests without interapting review process
 
 ![show annotations](./docs/img/show-annotations.png)
+
+## Show uncovered files
+
+In the rea; world, it's hard to get 100% code coverage and keep it all the time. Instead of showing you all uncovered files Barecheck show only the ones you have changed.
+![code coverage report](./docs/img/barecheck-comment-fail.png)
 
 ## Usage
 
@@ -17,9 +22,9 @@ To integrate with this Github Action, you can just use following configuration i
 ```yml
 - name: Generate Code Coverage report
   id: code-coverage
-  uses: barecheck/code-coverage-action@v0.3.3
+  uses: barecheck/code-coverage-action@v0.4.0
   with:
-    github-token: ${{ secrets.GITHUB_TOKEN }}
+    barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
     lcov-file: "./coverage/lcov.info"
     base-lcov-file: "./coverage/base-lcov.info"
     send-summary-comment: true
@@ -30,14 +35,15 @@ To integrate with this Github Action, you can just use following configuration i
 
 ## Inputs
 
-| Key                    | Required | Default   | Description                                                                                                       |
-| ---------------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------- |
-| `github-token`         | **yes**  | -         | Your Github token that would be used to send summary comment                                                      |
-| `lcov-file`            | **yes**  | -         | Lcov.info file that was generated after your test coverage command                                                |
-| `base-lcov-file`       | **yes**  | -         | Lcov.info file that would be used for code coverage                                                               |
-| `send-summary-comment` | **no**   | true      | Option to send Github code coverage comment based on the changes that were made in PR                             |
-| `show-annotations`     | **no**   | 'warning' | Option to enable Github anotation that would show uncovered files in review tab. Options: ' ' \| warning \| error |
-| `minimum-ratio`        | **no**   | ''        | Percantage of uncovered lines that is allowed for new changes                                                     |
+| Key                          | Required | Default   | Description                                                                                                       |
+| ---------------------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------- |
+| `github-token`               | **no**   | -         | **DEPRECATED\*** Install application and use `barecheck-github-app-token` instead                                 |
+| `barecheck-github-app-token` | **yes**  | -         | Barecheck application token, received after application installation comment                                      |
+| `lcov-file`                  | **yes**  | -         | Lcov.info file that was generated after your test coverage command                                                |
+| `base-lcov-file`             | **yes**  | -         | Lcov.info file that would be used for code coverage                                                               |
+| `send-summary-comment`       | **no**   | true      | Option to send Github code coverage comment based on the changes that were made in PR                             |
+| `show-annotations`           | **no**   | 'warning' | Option to enable Github anotation that would show uncovered files in review tab. Options: ' ' \| warning \| error |
+| `minimum-ratio`              | **no**   | ''        | Percantage of uncovered lines that is allowed for new changes                                                     |
 
 ## Workflow Example
 
@@ -96,9 +102,9 @@ jobs:
       #  Compares two code coverage files and generates report as a comment
       - name: Generate Code Coverage report
         id: code-coverage
-        uses: barecheck/code-coverage-action@v0.3.3
+        uses: barecheck/code-coverage-action@v0.4.0
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
           lcov-file: "./coverage/lcov.info"
           base-lcov-file: "./lcov.info"
           minimum-ratio: 0 # Fails Github action once code coverage is decreasing

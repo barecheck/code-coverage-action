@@ -79,7 +79,7 @@ describe("features/showAnnotations", () => {
       assert.isTrue(mergeFileLinesWithChangedFiles.calledOnce);
       assert.isTrue(info.calledTwice);
       assert.deepEqual(info.secondCall.args, [
-        `::warning file=${filename}::${line} lines are not covered with tests`
+        `::warning file=${filename}::${line} line is not covered with tests`
       ]);
     });
 
