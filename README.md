@@ -30,14 +30,15 @@ To integrate with this Github Action, you can just use following configuration i
 
 ## Inputs
 
-| Key                    | Required | Default   | Description                                                                                                       |
-| ---------------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------- |
-| `github-token`         | **yes**  | -         | Your Github token that would be used to send summary comment                                                      |
-| `lcov-file`            | **yes**  | -         | Lcov.info file that was generated after your test coverage command                                                |
-| `base-lcov-file`       | **yes**  | -         | Lcov.info file that would be used for code coverage                                                               |
-| `send-summary-comment` | **no**   | true      | Option to send Github code coverage comment based on the changes that were made in PR                             |
-| `show-annotations`     | **no**   | 'warning' | Option to enable Github anotation that would show uncovered files in review tab. Options: ' ' \| warning \| error |
-| `minimum-ratio`        | **no**   | ''        | Percantage of uncovered lines that is allowed for new changes                                                     |
+| Key                          | Required | Default   | Description                                                                                                       |
+| ---------------------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------- |
+| `github-token`               | **no**   | -         | **DEPRECATED\*** Install application and use `barecheck-github-app-token` instead                                 |
+| `barecheck-github-app-token` | **yes**  | -         | Barecheck application token, received after application installation comment                                      |
+| `lcov-file`                  | **yes**  | -         | Lcov.info file that was generated after your test coverage command                                                |
+| `base-lcov-file`             | **yes**  | -         | Lcov.info file that would be used for code coverage                                                               |
+| `send-summary-comment`       | **no**   | true      | Option to send Github code coverage comment based on the changes that were made in PR                             |
+| `show-annotations`           | **no**   | 'warning' | Option to enable Github anotation that would show uncovered files in review tab. Options: ' ' \| warning \| error |
+| `minimum-ratio`              | **no**   | ''        | Percantage of uncovered lines that is allowed for new changes                                                     |
 
 ## Workflow Example
 

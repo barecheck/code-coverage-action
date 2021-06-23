@@ -7,7 +7,7 @@ inputs:
   github-token:
     description: Your GitHub secret token
     deprecationMessage: The token will be deprecated in the next versions, please install app and use `barecheck-github-app-token` instead
-    required: true
+    required: false
   barecheck-github-app-token:
     description: Barecheck application token, received after application installation
     required: true
