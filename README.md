@@ -10,13 +10,14 @@ GitHub Action that generates coverage reports
 2. Copy the token provided on the authorization confirmation page and [add it to your build environment](https://docs.github.com/en/actions/reference/environment-variables) as BARECHECK_GITHUB_APP_TOKEN
 3. Create Github Actions worrkflow from the [example](https://github.com/barecheck/code-coverage-action#workflow-example)
 
-## Show annotations
+## Features 
+### Show annotations
 
 As a part of code coverage report action also enable an ability to show annotations along with changed lines to keep control what is covered with tests without interapting review process
 
 ![show annotations](./docs/img/show-annotations.png)
 
-## Show uncovered files
+### Show uncovered files
 
 In the rea; world, it's hard to get 100% code coverage and keep it all the time. Instead of showing you all uncovered files Barecheck show only the ones you have changed.
 ![code coverage report](./docs/img/barecheck-comment-fail.png)
