@@ -10,7 +10,8 @@ GitHub Action that generates coverage reports
 2. Copy the token provided on the authorization confirmation page and [add it to your build environment](https://docs.github.com/en/actions/reference/environment-variables) as BARECHECK_GITHUB_APP_TOKEN
 3. Create Github Actions worrkflow from the [example](https://github.com/barecheck/code-coverage-action#workflow-example)
 
-## Features 
+## Features
+
 ### Show annotations
 
 As a part of code coverage report action also enable an ability to show annotations along with changed lines to keep control what is covered with tests without interapting review process
