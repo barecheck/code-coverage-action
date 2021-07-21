@@ -10534,15 +10534,18 @@ const createGithubAccessToken = async (githubAppToken) => {
     githubAppToken
   };
 
-  const { data } = await makeRequest(query, variables);
+  const response = await makeRequest(query, variables);
 
-  if (!data.createGithubAccessToken.success) {
+  // eslint-disable-next-line no-console
+  console.log(response);
+
+  if (!response.data && !response.data.createGithubAccessToken.success) {
     throw new Error(
       "Couldn't fetch access token for Github application. Check if you use the correct `BARECHECK_GITHUB_APP_TOKEN`"
     );
   }
 
-  return data.createGithubAccessToken;
+  return response.data.createGithubAccessToken;
 };
 
 module.exports = {
