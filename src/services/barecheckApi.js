@@ -34,7 +34,7 @@ const createGithubAccessToken = async (githubAppToken) => {
 
   const response = await makeRequest(query, variables);
 
-  if (!response.data && !response.data.createGithubAccessToken.success) {
+  if (!response.data || !response.data.createGithubAccessToken.success) {
     throw new Error(
       "Couldn't fetch access token for Github application. Check if you use the correct `BARECHECK_GITHUB_APP_TOKEN`"
     );
