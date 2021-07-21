@@ -20,11 +20,14 @@ const getShowAnnotations = () => {
 
 const getGithubToken = () => core.getInput("github-token");
 
+const getAppName = () => core.getInput("app-name");
+
 const getBarecheckGithubAppToken = () =>
   core.getInput("barecheck-github-app-token");
 
 module.exports = {
   getShowAnnotations,
   getGithubToken,
-  getBarecheckGithubAppToken
+  getBarecheckGithubAppToken,
+  getAppName
 };

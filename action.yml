@@ -30,6 +30,10 @@ inputs:
     description: "Shows annotations with uncovered lines in the review. Options: warning|error"
     default: "warning"
     required: false
+  app-name:
+    description: "Application name should be used once you have more then one report in your workflow."
+    default: ""
+    required: false
 outputs:
   percentage:
     description: "Total Percentage coverage"
