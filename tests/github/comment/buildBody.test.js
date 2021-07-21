@@ -5,14 +5,16 @@ const { assert } = require("chai");
 const defaultMocks = {
   buildCommentDetails: () => null,
   uncoveredFileLinesByFileNames: () => [],
-  mergeFileLinesWithChangedFiles: () => []
+  mergeFileLinesWithChangedFiles: () => [],
+  buildGithubCommentTitle: () => "Barecheck - Code coverage report"
 };
 
 const buildBodyMock = (mocks) => {
   const {
     buildCommentDetails,
     uncoveredFileLinesByFileNames,
-    mergeFileLinesWithChangedFiles
+    mergeFileLinesWithChangedFiles,
+    buildGithubCommentTitle
   } = {
     ...defaultMocks,
     ...mocks
@@ -20,7 +22,8 @@ const buildBodyMock = (mocks) => {
   return proxyquire("../../../src/github/comment/buildBody", {
     "./buildDetails": buildCommentDetails,
     "../../lcov": { uncoveredFileLinesByFileNames },
-    "../../coverage": { mergeFileLinesWithChangedFiles }
+    "../../coverage": { mergeFileLinesWithChangedFiles },
+    "../utils": { buildGithubCommentTitle }
   });
 };
 

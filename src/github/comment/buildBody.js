@@ -1,4 +1,4 @@
-const { commentTitle } = require("../../config");
+const { buildGithubCommentTitle } = require("../utils");
 const { uncoveredFileLinesByFileNames } = require("../../lcov");
 const { mergeFileLinesWithChangedFiles } = require("../../coverage");
 
@@ -11,7 +11,7 @@ const buildFullMessage = (
 ) => {
   const coverageDiffOutput = coverageDiff < 0 ? "▾" : "▴";
   const trendArrow = coverageDiff === 0 ? "" : coverageDiffOutput;
-  const header = commentTitle;
+  const header = buildGithubCommentTitle();
   const descTotal = `Total: <b>${totalCoverage}%</b>`;
   const descCoverageDiff = `Your code coverage diff: <b>${coverageDiff}% ${trendArrow}</b>`;
   const description = `${descTotal}\n\n${descCoverageDiff}`;

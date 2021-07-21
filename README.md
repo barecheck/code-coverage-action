@@ -30,7 +30,7 @@ To integrate with this Github Action, you can just use following configuration i
 ```yml
 - name: Generate Code Coverage report
   id: code-coverage
-  uses: barecheck/code-coverage-action@v0.4.0
+  uses: barecheck/code-coverage-action@v0.5.0
   with:
     barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
     lcov-file: "./coverage/lcov.info"
@@ -52,6 +52,7 @@ To integrate with this Github Action, you can just use following configuration i
 | `send-summary-comment`       | **no**   | true      | Option to send Github code coverage comment based on the changes that were made in PR                             |
 | `show-annotations`           | **no**   | 'warning' | Option to enable Github anotation that would show uncovered files in review tab. Options: ' ' \| warning \| error |
 | `minimum-ratio`              | **no**   | ''        | Percantage of uncovered lines that is allowed for new changes                                                     |
+| `app-name`                   | **no**   | ''        | Application name should be used once you have more then one report in your workflow.                              |
 
 ## Workflow Example
 
@@ -110,7 +111,7 @@ jobs:
       #  Compares two code coverage files and generates report as a comment
       - name: Generate Code Coverage report
         id: code-coverage
-        uses: barecheck/code-coverage-action@v0.4.0
+        uses: barecheck/code-coverage-action@v0.5.0
         with:
           barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
           lcov-file: "./coverage/lcov.info"
@@ -118,6 +119,34 @@ jobs:
           minimum-ratio: 0 # Fails Github action once code coverage is decreasing
           send-summary-comment: true
           show-annotations: "warning" # Possible options warning|error
+```
+
+## Use cases
+
+### Monorepo support
+
+If you have monorepo with more then one application and want to have different code coverage reports you can use `app-name` input property to define different application names that would be used as a part of title.
+
+```yml
+- name: Application1 - Generate Code Coverage report
+  id: code-coverage
+  uses: barecheck/code-coverage-action@v0.5.0
+  with:
+    barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
+    lcov-file: "./coverage/lcov.info"
+    base-lcov-file: "./coverage/base-lcov.info"
+    app-name: "Application 1"
+```
+
+```yml
+- name: Application2 - Generate Code Coverage report
+  id: code-coverage
+  uses: barecheck/code-coverage-action@v0.5.0
+  with:
+    barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
+    lcov-file: "./coverage/lcov.info"
+    base-lcov-file: "./coverage/base-lcov.info"
+    app-name: "Application 2"
 ```
 
 ## Contributing

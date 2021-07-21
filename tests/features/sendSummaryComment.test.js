@@ -9,7 +9,8 @@ const defaultMocks = {
   getChangedFiles: () => [],
   createOrUpdateComment: () => true,
   buildBody: () => "",
-  context: {}
+  context: {},
+  buildGithubCommentTitle: () => "Barecheck - Code coverage report"
 };
 
 const sendSummaryCommentMock = (mocks) => {
@@ -19,7 +20,8 @@ const sendSummaryCommentMock = (mocks) => {
     context,
     getChangedFiles,
     createOrUpdateComment,
-    buildBody
+    buildBody,
+    buildGithubCommentTitle
   } = {
     ...defaultMocks,
     ...mocks
@@ -29,7 +31,8 @@ const sendSummaryCommentMock = (mocks) => {
     "@actions/github": { context },
     "../github/getChangedFiles": getChangedFiles,
     "../github/createOrUpdateComment": createOrUpdateComment,
-    "../github/comment/buildBody": buildBody
+    "../github/comment/buildBody": buildBody,
+    "../github/utils": { buildGithubCommentTitle }
   });
 };
 

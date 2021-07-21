@@ -9900,12 +9900,12 @@ function wrappy (fn, cb) {
 /***/ 4570:
 /***/ ((module) => {
 
-const commentTitle = "Barecheck - Code coverage report";
+const githubCommentTitle = "Code coverage report";
 
 const barecheckApiUrl = "https://api.barecheck.com/graphql";
 
 module.exports = {
-  commentTitle,
+  githubCommentTitle,
   barecheckApiUrl
 };
 
@@ -9964,7 +9964,7 @@ const getChangedFiles = __nccwpck_require__(397);
 const createOrUpdateComment = __nccwpck_require__(8646);
 const buildBody = __nccwpck_require__(681);
 
-const { commentTitle } = __nccwpck_require__(4570);
+const { buildGithubCommentTitle } = __nccwpck_require__(1006);
 
 const sendSummaryComment = async (
   coverageDiff,
@@ -9984,9 +9984,9 @@ const sendSummaryComment = async (
       totalCoverage,
       compareFileData
     );
-
+    const githubCommentTitle = buildGithubCommentTitle();
     // we can add an option how comments should be added create | update | none
-    await createOrUpdateComment(commentTitle, body);
+    await createOrUpdateComment(githubCommentTitle, body);
   }
 };
 
@@ -10052,7 +10052,7 @@ module.exports = {
 /***/ 681:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-const { commentTitle } = __nccwpck_require__(4570);
+const { buildGithubCommentTitle } = __nccwpck_require__(1006);
 const { uncoveredFileLinesByFileNames } = __nccwpck_require__(3318);
 const { mergeFileLinesWithChangedFiles } = __nccwpck_require__(3257);
 
@@ -10065,7 +10065,7 @@ const buildFullMessage = (
 ) => {
   const coverageDiffOutput = coverageDiff < 0 ? "▾" : "▴";
   const trendArrow = coverageDiff === 0 ? "" : coverageDiffOutput;
-  const header = commentTitle;
+  const header = buildGithubCommentTitle();
   const descTotal = `Total: <b>${totalCoverage}%</b>`;
   const descCoverageDiff = `Your code coverage diff: <b>${coverageDiff}% ${trendArrow}</b>`;
   const description = `${descTotal}\n\n${descCoverageDiff}`;
@@ -10330,6 +10330,25 @@ module.exports = updateComment;
 
 /***/ }),
 
+/***/ 1006:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const { getAppName } = __nccwpck_require__(6);
+const { githubCommentTitle } = __nccwpck_require__(4570);
+
+const buildGithubCommentTitle = () => {
+  const appName = getAppName();
+
+  return `${appName !== "" ? appName : "Barecheck"} - ${githubCommentTitle}`;
+};
+
+module.exports = {
+  buildGithubCommentTitle
+};
+
+
+/***/ }),
+
 /***/ 6:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -10355,13 +10374,16 @@ const getShowAnnotations = () => {
 
 const getGithubToken = () => core.getInput("github-token");
 
+const getAppName = () => core.getInput("app-name");
+
 const getBarecheckGithubAppToken = () =>
   core.getInput("barecheck-github-app-token");
 
 module.exports = {
   getShowAnnotations,
   getGithubToken,
-  getBarecheckGithubAppToken
+  getBarecheckGithubAppToken,
+  getAppName
 };
 
 
@@ -10512,15 +10534,15 @@ const createGithubAccessToken = async (githubAppToken) => {
     githubAppToken
   };
 
-  const { data } = await makeRequest(query, variables);
+  const response = await makeRequest(query, variables);
 
-  if (!data.createGithubAccessToken.success) {
+  if (!response.data && !response.data.createGithubAccessToken.success) {
     throw new Error(
       "Couldn't fetch access token for Github application. Check if you use the correct `BARECHECK_GITHUB_APP_TOKEN`"
     );
   }
 
-  return data.createGithubAccessToken;
+  return response.data.createGithubAccessToken;
 };
 
 module.exports = {
