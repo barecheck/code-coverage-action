@@ -4,7 +4,7 @@ const getChangedFiles = require("../github/getChangedFiles");
 const createOrUpdateComment = require("../github/createOrUpdateComment");
 const buildBody = require("../github/comment/buildBody");
 
-const { commentTitle } = require("../config");
+const { buildGithubCommentTitle } = require("../github/utils");
 
 const sendSummaryComment = async (
   coverageDiff,
@@ -24,9 +24,9 @@ const sendSummaryComment = async (
       totalCoverage,
       compareFileData
     );
-
+    const githubCommentTitle = buildGithubCommentTitle();
     // we can add an option how comments should be added create | update | none
-    await createOrUpdateComment(commentTitle, body);
+    await createOrUpdateComment(githubCommentTitle, body);
   }
 };
 

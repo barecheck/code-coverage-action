@@ -95,7 +95,29 @@ describe(path, () => {
 
     try {
       await createGithubAccessToken(githubAppToken);
-      assert.fail("createGithubAccessToken should throiw an error");
+      assert.fail("createGithubAccessToken should throw an error");
+    } catch {
+      assert.isTrue(axios.post.calledOnce);
+    }
+  });
+
+  it("should throw error once there is no data in the response", async () => {
+    const githubAppToken = "github-token:123";
+
+    const mutationResponse = {
+      errors: ["some error"]
+    };
+    const axios = {
+      post: sinon.stub().returns(mutationResponse)
+    };
+
+    const { createGithubAccessToken } = barecheckApiMock({
+      axios
+    });
+
+    try {
+      await createGithubAccessToken(githubAppToken);
+      assert.fail("createGithubAccessToken should throw an error");
     } catch {
       assert.isTrue(axios.post.calledOnce);
     }
