@@ -79,7 +79,7 @@ describe("features/showAnnotations", () => {
       assert.isTrue(mergeFileLinesWithChangedFiles.calledOnce);
       assert.isTrue(info.calledTwice);
       assert.deepEqual(info.secondCall.args, [
-        `::warning file=${filename}::${line} line is not covered with tests`
+        `::warning file=${filename}#L${line}::${line} line is not covered with tests`
       ]);
     });
 
@@ -111,9 +111,9 @@ describe("features/showAnnotations", () => {
       assert.isTrue(getChangedFiles.calledOnce);
       assert.isTrue(uncoveredFileLinesByFileNames.calledOnce);
       assert.isTrue(mergeFileLinesWithChangedFiles.calledOnce);
-      assert.isTrue(info.calledTwice);
+      assert.equal(info.callCount, 4);
       assert.deepEqual(info.secondCall.args, [
-        `::warning file=${filename}::1-4, 8, 45-50 lines are not covered with tests`
+        `::warning file=${filename}#L1-4::1-4 lines are not covered with tests`
       ]);
     });
   });
