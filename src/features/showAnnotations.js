@@ -22,20 +22,20 @@ const showAnnotations = async (compareFileData) => {
     );
 
     fileLinesWithChangedFiles.forEach(({ file, lines }) => {
-      const linesToDisplay = lines.map((line) =>
-        Array.isArray(line) ? line.join("-") : line
-      );
-
-      const linesWord = linesToDisplay.length === 1 ? "line is" : "lines are";
-
-      const formattedLines = linesToDisplay.join(", ");
-
-      const message = `file=${file}::${formattedLines} ${linesWord} not covered with tests`;
-
-      // NOTE: consider an option to show lines directly by attaching 'line' param
-      // Need to fix the issue where we consider 'empty line' as covered line
-      // Empty lines should not interapt uncovered interval
-      core.info(`::${showAnnotationsInput} ${message}`);
+      lines.forEach((line) => {
+        const message = () => {
+          if (Array.isArray(line)) {
+            return `file=${file},line=${line[0]},endLine=${
+              line[line.length - 1]
+            }::${line.join("-")} lines are not covered with tests`;
+          }
+          return `file=${file},line=${line}::${line} line is not covered with tests`;
+        };
+        // NOTE: consider an option to show lines directly by attaching 'line' param
+        // Need to fix the issue where we consider 'empty line' as covered line
+        // Empty lines should not interapt uncovered interval
+        core.info(`::${showAnnotationsInput} ${message()}`);
+      });
     });
   }
 };
