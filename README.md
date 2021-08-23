@@ -30,7 +30,7 @@ To integrate with this Github Action, you can just use following configuration i
 ```yml
 - name: Generate Code Coverage report
   id: code-coverage
-  uses: barecheck/code-coverage-action@v0.5.0
+  uses: barecheck/code-coverage-action@v0.5.1
   with:
     barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
     lcov-file: "./coverage/lcov.info"
@@ -111,7 +111,7 @@ jobs:
       #  Compares two code coverage files and generates report as a comment
       - name: Generate Code Coverage report
         id: code-coverage
-        uses: barecheck/code-coverage-action@v0.5.0
+        uses: barecheck/code-coverage-action@v0.5.1
         with:
           barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
           lcov-file: "./coverage/lcov.info"
@@ -130,7 +130,7 @@ If you have monorepo with more then one application and want to have different c
 ```yml
 - name: Application1 - Generate Code Coverage report
   id: code-coverage
-  uses: barecheck/code-coverage-action@v0.5.0
+  uses: barecheck/code-coverage-action@v0.5.1
   with:
     barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
     lcov-file: "./coverage/lcov.info"
@@ -141,7 +141,7 @@ If you have monorepo with more then one application and want to have different c
 ```yml
 - name: Application2 - Generate Code Coverage report
   id: code-coverage
-  uses: barecheck/code-coverage-action@v0.5.0
+  uses: barecheck/code-coverage-action@v0.5.1
   with:
     barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
     lcov-file: "./coverage/lcov.info"
