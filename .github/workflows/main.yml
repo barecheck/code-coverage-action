@@ -55,6 +55,7 @@ jobs:
         with:
           barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          barecheck-api-key: ${{ secrets.BARECHECK_API_KEY }}
           lcov-file: "./coverage/lcov.info"
           base-lcov-file: "./lcov.info"
           minimum-ratio: 0

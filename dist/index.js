@@ -10505,10 +10505,26 @@ module.exports = { mergeFileLinesWithChangedFiles };
 /***/ }),
 
 /***/ 4536:
-/***/ ((module) => {
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-const sendMetricsToBarecheck = (coverage) => {
-  console.log(coverage);
+const github = __nccwpck_require__(5438);
+
+const { setProjectMetric } = __nccwpck_require__(4030);
+const { getBarecheckApiKey } = __nccwpck_require__(6);
+
+const sendMetricsToBarecheck = async (coverage) => {
+  const branch = github.context.payload.pull_request.head.ref;
+  const commit = github.context.payload.pull_request.head.sha;
+  const apiKey = getBarecheckApiKey();
+
+  const { projectMetricId } = await setProjectMetric(
+    apiKey,
+    branch,
+    commit,
+    coverage
+  );
+
+  return projectMetricId;
 };
 
 module.exports = {
@@ -10969,10 +10985,13 @@ const getAppName = () => core.getInput("app-name");
 const getBarecheckGithubAppToken = () =>
   core.getInput("barecheck-github-app-token");
 
+const getBarecheckApiKey = () => core.getInput("barecheck-api-key");
+
 module.exports = {
   getShowAnnotations,
   getGithubToken,
   getBarecheckGithubAppToken,
+  getBarecheckApiKey,
   getAppName
 };
 
@@ -11334,7 +11353,6 @@ var __webpack_exports__ = {};
 (() => {
 const fs = __nccwpck_require__(5747);
 const core = __nccwpck_require__(2186);
-const github = __nccwpck_require__(5438);
 
 const lcov = __nccwpck_require__(3318);
 const { checkMinimumRatio } = __nccwpck_require__(3324);
@@ -11353,12 +11371,6 @@ const runFeatures = async (diff, comparePercentage, compareFileData) => {
 };
 
 const runCodeCoverage = async (baseFileRaw, compareFileRaw) => {
-  console.log(
-    github.context.payload.pull_request.base.sha,
-    github.context.payload.pull_request.base.ref,
-    github.context.payload.pull_request.head.ref,
-    github.context.payload.pull_request.head.sha
-  );
   const baseFileData = await lcov.parse(baseFileRaw);
   const compareFileData = await lcov.parse(compareFileRaw);
 

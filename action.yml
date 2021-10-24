@@ -11,6 +11,9 @@ inputs:
   barecheck-github-app-token:
     description: Barecheck application token, received after application installation
     required: true
+  barecheck-api-key:
+    description: Barecheck project API key
+    required: false
   lcov-file:
     description: "Compare code coverage report"
     required: true
