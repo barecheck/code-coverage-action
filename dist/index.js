@@ -11354,9 +11354,10 @@ const runFeatures = async (diff, comparePercentage, compareFileData) => {
 
 const runCodeCoverage = async (baseFileRaw, compareFileRaw) => {
   console.log(
-    github.context,
-    github.context.payload.pull_request.base,
-    github.context.payload.pull_request.head
+    github.context.payload.pull_request.base.sha,
+    github.context.payload.pull_request.base.ref,
+    github.context.payload.pull_request.head.ref,
+    github.context.payload.pull_request.head.sha
   );
   const baseFileData = await lcov.parse(baseFileRaw);
   const compareFileData = await lcov.parse(compareFileRaw);
