@@ -12,7 +12,7 @@ const sendMetricsToBarecheck = async (coverage) => {
     apiKey,
     branch,
     commit,
-    coverage
+    parseFloat(coverage)
   );
 
   return projectMetricId;
