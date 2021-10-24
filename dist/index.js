@@ -10507,14 +10507,13 @@ module.exports = { mergeFileLinesWithChangedFiles };
 /***/ 4536:
 /***/ ((module) => {
 
-
 const sendMetricsToBarecheck = (coverage) => {
-  console.log(coverage)
-}
+  console.log(coverage);
+};
 
 module.exports = {
   sendMetricsToBarecheck
-}
+};
 
 
 /***/ }),
@@ -11144,15 +11143,14 @@ const setProjectMetric = async (apiKey, branch, commit, coverage) => {
       projectMetricId
     }
   }
-  `
+  `;
 
   const variables = {
     apiKey,
     branch,
     commit,
     coverage
-  }
-
+  };
 
   const response = await makeRequest(query, variables);
 
@@ -11163,7 +11161,7 @@ const setProjectMetric = async (apiKey, branch, commit, coverage) => {
   }
 
   return response.data.setProjectMetric;
-}
+};
 
 module.exports = {
   createGithubAccessToken,
@@ -11345,18 +11343,21 @@ const { showAnnotations } = __nccwpck_require__(3360);
 const { sendMetricsToBarecheck } = __nccwpck_require__(4536);
 
 const runFeatures = async (diff, comparePercentage, compareFileData) => {
-
   await sendSummaryComment(diff, comparePercentage, compareFileData);
   checkMinimumRatio(diff);
   await showAnnotations(compareFileData);
 
-  await sendMetricsToBarecheck(comparePercentage)
+  await sendMetricsToBarecheck(comparePercentage);
   core.setOutput("percentage", comparePercentage);
   core.setOutput("diff", diff);
 };
 
 const runCodeCoverage = async (baseFileRaw, compareFileRaw) => {
-  console.log(github.context)
+  console.log(
+    github.context,
+    github.context.pull_request.base,
+    github.context.pull_request.head
+  );
   const baseFileData = await lcov.parse(baseFileRaw);
   const compareFileData = await lcov.parse(compareFileRaw);
 

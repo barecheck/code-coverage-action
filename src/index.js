@@ -9,18 +9,21 @@ const { showAnnotations } = require("./features/showAnnotations");
 const { sendMetricsToBarecheck } = require("./features/barecheckApi");
 
 const runFeatures = async (diff, comparePercentage, compareFileData) => {
-
   await sendSummaryComment(diff, comparePercentage, compareFileData);
   checkMinimumRatio(diff);
   await showAnnotations(compareFileData);
 
-  await sendMetricsToBarecheck(comparePercentage)
+  await sendMetricsToBarecheck(comparePercentage);
   core.setOutput("percentage", comparePercentage);
   core.setOutput("diff", diff);
 };
 
 const runCodeCoverage = async (baseFileRaw, compareFileRaw) => {
-  console.log(github.context)
+  console.log(
+    github.context,
+    github.context.pull_request.base,
+    github.context.pull_request.head
+  );
   const baseFileData = await lcov.parse(baseFileRaw);
   const compareFileData = await lcov.parse(compareFileRaw);
 

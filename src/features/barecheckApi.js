@@ -1,8 +1,7 @@
-
 const sendMetricsToBarecheck = (coverage) => {
-  console.log(coverage)
-}
+  console.log(coverage);
+};
 
 module.exports = {
   sendMetricsToBarecheck
-}
+};

@@ -51,15 +51,14 @@ const setProjectMetric = async (apiKey, branch, commit, coverage) => {
       projectMetricId
     }
   }
-  `
+  `;
 
   const variables = {
     apiKey,
     branch,
     commit,
     coverage
-  }
-
+  };
 
   const response = await makeRequest(query, variables);
 
@@ -70,7 +69,7 @@ const setProjectMetric = async (apiKey, branch, commit, coverage) => {
   }
 
   return response.data.setProjectMetric;
-}
+};
 
 module.exports = {
   createGithubAccessToken,
