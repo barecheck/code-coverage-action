@@ -10509,8 +10509,21 @@ module.exports = { mergeFileLinesWithChangedFiles };
 
 const github = __nccwpck_require__(5438);
 
-const { setProjectMetric } = __nccwpck_require__(4030);
+const {
+  setProjectMetric,
+  getProjectMetric
+} = __nccwpck_require__(4030);
 const { getBarecheckApiKey } = __nccwpck_require__(6);
+
+const getMetricsFromBaseBranch = async () => {
+  const branch = github.context.payload.pull_request.base.ref;
+  const commit = github.context.payload.pull_request.base.sha;
+  const apiKey = getBarecheckApiKey();
+
+  const metrics = await getProjectMetric(apiKey, branch, commit);
+
+  return metrics;
+};
 
 const sendMetricsToBarecheck = async (coverage) => {
   const branch = github.context.payload.pull_request.head.ref;
@@ -10528,7 +10541,8 @@ const sendMetricsToBarecheck = async (coverage) => {
 };
 
 module.exports = {
-  sendMetricsToBarecheck
+  sendMetricsToBarecheck,
+  getMetricsFromBaseBranch
 };
 
 
@@ -11182,9 +11196,68 @@ const setProjectMetric = async (apiKey, branch, commit, coverage) => {
   return response.data.setProjectMetric;
 };
 
+const getProjectMetric = async (apiKey, branch, commit) => {
+  const query = `query projectMetric($apiKey: String!, $branch: String!, $commit: String!) {
+    projectMetric(apiKey: $apiKey, branch:$branch, commit:$commit){
+      projectId
+      branch
+      commit
+      coverage
+      createdAt
+    }
+  }
+  `;
+
+  const variables = {
+    apiKey,
+    branch,
+    commit
+  };
+
+  console.log("head branch", branch, commit);
+
+  const response = await makeRequest(query, variables);
+
+  if (!response.data) {
+    return null;
+  }
+
+  return response.data.projectMetric;
+};
+
 module.exports = {
   createGithubAccessToken,
-  setProjectMetric
+  setProjectMetric,
+  getProjectMetric
+};
+
+
+/***/ }),
+
+/***/ 4594:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const fs = __nccwpck_require__(5747);
+
+const lcov = __nccwpck_require__(3318);
+
+const getCoverageFromFile = async (coverageFile) => {
+  const fileRaw = fs.readFileSync(coverageFile, "utf8");
+
+  if (!fileRaw) {
+    throw new Error(
+      `No coverage report found at '${coverageFile}', exiting...`
+    );
+  }
+  const fileData = await lcov.parse(fileRaw);
+
+  const coverage = lcov.percentage(fileData);
+
+  return coverage;
+};
+
+module.exports = {
+  getCoverageFromFile
 };
 
 
@@ -11351,14 +11424,17 @@ module.exports = require("zlib");
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-const fs = __nccwpck_require__(5747);
 const core = __nccwpck_require__(2186);
 
-const lcov = __nccwpck_require__(3318);
 const { checkMinimumRatio } = __nccwpck_require__(3324);
 const { sendSummaryComment } = __nccwpck_require__(7788);
 const { showAnnotations } = __nccwpck_require__(3360);
-const { sendMetricsToBarecheck } = __nccwpck_require__(4536);
+const {
+  sendMetricsToBarecheck,
+  getMetricsFromBaseBranch
+} = __nccwpck_require__(4536);
+
+const { getCoverageFromFile } = __nccwpck_require__(4594);
 
 const runFeatures = async (diff, comparePercentage, compareFileData) => {
   await sendSummaryComment(diff, comparePercentage, compareFileData);
@@ -11370,37 +11446,31 @@ const runFeatures = async (diff, comparePercentage, compareFileData) => {
   core.setOutput("diff", diff);
 };
 
-const runCodeCoverage = async (baseFileRaw, compareFileRaw) => {
-  const baseFileData = await lcov.parse(baseFileRaw);
-  const compareFileData = await lcov.parse(compareFileRaw);
+const runCodeCoverage = async (coverage, baseFile) => {
+  const baseMetrics = await getMetricsFromBaseBranch();
+  let baseCoverage = baseMetrics ? baseMetrics.coverage : null;
 
-  const comparePercentage = lcov.percentage(compareFileData);
-  core.info(`Compare branch code coverage: ${comparePercentage}%`);
+  if (!baseCoverage) baseCoverage = await getCoverageFromFile(baseFile);
 
-  const basePercentage = lcov.percentage(baseFileData);
-  core.info(`Base branch code coverage: ${basePercentage}%`);
+  core.info(`Base branch code coverage: ${baseCoverage}%`);
 
-  const diff = (comparePercentage - basePercentage).toFixed(2);
+  const diff = (coverage - baseCoverage).toFixed(2);
   core.info(`Code coverage diff: ${diff}%`);
 
-  await runFeatures(diff, comparePercentage, compareFileData);
+  await runFeatures(diff, coverage, baseCoverage);
 };
 
 async function main() {
   const compareFile = core.getInput("lcov-file");
   const baseFile = core.getInput("base-lcov-file");
+
   core.info(`lcov-file: ${compareFile}`);
   core.info(`base-lcov-file: ${baseFile}`);
 
-  const compareFileRaw = fs.readFileSync(compareFile, "utf8");
-  if (!compareFileRaw)
-    throw new Error(`No coverage report found at '${compareFile}', exiting...`);
+  const coverage = getCoverageFromFile(compareFile);
+  core.info(`Current code coverage: ${coverage}%`);
 
-  const baseFileRaw = fs.readFileSync(baseFile, "utf8");
-  if (!baseFileRaw)
-    throw new Error(`No coverage report found at '${baseFileRaw}', exiting...`);
-
-  await runCodeCoverage(baseFileRaw, compareFileRaw);
+  await runCodeCoverage(coverage, baseFile);
 }
 
 try {

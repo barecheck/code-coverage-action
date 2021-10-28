@@ -71,7 +71,37 @@ const setProjectMetric = async (apiKey, branch, commit, coverage) => {
   return response.data.setProjectMetric;
 };
 
+const getProjectMetric = async (apiKey, branch, commit) => {
+  const query = `query projectMetric($apiKey: String!, $branch: String!, $commit: String!) {
+    projectMetric(apiKey: $apiKey, branch:$branch, commit:$commit){
+      projectId
+      branch
+      commit
+      coverage
+      createdAt
+    }
+  }
+  `;
+
+  const variables = {
+    apiKey,
+    branch,
+    commit
+  };
+
+  console.log("head branch", branch, commit);
+
+  const response = await makeRequest(query, variables);
+
+  if (!response.data) {
+    return null;
+  }
+
+  return response.data.projectMetric;
+};
+
 module.exports = {
   createGithubAccessToken,
-  setProjectMetric
+  setProjectMetric,
+  getProjectMetric
 };
