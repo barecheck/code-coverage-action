@@ -11214,6 +11214,7 @@ const getProjectMetric = async (apiKey, branch, commit) => {
     commit
   };
 
+  // eslint-disable-next-line no-console
   console.log("head branch", branch, commit);
 
   const response = await makeRequest(query, variables);
