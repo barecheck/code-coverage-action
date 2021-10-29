@@ -161,5 +161,130 @@ describe(path, () => {
         }
       });
     });
+
+    it("should throw error once there is no data in the response", async () => {
+      const apiKey = "api-key";
+      const branch = "master";
+      const commit = "e2e2e2";
+      const coverage = 93;
+
+      const mutationResponse = {
+        errors: ["some error"]
+      };
+
+      const axios = {
+        post: sinon.stub().returns(mutationResponse)
+      };
+
+      const { setProjectMetric } = barecheckApiMock({
+        axios
+      });
+
+      try {
+        await setProjectMetric(apiKey, branch, commit, coverage);
+        assert.fail("createGithubAccessToken should throw an error");
+      } catch {
+        assert.isTrue(axios.post.calledOnce);
+      }
+    });
+
+    it("should throw error once mutation doesn't have succes:True", async () => {
+      const apiKey = "api-key";
+      const branch = "master";
+      const commit = "e2e2e2";
+      const coverage = 93;
+
+      const mutationResponse = {
+        data: {
+          data: {
+            setProjectMetric: {
+              success: false
+            }
+          }
+        }
+      };
+
+      const axios = {
+        post: sinon.stub().returns(mutationResponse)
+      };
+
+      const { setProjectMetric } = barecheckApiMock({
+        axios
+      });
+
+      try {
+        await setProjectMetric(apiKey, branch, commit, coverage);
+        assert.fail("createGithubAccessToken should throw an error");
+      } catch {
+        assert.isTrue(axios.post.calledOnce);
+      }
+    });
+  });
+
+  describe("getProjectMetric", () => {
+    it("should call axios post with proper params", async () => {
+      const apiKey = "api-key";
+      const branch = "master";
+      const commit = "e2e2e2";
+      const coverage = 93;
+      const projectId = 2;
+
+      const queryResponse = {
+        data: {
+          data: {
+            projectMetric: {
+              branch,
+              commit,
+              projectId,
+              coverage
+            }
+          }
+        }
+      };
+      const axios = {
+        post: sinon.stub().returns(queryResponse)
+      };
+
+      const { getProjectMetric } = barecheckApiMock({
+        axios
+      });
+
+      const actualRes = await getProjectMetric(apiKey, branch, commit);
+
+      assert.isTrue(axios.post.calledOnce);
+      const [requestPath, body, headers] = axios.post.firstCall.args;
+      assert.deepEqual(requestPath, "https://api.barecheck.com/graphql");
+      assert.deepEqual(body.variables, { apiKey, branch, commit });
+      assert.deepEqual(headers, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      assert.deepEqual(actualRes, queryResponse.data.data.projectMetric);
+    });
+
+    it("should return null from api", async () => {
+      const apiKey = "api-key";
+      const branch = "master";
+      const commit = "e2e2e2";
+
+      const queryResponse = {
+        data: {
+          data: null
+        }
+      };
+      const axios = {
+        post: sinon.stub().returns(queryResponse)
+      };
+
+      const { getProjectMetric } = barecheckApiMock({
+        axios
+      });
+
+      const actualRes = await getProjectMetric(apiKey, branch, commit);
+
+      assert.isTrue(axios.post.calledOnce);
+      assert.isNull(actualRes);
+    });
   });
 });
