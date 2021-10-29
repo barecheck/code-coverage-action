@@ -11474,7 +11474,7 @@ async function main() {
   core.info(`lcov-file: ${compareFile}`);
   core.info(`base-lcov-file: ${baseFile}`);
 
-  const coverage = getCoverageFromFile(compareFile);
+  const coverage = await getCoverageFromFile(compareFile);
   core.info(`Current code coverage: ${coverage}%`);
 
   await runCodeCoverage(coverage, baseFile);
