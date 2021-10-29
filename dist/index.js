@@ -11253,11 +11253,11 @@ const getCoverageFromFile = async (coverageFile) => {
       `No coverage report found at '${coverageFile}', exiting...`
     );
   }
-  const fileData = await lcov.parse(fileRaw);
+  const data = await lcov.parse(fileRaw);
 
-  const coverage = lcov.percentage(fileData);
+  const percentage = lcov.percentage(data);
 
-  return coverage;
+  return { data, percentage };
 };
 
 module.exports = {
@@ -11440,28 +11440,31 @@ const {
 
 const { getCoverageFromFile } = __nccwpck_require__(4594);
 
-const runFeatures = async (diff, comparePercentage, compareFileData) => {
-  await sendSummaryComment(diff, comparePercentage, compareFileData);
+const runFeatures = async (diff, coverage) => {
+  await sendSummaryComment(diff, coverage.percentage, coverage.data);
   checkMinimumRatio(diff);
-  await showAnnotations(compareFileData);
+  await showAnnotations(coverage.data);
 
-  await sendMetricsToBarecheck(comparePercentage);
-  core.setOutput("percentage", comparePercentage);
+  await sendMetricsToBarecheck(coverage.percentage);
+  core.setOutput("percentage", coverage.percentage);
   core.setOutput("diff", diff);
 };
 
 const runCodeCoverage = async (coverage, baseFile) => {
   const baseMetrics = await getMetricsFromBaseBranch();
-  let baseCoverage = baseMetrics ? baseMetrics.coverage : null;
+  let baseCoveragePercentage = baseMetrics ? baseMetrics.coverage : null;
 
-  if (!baseCoverage) baseCoverage = await getCoverageFromFile(baseFile);
+  if (!baseCoveragePercentage) {
+    const baseCoverage = await getCoverageFromFile(baseFile);
+    baseCoveragePercentage = baseCoverage.percentage;
+  }
 
-  core.info(`Base branch code coverage: ${baseCoverage}%`);
+  core.info(`Base branch code coverage: ${baseCoveragePercentage}%`);
 
-  const diff = (coverage - baseCoverage).toFixed(2);
+  const diff = (coverage.percentage - baseCoveragePercentage).toFixed(2);
   core.info(`Code coverage diff: ${diff}%`);
 
-  await runFeatures(diff, coverage, baseCoverage);
+  await runFeatures(diff, coverage);
 };
 
 async function main() {

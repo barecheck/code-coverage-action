@@ -10,11 +10,11 @@ const getCoverageFromFile = async (coverageFile) => {
       `No coverage report found at '${coverageFile}', exiting...`
     );
   }
-  const fileData = await lcov.parse(fileRaw);
+  const data = await lcov.parse(fileRaw);
 
-  const coverage = lcov.percentage(fileData);
+  const percentage = lcov.percentage(data);
 
-  return coverage;
+  return { data, percentage };
 };
 
 module.exports = {
