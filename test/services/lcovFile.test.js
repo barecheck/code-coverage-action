@@ -62,5 +62,36 @@ describe(path, () => {
 
       assert.deepEqual(actualRes, { data, percentage });
     });
+
+    it("should throw exception if there is file", async () => {
+      const coverageFilePath = "dir/file.lcov";
+
+      const fs = {
+        readFileSync: sinon.stub().returns(null)
+      };
+      const lcov = {
+        parse: sinon.spy(),
+        percentage: sinon.spy()
+      };
+
+      const { getCoverageFromFile } = lcovFileMock({
+        fs,
+        lcov
+      });
+
+      try {
+        await getCoverageFromFile(coverageFilePath);
+        assert.fail("getCoverageFromFile should throw an error");
+      } catch {
+        assert.isTrue(fs.readFileSync.calledOnce);
+        assert.isFalse(lcov.parse.calledOnce);
+        assert.isFalse(lcov.percentage.calledOnce);
+
+        assert.deepEqual(fs.readFileSync.firstCall.args, [
+          coverageFilePath,
+          "utf8"
+        ]);
+      }
+    });
   });
 });
