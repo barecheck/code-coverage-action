@@ -20,11 +20,13 @@ const runFeatures = async (diff, coverage) => {
   core.setOutput("diff", diff);
 };
 
+// TODO: move to `coverage` service to define priorities from
+// where metrics should be calculated
 const runCodeCoverage = async (coverage, baseFile) => {
   const baseMetrics = await getMetricsFromBaseBranch();
-  let baseCoveragePercentage = baseMetrics ? baseMetrics.coverage : null;
+  let baseCoveragePercentage = baseMetrics ? baseMetrics.coverage : 0;
 
-  if (!baseCoveragePercentage) {
+  if (!baseCoveragePercentage && baseFile) {
     const baseCoverage = await getCoverageFromFile(baseFile);
     baseCoveragePercentage = baseCoverage.percentage;
   }
