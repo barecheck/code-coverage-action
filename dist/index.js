@@ -10516,24 +10516,24 @@ const {
 const { getBarecheckApiKey } = __nccwpck_require__(6);
 
 const getMetricsFromBaseBranch = async () => {
-  const branch = github.context.payload.pull_request.base.ref;
-  const commit = github.context.payload.pull_request.base.sha;
+  const { ref, sha } = github.context.payload.pull_request.base;
+
   const apiKey = getBarecheckApiKey();
 
-  const metrics = await getProjectMetric(apiKey, branch, commit);
+  const metrics = await getProjectMetric(apiKey, ref, sha);
 
   return metrics;
 };
 
 const sendMetricsToBarecheck = async (coverage) => {
-  const branch = github.context.payload.pull_request.head.ref;
-  const commit = github.context.payload.pull_request.head.sha;
+  const { ref, sha } = github.context.payload.pull_request.head;
+
   const apiKey = getBarecheckApiKey();
 
   const { projectMetricId } = await setProjectMetric(
     apiKey,
-    branch,
-    commit,
+    ref,
+    sha,
     parseFloat(coverage)
   );
 
@@ -11168,9 +11168,9 @@ const createGithubAccessToken = async (githubAppToken) => {
   return response.data.createGithubAccessToken;
 };
 
-const setProjectMetric = async (apiKey, branch, commit, coverage) => {
-  const query = `mutation setProjectMetric($apiKey: String!, $branch: String!, $commit: String!, $coverage: Float!) {
-    setProjectMetric(apiKey: $apiKey, branch: $branch, commit: $commit, coverage: $coverage) {
+const setProjectMetric = async (apiKey, ref, sha, coverage) => {
+  const query = `mutation setProjectMetric($apiKey: String!, $ref: String!, $sha: String!, $coverage: Float!) {
+    setProjectMetric(apiKey: $apiKey, ref: $ref, sha: $sha, coverage: $coverage) {
       code
       success
       projectMetricId
@@ -11180,8 +11180,8 @@ const setProjectMetric = async (apiKey, branch, commit, coverage) => {
 
   const variables = {
     apiKey,
-    branch,
-    commit,
+    ref,
+    sha,
     coverage
   };
 
@@ -11196,12 +11196,12 @@ const setProjectMetric = async (apiKey, branch, commit, coverage) => {
   return response.data.setProjectMetric;
 };
 
-const getProjectMetric = async (apiKey, branch, commit) => {
-  const query = `query projectMetric($apiKey: String!, $branch: String!, $commit: String!) {
-    projectMetric(apiKey: $apiKey, branch:$branch, commit:$commit){
+const getProjectMetric = async (apiKey, ref, sha) => {
+  const query = `query projectMetric($apiKey: String!, $ref: String!, $sha: String!) {
+    projectMetric(apiKey: $apiKey, ref:$ref, sha:$sha){
       projectId
-      branch
-      commit
+      ref
+      sha
       coverage
       createdAt
     }
@@ -11210,17 +11210,11 @@ const getProjectMetric = async (apiKey, branch, commit) => {
 
   const variables = {
     apiKey,
-    branch,
-    commit
+    ref,
+    sha
   };
 
-  // eslint-disable-next-line no-console
-  console.log("head branch", branch, commit);
-
   const response = await makeRequest(query, variables);
-
-  // eslint-disable-next-line no-console
-  console.log("response", response);
 
   if (!response.data) {
     return null;
@@ -11245,12 +11239,12 @@ const fs = __nccwpck_require__(5747);
 
 const lcov = __nccwpck_require__(3318);
 
-const getCoverageFromFile = async (coverageFile) => {
-  const fileRaw = fs.readFileSync(coverageFile, "utf8");
+const getCoverageFromFile = async (coverageFilePath) => {
+  const fileRaw = fs.readFileSync(coverageFilePath, "utf8");
 
   if (!fileRaw) {
     throw new Error(
-      `No coverage report found at '${coverageFile}', exiting...`
+      `No coverage report found at '${coverageFilePath}', exiting...`
     );
   }
   const data = await lcov.parse(fileRaw);
