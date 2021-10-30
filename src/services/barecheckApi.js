@@ -43,9 +43,9 @@ const createGithubAccessToken = async (githubAppToken) => {
   return response.data.createGithubAccessToken;
 };
 
-const setProjectMetric = async (apiKey, branch, commit, coverage) => {
-  const query = `mutation setProjectMetric($apiKey: String!, $branch: String!, $commit: String!, $coverage: Float!) {
-    setProjectMetric(apiKey: $apiKey, branch: $branch, commit: $commit, coverage: $coverage) {
+const setProjectMetric = async (apiKey, ref, sha, coverage) => {
+  const query = `mutation setProjectMetric($apiKey: String!, $ref: String!, $sha: String!, $coverage: Float!) {
+    setProjectMetric(apiKey: $apiKey, ref: $ref, sha: $sha, coverage: $coverage) {
       code
       success
       projectMetricId
@@ -55,8 +55,8 @@ const setProjectMetric = async (apiKey, branch, commit, coverage) => {
 
   const variables = {
     apiKey,
-    branch,
-    commit,
+    ref,
+    sha,
     coverage
   };
 
@@ -71,12 +71,12 @@ const setProjectMetric = async (apiKey, branch, commit, coverage) => {
   return response.data.setProjectMetric;
 };
 
-const getProjectMetric = async (apiKey, branch, commit) => {
-  const query = `query projectMetric($apiKey: String!, $branch: String!, $commit: String!) {
-    projectMetric(apiKey: $apiKey, branch:$branch, commit:$commit){
+const getProjectMetric = async (apiKey, ref, sha) => {
+  const query = `query projectMetric($apiKey: String!, $ref: String!, $sha: String!) {
+    projectMetric(apiKey: $apiKey, ref:$ref, sha:$sha){
       projectId
-      branch
-      commit
+      ref
+      sha
       coverage
       createdAt
     }
@@ -85,8 +85,8 @@ const getProjectMetric = async (apiKey, branch, commit) => {
 
   const variables = {
     apiKey,
-    branch,
-    commit
+    ref,
+    sha
   };
 
   const response = await makeRequest(query, variables);

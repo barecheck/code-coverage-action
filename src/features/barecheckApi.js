@@ -7,24 +7,24 @@ const {
 const { getBarecheckApiKey } = require("../input");
 
 const getMetricsFromBaseBranch = async () => {
-  const branch = github.context.payload.pull_request.base.ref;
-  const commit = github.context.payload.pull_request.base.sha;
+  const { ref, sha } = github.context.payload.pull_request.base;
+
   const apiKey = getBarecheckApiKey();
 
-  const metrics = await getProjectMetric(apiKey, branch, commit);
+  const metrics = await getProjectMetric(apiKey, ref, sha);
 
   return metrics;
 };
 
 const sendMetricsToBarecheck = async (coverage) => {
-  const branch = github.context.payload.pull_request.head.ref;
-  const commit = github.context.payload.pull_request.head.sha;
+  const { ref, sha } = github.context.payload.pull_request.head;
+
   const apiKey = getBarecheckApiKey();
 
   const { projectMetricId } = await setProjectMetric(
     apiKey,
-    branch,
-    commit,
+    ref,
+    sha,
     parseFloat(coverage)
   );
 

@@ -41,16 +41,16 @@ describe(path, () => {
   describe("getMetricsFromBaseBranch", () => {
     it("should return metrics from getProjectMetric barecheck endpoint", async () => {
       const apiKey = "key-1-2-3";
-      const branch = "br";
-      const commit = "commit";
+      const ref = "br";
+      const sha = "sha";
 
       const github = {
         context: {
           payload: {
             pull_request: {
               base: {
-                ref: branch,
-                sha: commit
+                ref,
+                sha
               }
             }
           }
@@ -72,11 +72,7 @@ describe(path, () => {
       const actualRes = await getMetricsFromBaseBranch();
 
       assert.isTrue(getProjectMetric.calledOnce);
-      assert.deepEqual(getProjectMetric.firstCall.args, [
-        apiKey,
-        branch,
-        commit
-      ]);
+      assert.deepEqual(getProjectMetric.firstCall.args, [apiKey, ref, sha]);
 
       assert.deepEqual(actualRes, expectedResponse);
     });
@@ -85,8 +81,8 @@ describe(path, () => {
   describe("sendMetricsToBarecheck", () => {
     it("should send coverage through barecheckApi service", async () => {
       const apiKey = "key-1-2-3";
-      const branch = "br";
-      const commit = "commit";
+      const ref = "br";
+      const sha = "sha";
       const coverage = 123;
       const projectMetricId = 3;
 
@@ -95,8 +91,8 @@ describe(path, () => {
           payload: {
             pull_request: {
               head: {
-                ref: branch,
-                sha: commit
+                ref,
+                sha
               }
             }
           }
@@ -120,8 +116,8 @@ describe(path, () => {
       assert.isTrue(setProjectMetric.calledOnce);
       assert.deepEqual(setProjectMetric.firstCall.args, [
         apiKey,
-        branch,
-        commit,
+        ref,
+        sha,
         coverage
       ]);
 
