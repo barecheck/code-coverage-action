@@ -9928,6 +9928,50 @@ module.exports = { mergeFileLinesWithChangedFiles };
 
 /***/ }),
 
+/***/ 4536:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const github = __nccwpck_require__(5438);
+
+const {
+  setProjectMetric,
+  getProjectMetric
+} = __nccwpck_require__(4030);
+const { getBarecheckApiKey } = __nccwpck_require__(6);
+
+const getMetricsFromBaseBranch = async () => {
+  const { ref, sha } = github.context.payload.pull_request.base;
+
+  const apiKey = getBarecheckApiKey();
+
+  const metrics = await getProjectMetric(apiKey, ref, sha);
+
+  return metrics;
+};
+
+const sendMetricsToBarecheck = async (coverage) => {
+  const { ref, sha } = github.context.payload.pull_request.head;
+
+  const apiKey = getBarecheckApiKey();
+
+  const { projectMetricId } = await setProjectMetric(
+    apiKey,
+    ref,
+    sha,
+    parseFloat(coverage)
+  );
+
+  return projectMetricId;
+};
+
+module.exports = {
+  sendMetricsToBarecheck,
+  getMetricsFromBaseBranch
+};
+
+
+/***/ }),
+
 /***/ 3324:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -10379,10 +10423,13 @@ const getAppName = () => core.getInput("app-name");
 const getBarecheckGithubAppToken = () =>
   core.getInput("barecheck-github-app-token");
 
+const getBarecheckApiKey = () => core.getInput("barecheck-api-key");
+
 module.exports = {
   getShowAnnotations,
   getGithubToken,
   getBarecheckGithubAppToken,
+  getBarecheckApiKey,
   getAppName
 };
 
@@ -10545,8 +10592,94 @@ const createGithubAccessToken = async (githubAppToken) => {
   return response.data.createGithubAccessToken;
 };
 
+const setProjectMetric = async (apiKey, ref, sha, coverage) => {
+  const query = `mutation setProjectMetric($apiKey: String!, $ref: String!, $sha: String!, $coverage: Float!) {
+    setProjectMetric(apiKey: $apiKey, ref: $ref, sha: $sha, coverage: $coverage) {
+      code
+      success
+      projectMetricId
+    }
+  }
+  `;
+
+  const variables = {
+    apiKey,
+    ref,
+    sha,
+    coverage
+  };
+
+  const response = await makeRequest(query, variables);
+
+  if (!response.data || !response.data.setProjectMetric.success) {
+    throw new Error(
+      "Couldn't send your project metric. Check if `BARECHECK_API_KEY` property set correctly and restart action"
+    );
+  }
+
+  return response.data.setProjectMetric;
+};
+
+const getProjectMetric = async (apiKey, ref, sha) => {
+  const query = `query projectMetric($apiKey: String!, $ref: String!, $sha: String!) {
+    projectMetric(apiKey: $apiKey, ref:$ref, sha:$sha){
+      projectId
+      ref
+      sha
+      coverage
+      createdAt
+    }
+  }
+  `;
+
+  const variables = {
+    apiKey,
+    ref,
+    sha
+  };
+
+  const response = await makeRequest(query, variables);
+
+  if (!response.data) {
+    return null;
+  }
+
+  return response.data.projectMetric;
+};
+
 module.exports = {
-  createGithubAccessToken
+  createGithubAccessToken,
+  setProjectMetric,
+  getProjectMetric
+};
+
+
+/***/ }),
+
+/***/ 4594:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const fs = __nccwpck_require__(5747);
+
+const lcov = __nccwpck_require__(3318);
+
+const getCoverageFromFile = async (coverageFilePath) => {
+  const fileRaw = fs.readFileSync(coverageFilePath, "utf8");
+
+  if (!fileRaw) {
+    throw new Error(
+      `No coverage report found at '${coverageFilePath}', exiting...`
+    );
+  }
+  const data = await lcov.parse(fileRaw);
+
+  const percentage = lcov.percentage(data);
+
+  return { data, percentage };
+};
+
+module.exports = {
+  getCoverageFromFile
 };
 
 
@@ -10572,7 +10705,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.1","description":"P
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("assert");
+module.exports = require("assert");;
 
 /***/ }),
 
@@ -10580,7 +10713,7 @@ module.exports = require("assert");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("events");
+module.exports = require("events");;
 
 /***/ }),
 
@@ -10588,7 +10721,7 @@ module.exports = require("events");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("fs");
+module.exports = require("fs");;
 
 /***/ }),
 
@@ -10596,7 +10729,7 @@ module.exports = require("fs");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("http");
+module.exports = require("http");;
 
 /***/ }),
 
@@ -10604,7 +10737,7 @@ module.exports = require("http");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("https");
+module.exports = require("https");;
 
 /***/ }),
 
@@ -10612,7 +10745,7 @@ module.exports = require("https");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("net");
+module.exports = require("net");;
 
 /***/ }),
 
@@ -10620,7 +10753,7 @@ module.exports = require("net");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("os");
+module.exports = require("os");;
 
 /***/ }),
 
@@ -10628,7 +10761,7 @@ module.exports = require("os");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("path");
+module.exports = require("path");;
 
 /***/ }),
 
@@ -10636,7 +10769,7 @@ module.exports = require("path");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("stream");
+module.exports = require("stream");;
 
 /***/ }),
 
@@ -10644,7 +10777,7 @@ module.exports = require("stream");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("tls");
+module.exports = require("tls");;
 
 /***/ }),
 
@@ -10652,7 +10785,7 @@ module.exports = require("tls");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("tty");
+module.exports = require("tty");;
 
 /***/ }),
 
@@ -10660,7 +10793,7 @@ module.exports = require("tty");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("url");
+module.exports = require("url");;
 
 /***/ }),
 
@@ -10668,7 +10801,7 @@ module.exports = require("url");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("util");
+module.exports = require("util");;
 
 /***/ }),
 
@@ -10676,7 +10809,7 @@ module.exports = require("util");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("zlib");
+module.exports = require("zlib");;
 
 /***/ })
 
@@ -10715,60 +10848,62 @@ module.exports = require("zlib");
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
-/******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
-/******/ 	
-/************************************************************************/
+/******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";/************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-const fs = __nccwpck_require__(5747);
 const core = __nccwpck_require__(2186);
 
-const lcov = __nccwpck_require__(3318);
 const { checkMinimumRatio } = __nccwpck_require__(3324);
 const { sendSummaryComment } = __nccwpck_require__(7788);
 const { showAnnotations } = __nccwpck_require__(3360);
+const {
+  sendMetricsToBarecheck,
+  getMetricsFromBaseBranch
+} = __nccwpck_require__(4536);
 
-const runFeatures = async (diff, comparePercentage, compareFileData) => {
-  await sendSummaryComment(diff, comparePercentage, compareFileData);
+const { getCoverageFromFile } = __nccwpck_require__(4594);
+
+const runFeatures = async (diff, coverage) => {
+  await sendSummaryComment(diff, coverage.percentage, coverage.data);
   checkMinimumRatio(diff);
-  await showAnnotations(compareFileData);
+  await showAnnotations(coverage.data);
 
-  core.setOutput("percentage", comparePercentage);
+  await sendMetricsToBarecheck(coverage.percentage);
+  core.setOutput("percentage", coverage.percentage);
   core.setOutput("diff", diff);
 };
 
-const runCodeCoverage = async (baseFileRaw, compareFileRaw) => {
-  const baseFileData = await lcov.parse(baseFileRaw);
-  const compareFileData = await lcov.parse(compareFileRaw);
+// TODO: move to `coverage` service to define priorities from
+// where metrics should be calculated
+const runCodeCoverage = async (coverage, baseFile) => {
+  const baseMetrics = await getMetricsFromBaseBranch();
+  let baseCoveragePercentage = baseMetrics ? baseMetrics.coverage : 0;
 
-  const comparePercentage = lcov.percentage(compareFileData);
-  core.info(`Compare branch code coverage: ${comparePercentage}%`);
+  if (!baseCoveragePercentage && baseFile) {
+    const baseCoverage = await getCoverageFromFile(baseFile);
+    baseCoveragePercentage = baseCoverage.percentage;
+  }
 
-  const basePercentage = lcov.percentage(baseFileData);
-  core.info(`Base branch code coverage: ${basePercentage}%`);
+  core.info(`Base branch code coverage: ${baseCoveragePercentage}%`);
 
-  const diff = (comparePercentage - basePercentage).toFixed(2);
+  const diff = (coverage.percentage - baseCoveragePercentage).toFixed(2);
   core.info(`Code coverage diff: ${diff}%`);
 
-  await runFeatures(diff, comparePercentage, compareFileData);
+  await runFeatures(diff, coverage);
 };
 
 async function main() {
   const compareFile = core.getInput("lcov-file");
   const baseFile = core.getInput("base-lcov-file");
+
   core.info(`lcov-file: ${compareFile}`);
   core.info(`base-lcov-file: ${baseFile}`);
 
-  const compareFileRaw = fs.readFileSync(compareFile, "utf8");
-  if (!compareFileRaw)
-    throw new Error(`No coverage report found at '${compareFile}', exiting...`);
+  const coverage = await getCoverageFromFile(compareFile);
+  core.info(`Current code coverage: ${coverage.percentage}%`);
 
-  const baseFileRaw = fs.readFileSync(baseFile, "utf8");
-  if (!baseFileRaw)
-    throw new Error(`No coverage report found at '${baseFileRaw}', exiting...`);
-
-  await runCodeCoverage(baseFileRaw, compareFileRaw);
+  await runCodeCoverage(coverage, baseFile);
 }
 
 try {

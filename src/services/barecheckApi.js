@@ -43,6 +43,63 @@ const createGithubAccessToken = async (githubAppToken) => {
   return response.data.createGithubAccessToken;
 };
 
+const setProjectMetric = async (apiKey, ref, sha, coverage) => {
+  const query = `mutation setProjectMetric($apiKey: String!, $ref: String!, $sha: String!, $coverage: Float!) {
+    setProjectMetric(apiKey: $apiKey, ref: $ref, sha: $sha, coverage: $coverage) {
+      code
+      success
+      projectMetricId
+    }
+  }
+  `;
+
+  const variables = {
+    apiKey,
+    ref,
+    sha,
+    coverage
+  };
+
+  const response = await makeRequest(query, variables);
+
+  if (!response.data || !response.data.setProjectMetric.success) {
+    throw new Error(
+      "Couldn't send your project metric. Check if `BARECHECK_API_KEY` property set correctly and restart action"
+    );
+  }
+
+  return response.data.setProjectMetric;
+};
+
+const getProjectMetric = async (apiKey, ref, sha) => {
+  const query = `query projectMetric($apiKey: String!, $ref: String!, $sha: String!) {
+    projectMetric(apiKey: $apiKey, ref:$ref, sha:$sha){
+      projectId
+      ref
+      sha
+      coverage
+      createdAt
+    }
+  }
+  `;
+
+  const variables = {
+    apiKey,
+    ref,
+    sha
+  };
+
+  const response = await makeRequest(query, variables);
+
+  if (!response.data) {
+    return null;
+  }
+
+  return response.data.projectMetric;
+};
+
 module.exports = {
-  createGithubAccessToken
+  createGithubAccessToken,
+  setProjectMetric,
+  getProjectMetric
 };

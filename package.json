@@ -24,7 +24,7 @@
     "build": "ncc build src/index.js --license licenses.txt",
     "lint": "eslint --max-warnings=0 .",
     "format": "prettier --write .",
-    "test": "mocha --recursive tests",
+    "test": "mocha --recursive test",
     "coverage": "nyc yarn test",
     "format-check": "prettier --check .",
     "check-all": "yarn format-check && yarn lint"

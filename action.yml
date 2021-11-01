@@ -11,14 +11,17 @@ inputs:
   barecheck-github-app-token:
     description: Barecheck application token, received after application installation
     required: true
+  barecheck-api-key:
+    description: Barecheck project API key
+    required: false
   lcov-file:
     description: "Compare code coverage report"
     required: true
     default: "./coverage/lcov.info"
   base-lcov-file:
     description: "Base code coverage report to generate percentage diff"
-    required: true
-    default: "./coverage/lcov.info"
+    required: false
+    default: ""
   minimum-ratio:
     description: "Minimum code coverage ratio that would to be considered as a difference between based and head commits"
     required: false

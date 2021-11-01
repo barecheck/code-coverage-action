@@ -25,9 +25,12 @@ const getAppName = () => core.getInput("app-name");
 const getBarecheckGithubAppToken = () =>
   core.getInput("barecheck-github-app-token");
 
+const getBarecheckApiKey = () => core.getInput("barecheck-api-key");
+
 module.exports = {
   getShowAnnotations,
   getGithubToken,
   getBarecheckGithubAppToken,
+  getBarecheckApiKey,
   getAppName
 };
