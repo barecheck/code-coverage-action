@@ -54,6 +54,7 @@ async function main() {
 }
 
 try {
+  // eslint-disable-next-line no-console
   console.log(github.context);
   main();
 } catch (err) {
