@@ -58,13 +58,52 @@ describe(path, () => {
       const github = {
         context: {
           payload: {
-            base_ref: ref,
             pull_request: {
               base: {
-                sha
+                sha,
+                ref
               }
             }
           }
+        }
+      };
+
+      const expectedResponse = {
+        coverage: 123
+      };
+      const getProjectMetric = sinon.stub().returns(expectedResponse);
+      const getBarecheckApiKey = sinon.stub().returns(apiKey);
+
+      const { getBaseMetric } = barecheckApiMock({
+        getProjectMetric,
+        getBarecheckApiKey,
+        github
+      });
+
+      const actualRes = await getBaseMetric();
+
+      assert.isTrue(getProjectMetric.calledOnce);
+      assert.deepEqual(getProjectMetric.firstCall.args, [
+        apiKey,
+        branchName,
+        sha
+      ]);
+
+      assert.deepEqual(actualRes, expectedResponse);
+    });
+
+    it("should return metrics where is not pull_request payload", async () => {
+      const apiKey = "key-1-2-3";
+      const branchName = "test-branch-name";
+      const ref = `refs/heads/${branchName}`;
+      const sha = "sha";
+
+      const github = {
+        context: {
+          payload: {
+            before: sha
+          },
+          ref
         }
       };
 

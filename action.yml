@@ -5,12 +5,11 @@ branding:
   color: "yellow"
 inputs:
   github-token:
-    description: Your GitHub secret token
-    deprecationMessage: The token will be deprecated in the next versions, please install app and use `barecheck-github-app-token` instead
-    required: false
-  barecheck-github-app-token:
-    description: Barecheck application token, received after application installation
+    description: Your GitHub Action token
     required: true
+  barecheck-github-app-token:
+    description: Barecheck application token, received after application installation. Would be used instead of `github-token`
+    required: false
   barecheck-api-key:
     description: Barecheck project API key
     required: false

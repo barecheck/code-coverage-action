@@ -9943,18 +9943,20 @@ const { getBarecheckApiKey } = __nccwpck_require__(6);
 const cleanRef = (fullRef) =>
   fullRef ? fullRef.replace("refs/heads/", "") : null;
 
-const getBaseMetric = async () => {
-  const {
-    before: baseSha,
-    base_ref: baseRef,
-    ref: currentRef,
-    pull_request: pullRequest
-  } = github.context.payload;
+const getBaseRefSha = () => {
+  const { before: baseSha, pull_request: pullRequest } = github.context.payload;
+  const { ref: currentRef } = github.context;
 
-  const ref = cleanRef(baseRef || currentRef);
+  const fullRef = pullRequest ? pullRequest.base.ref : currentRef;
+  const ref = cleanRef(fullRef);
 
   const sha = pullRequest ? pullRequest.base.sha : baseSha;
 
+  return { ref, sha };
+};
+
+const getBaseMetric = async () => {
+  const { ref, sha } = getBaseRefSha();
   // # if for some reason base ref, sha cannot be defined just skip comparision part
   if (!ref || !sha) {
     return null;

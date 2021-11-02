@@ -43,16 +43,16 @@ To integrate with this Github Action, you can just use following configuration i
 
 ## Inputs
 
-| Key                          | Required | Default   | Description                                                                                                                                  |
-| ---------------------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `github-token`               | **yes**  | -         | Default Github Actions token. Token is not requered if Github application is installed and token passed through `barecheck-github-app-token` |
-| `lcov-file`                  | **yes**  | -         | Lcov.info file that was generated after your test coverage command                                                                           |
-| `barecheck-github-app-token` | **no**   | -         | Barecheck application token, received after application installation comment.                                                                |
-| `base-lcov-file`             | **no**   | -         | Lcov.info file that would be used to compare code coverage. The comparision will be disabled if the file is not passed                       |
-| `send-summary-comment`       | **no**   | true      | Option to send Github code coverage comment based on the changes that were made in PR                                                        |
-| `show-annotations`           | **no**   | 'warning' | Option to enable Github anotation that would show uncovered files in review tab. Options: ' ' \| warning \| error                            |
-| `minimum-ratio`              | **no**   | ''        | Percantage of uncovered lines that is allowed for new changes                                                                                |
-| `app-name`                   | **no**   | ''        | Application name should be used once you have more then one report in your workflow.                                                         |
+| Key                          | Required | Default     | Description                                                                                                                                  |
+| ---------------------------- | -------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `github-token`               | **yes**  | -           | Default Github Actions token. Token is not requered if Github application is installed and token passed through `barecheck-github-app-token` |
+| `lcov-file`                  | **yes**  | -           | Lcov.info file that was generated after your test coverage command                                                                           |
+| `barecheck-github-app-token` | **no**   | -           | Barecheck application token, received after application installation comment.                                                                |
+| `base-lcov-file`             | **no**   | -           | Lcov.info file that would be used to compare code coverage. The comparision will be disabled if the file is not passed                       |
+| `send-summary-comment`       | **no**   | true        | Option to send Github code coverage comment based on the changes that were made in PR                                                        |
+| `show-annotations`           | **no**   | 'warning'   | Option to enable Github anotation that would show uncovered files in review tab. Options: ' ' \| warning \| error                            |
+| `minimum-ratio`              | **no**   | ''          | Percantage of uncovered lines that is allowed for new changes                                                                                |
+| `app-name`                   | **no**   | 'Barecheck' | Application name would be used once you have more than one report in your workflow and want to have different reports per application.       |
 
 ## Workflow Example
 
