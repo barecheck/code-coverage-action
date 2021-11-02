@@ -20,7 +20,7 @@ const getBaseMetric = async () => {
   } = github.context.payload;
 
   // eslint-disable-next-line no-console
-  console.log(baseRef, currentRef);
+  console.log(baseRef, currentRef, github.context);
   const ref = cleanRef(baseRef || currentRef);
 
   const sha = pullRequest ? pullRequest.base.sha : baseSha;
