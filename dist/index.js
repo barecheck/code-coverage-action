@@ -9931,6 +9931,7 @@ module.exports = { mergeFileLinesWithChangedFiles };
 /***/ 4536:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
+/* eslint-disable max-statements */
 const github = __nccwpck_require__(5438);
 const core = __nccwpck_require__(2186);
 
@@ -9951,6 +9952,8 @@ const getBaseMetric = async () => {
     pull_request: pullRequest
   } = github.context.payload;
 
+  // eslint-disable-next-line no-console
+  console.log(baseRef, currentRef);
   const ref = cleanRef(baseRef || currentRef);
 
   const sha = pullRequest ? pullRequest.base.sha : baseSha;

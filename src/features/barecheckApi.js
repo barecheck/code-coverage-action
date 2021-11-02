@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 const github = require("@actions/github");
 const core = require("@actions/core");
 
@@ -18,6 +19,8 @@ const getBaseMetric = async () => {
     pull_request: pullRequest
   } = github.context.payload;
 
+  // eslint-disable-next-line no-console
+  console.log(baseRef, currentRef);
   const ref = cleanRef(baseRef || currentRef);
 
   const sha = pullRequest ? pullRequest.base.sha : baseSha;
