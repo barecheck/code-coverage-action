@@ -10064,6 +10064,8 @@ module.exports = {
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const core = __nccwpck_require__(2186);
+const github = __nccwpck_require__(5438);
+
 const getChangedFiles = __nccwpck_require__(397);
 const { uncoveredFileLinesByFileNames } = __nccwpck_require__(3318);
 const { mergeFileLinesWithChangedFiles } = __nccwpck_require__(3257);
@@ -10072,7 +10074,7 @@ const { getShowAnnotations } = __nccwpck_require__(6);
 const showAnnotations = async (compareFileData) => {
   const showAnnotationsInput = getShowAnnotations();
 
-  if (showAnnotationsInput) {
+  if (showAnnotationsInput && github.context.payload.pull_request) {
     core.info("Show annotations feature enabled");
     const changedFiles = await getChangedFiles();
 
