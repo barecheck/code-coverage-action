@@ -36,7 +36,7 @@ const getBaseMetric = async () => {
 };
 
 const sendMetricsToBarecheck = async (coverage) => {
-  const { ref: fullRef, sha } = github.context.payload;
+  const { ref: fullRef, sha } = github.context;
 
   const ref = cleanRef(fullRef);
 

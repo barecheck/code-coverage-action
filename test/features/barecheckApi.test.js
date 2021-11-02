@@ -132,10 +132,8 @@ describe(path, () => {
 
       const github = {
         context: {
-          payload: {
-            ref,
-            sha
-          }
+          ref,
+          sha
         }
       };
 
