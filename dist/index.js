@@ -9939,8 +9939,25 @@ const {
 } = __nccwpck_require__(4030);
 const { getBarecheckApiKey } = __nccwpck_require__(6);
 
-const getMetricsFromBaseBranch = async () => {
-  const { ref, sha } = github.context.payload.pull_request.base;
+const cleanRef = (fullRef) =>
+  fullRef ? fullRef.replace("refs/heads/", "") : null;
+
+const getBaseMetric = async () => {
+  const {
+    before: baseSha,
+    base_ref: baseRef,
+    ref: currentRef,
+    pull_request: pullRequest
+  } = github.context.payload;
+
+  const ref = cleanRef(baseRef || currentRef);
+
+  const sha = pullRequest ? pullRequest.base.sha : baseSha;
+
+  // # if for some reason base ref, sha cannot be defined just skip comparision part
+  if (!ref || !sha) {
+    return null;
+  }
 
   const apiKey = getBarecheckApiKey();
 
@@ -9950,7 +9967,9 @@ const getMetricsFromBaseBranch = async () => {
 };
 
 const sendMetricsToBarecheck = async (coverage) => {
-  const { ref, sha } = github.context.payload.pull_request.head;
+  const { ref: fullRef, sha } = github.context.payload;
+
+  const ref = cleanRef(fullRef);
 
   const apiKey = getBarecheckApiKey();
 
@@ -9966,7 +9985,7 @@ const sendMetricsToBarecheck = async (coverage) => {
 
 module.exports = {
   sendMetricsToBarecheck,
-  getMetricsFromBaseBranch
+  getBaseMetric
 };
 
 
@@ -10860,7 +10879,7 @@ const { sendSummaryComment } = __nccwpck_require__(7788);
 const { showAnnotations } = __nccwpck_require__(3360);
 const {
   sendMetricsToBarecheck,
-  getMetricsFromBaseBranch
+  getBaseMetric
 } = __nccwpck_require__(4536);
 
 const { getCoverageFromFile } = __nccwpck_require__(4594);
@@ -10878,7 +10897,7 @@ const runFeatures = async (diff, coverage) => {
 // TODO: move to `coverage` service to define priorities from
 // where metrics should be calculated
 const runCodeCoverage = async (coverage, baseFile) => {
-  const baseMetrics = await getMetricsFromBaseBranch();
+  const baseMetrics = await getBaseMetric();
   let baseCoveragePercentage = baseMetrics ? baseMetrics.coverage : 0;
 
   if (!baseCoveragePercentage && baseFile) {
@@ -10908,6 +10927,7 @@ async function main() {
 }
 
 try {
+  // eslint-disable-next-line no-console
   console.log(github.context);
   main();
 } catch (err) {

@@ -6,7 +6,7 @@ const { sendSummaryComment } = require("./features/sendSummaryComment");
 const { showAnnotations } = require("./features/showAnnotations");
 const {
   sendMetricsToBarecheck,
-  getMetricsFromBaseBranch
+  getBaseMetric
 } = require("./features/barecheckApi");
 
 const { getCoverageFromFile } = require("./services/lcovFile");
@@ -24,7 +24,7 @@ const runFeatures = async (diff, coverage) => {
 // TODO: move to `coverage` service to define priorities from
 // where metrics should be calculated
 const runCodeCoverage = async (coverage, baseFile) => {
-  const baseMetrics = await getMetricsFromBaseBranch();
+  const baseMetrics = await getBaseMetric();
   let baseCoveragePercentage = baseMetrics ? baseMetrics.coverage : 0;
 
   if (!baseCoveragePercentage && baseFile) {

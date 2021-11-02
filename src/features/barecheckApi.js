@@ -6,8 +6,25 @@ const {
 } = require("../services/barecheckApi");
 const { getBarecheckApiKey } = require("../input");
 
-const getMetricsFromBaseBranch = async () => {
-  const { ref, sha } = github.context.payload.pull_request.base;
+const cleanRef = (fullRef) =>
+  fullRef ? fullRef.replace("refs/heads/", "") : null;
+
+const getBaseMetric = async () => {
+  const {
+    before: baseSha,
+    base_ref: baseRef,
+    ref: currentRef,
+    pull_request: pullRequest
+  } = github.context.payload;
+
+  const ref = cleanRef(baseRef || currentRef);
+
+  const sha = pullRequest ? pullRequest.base.sha : baseSha;
+
+  // # if for some reason base ref, sha cannot be defined just skip comparision part
+  if (!ref || !sha) {
+    return null;
+  }
 
   const apiKey = getBarecheckApiKey();
 
@@ -17,7 +34,9 @@ const getMetricsFromBaseBranch = async () => {
 };
 
 const sendMetricsToBarecheck = async (coverage) => {
-  const { ref, sha } = github.context.payload.pull_request.head;
+  const { ref: fullRef, sha } = github.context.payload;
+
+  const ref = cleanRef(fullRef);
 
   const apiKey = getBarecheckApiKey();
 
@@ -33,5 +52,5 @@ const sendMetricsToBarecheck = async (coverage) => {
 
 module.exports = {
   sendMetricsToBarecheck,
-  getMetricsFromBaseBranch
+  getBaseMetric
 };
