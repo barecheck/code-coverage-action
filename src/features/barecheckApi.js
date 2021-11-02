@@ -1,4 +1,3 @@
-/* eslint-disable max-statements */
 const github = require("@actions/github");
 const core = require("@actions/core");
 
@@ -11,7 +10,7 @@ const { getBarecheckApiKey } = require("../input");
 const cleanRef = (fullRef) =>
   fullRef ? fullRef.replace("refs/heads/", "") : null;
 
-const getBaseMetric = async () => {
+const getBaseRefSha = () => {
   const { before: baseSha, pull_request: pullRequest } = github.context.payload;
   const { ref: currentRef } = github.context;
 
@@ -20,6 +19,11 @@ const getBaseMetric = async () => {
 
   const sha = pullRequest ? pullRequest.base.sha : baseSha;
 
+  return { ref, sha };
+};
+
+const getBaseMetric = async () => {
+  const { ref, sha } = getBaseRefSha();
   // # if for some reason base ref, sha cannot be defined just skip comparision part
   if (!ref || !sha) {
     return null;
