@@ -1,4 +1,5 @@
 const github = require("@actions/github");
+const core = require("@actions/core");
 
 const {
   setProjectMetric,
@@ -28,6 +29,7 @@ const getBaseMetric = async () => {
 
   const apiKey = getBarecheckApiKey();
 
+  core.info(`Getting metrics from Barecheck. ref=${ref}, sha=${sha}`);
   const metrics = await getProjectMetric(apiKey, ref, sha);
 
   return metrics;
@@ -40,6 +42,9 @@ const sendMetricsToBarecheck = async (coverage) => {
 
   const apiKey = getBarecheckApiKey();
 
+  core.info(
+    `Sending metrics to Barecheck. ref=${ref}, sha=${sha}, coverage=${coverage}`
+  );
   const { projectMetricId } = await setProjectMetric(
     apiKey,
     ref,

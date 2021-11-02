@@ -2,10 +2,12 @@ const sinon = require("sinon");
 const { assert } = require("chai");
 
 const { importMock } = require("../utils");
+const actionsCoreStub = require("../stubs/actionsCore.stub");
 
 const path = "features/barecheckApi";
 
 const defaultStubValues = {
+  ...actionsCoreStub,
   github: {
     context: {
       payload: {
@@ -30,8 +32,16 @@ const defaultStubValues = {
 const barecheckApiMock = importMock(
   path,
   defaultStubValues,
-  ({ github, getProjectMetric, setProjectMetric, getBarecheckApiKey }) => ({
+  ({
+    github,
+    getProjectMetric,
+    setProjectMetric,
+    getBarecheckApiKey,
+    info,
+    getInput
+  }) => ({
     "@actions/github": github,
+    "@actions/core": { getInput, info },
     "../services/barecheckApi": { getProjectMetric, setProjectMetric },
     "../input": { getBarecheckApiKey }
   })

@@ -9932,6 +9932,7 @@ module.exports = { mergeFileLinesWithChangedFiles };
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const github = __nccwpck_require__(5438);
+const core = __nccwpck_require__(2186);
 
 const {
   setProjectMetric,
@@ -9961,6 +9962,7 @@ const getBaseMetric = async () => {
 
   const apiKey = getBarecheckApiKey();
 
+  core.info(`Getting metrics from Barecheck. ref=${ref}, sha=${sha}`);
   const metrics = await getProjectMetric(apiKey, ref, sha);
 
   return metrics;
@@ -9973,6 +9975,9 @@ const sendMetricsToBarecheck = async (coverage) => {
 
   const apiKey = getBarecheckApiKey();
 
+  core.info(
+    `Sending metrics to Barecheck. ref=${ref}, sha=${sha}, coverage=${coverage}`
+  );
   const { projectMetricId } = await setProjectMetric(
     apiKey,
     ref,
