@@ -38,6 +38,9 @@ const getBaseMetric = async () => {
 };
 
 const sendMetricsToBarecheck = async (coverage) => {
+  // eslint-disable-next-line no-console
+  console.log(github.context);
+
   const { ref: fullRef, sha } = github.context;
 
   const ref = cleanRef(fullRef);
