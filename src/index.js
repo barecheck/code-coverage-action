@@ -1,5 +1,4 @@
 const core = require("@actions/core");
-const github = require("@actions/github");
 
 const { checkMinimumRatio } = require("./features/minimumRatio");
 const { sendSummaryComment } = require("./features/sendSummaryComment");
@@ -54,8 +53,6 @@ async function main() {
 }
 
 try {
-  // eslint-disable-next-line no-console
-  console.log(github.context);
   main();
 } catch (err) {
   core.info(err);

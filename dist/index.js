@@ -10879,7 +10879,6 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const core = __nccwpck_require__(2186);
-const github = __nccwpck_require__(5438);
 
 const { checkMinimumRatio } = __nccwpck_require__(3324);
 const { sendSummaryComment } = __nccwpck_require__(7788);
@@ -10934,8 +10933,6 @@ async function main() {
 }
 
 try {
-  // eslint-disable-next-line no-console
-  console.log(github.context);
   main();
 } catch (err) {
   core.info(err);
