@@ -7,11 +7,19 @@ const actionsCoreStub = require("../stubs/actionsCore.stub");
 const defaultMocks = {
   ...actionsCoreStub,
   uncoveredFileLinesByFileNames: () => null,
-  mergeFileLinesWithChangedFiles: () => null
+  mergeFileLinesWithChangedFiles: () => null,
+  github: {
+    context: {
+      payload: {
+        pull_request: {}
+      }
+    }
+  }
 };
 
 const showAnnotationsMock = (mocks) => {
   const {
+    github,
     showAnnotationsInput,
     getChangedFiles,
     uncoveredFileLinesByFileNames,
@@ -25,6 +33,7 @@ const showAnnotationsMock = (mocks) => {
   };
   return proxyquire("../../src/features/showAnnotations", {
     "@actions/core": { getInput, info, setFailed },
+    "@actions/github": github,
     "../github/getChangedFiles": getChangedFiles,
     "../lcov": { uncoveredFileLinesByFileNames },
     "../coverage": { mergeFileLinesWithChangedFiles },
@@ -41,6 +50,26 @@ describe("features/showAnnotations", () => {
       const { showAnnotations } = showAnnotationsMock({
         showAnnotationsInput,
         getChangedFiles
+      });
+
+      await showAnnotations(compareFileData);
+
+      assert.isFalse(getChangedFiles.calledOnce);
+    });
+
+    it("any logic should not be called once there is no pull_request payload", async () => {
+      const showAnnotationsInput = true;
+      const compareFileData = [];
+      const getChangedFiles = sinon.spy();
+      const github = {
+        context: {
+          payload: {}
+        }
+      };
+      const { showAnnotations } = showAnnotationsMock({
+        showAnnotationsInput,
+        getChangedFiles,
+        github
       });
 
       await showAnnotations(compareFileData);

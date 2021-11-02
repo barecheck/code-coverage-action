@@ -1,4 +1,6 @@
 const core = require("@actions/core");
+const github = require("@actions/github");
+
 const getChangedFiles = require("../github/getChangedFiles");
 const { uncoveredFileLinesByFileNames } = require("../lcov");
 const { mergeFileLinesWithChangedFiles } = require("../coverage");
@@ -7,7 +9,7 @@ const { getShowAnnotations } = require("../input");
 const showAnnotations = async (compareFileData) => {
   const showAnnotationsInput = getShowAnnotations();
 
-  if (showAnnotationsInput) {
+  if (showAnnotationsInput && github.context.payload.pull_request) {
     core.info("Show annotations feature enabled");
     const changedFiles = await getChangedFiles();
 

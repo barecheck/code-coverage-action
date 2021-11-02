@@ -9932,6 +9932,7 @@ module.exports = { mergeFileLinesWithChangedFiles };
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const github = __nccwpck_require__(5438);
+const core = __nccwpck_require__(2186);
 
 const {
   setProjectMetric,
@@ -9939,21 +9940,44 @@ const {
 } = __nccwpck_require__(4030);
 const { getBarecheckApiKey } = __nccwpck_require__(6);
 
-const getMetricsFromBaseBranch = async () => {
-  const { ref, sha } = github.context.payload.pull_request.base;
+const cleanRef = (fullRef) =>
+  fullRef ? fullRef.replace("refs/heads/", "") : null;
+
+const getBaseMetric = async () => {
+  const {
+    before: baseSha,
+    base_ref: baseRef,
+    ref: currentRef,
+    pull_request: pullRequest
+  } = github.context.payload;
+
+  const ref = cleanRef(baseRef || currentRef);
+
+  const sha = pullRequest ? pullRequest.base.sha : baseSha;
+
+  // # if for some reason base ref, sha cannot be defined just skip comparision part
+  if (!ref || !sha) {
+    return null;
+  }
 
   const apiKey = getBarecheckApiKey();
 
+  core.info(`Getting metrics from Barecheck. ref=${ref}, sha=${sha}`);
   const metrics = await getProjectMetric(apiKey, ref, sha);
 
   return metrics;
 };
 
 const sendMetricsToBarecheck = async (coverage) => {
-  const { ref, sha } = github.context.payload.pull_request.head;
+  const { ref: fullRef, sha } = github.context;
+
+  const ref = cleanRef(fullRef);
 
   const apiKey = getBarecheckApiKey();
 
+  core.info(
+    `Sending metrics to Barecheck. ref=${ref}, sha=${sha}, coverage=${coverage}`
+  );
   const { projectMetricId } = await setProjectMetric(
     apiKey,
     ref,
@@ -9966,7 +9990,7 @@ const sendMetricsToBarecheck = async (coverage) => {
 
 module.exports = {
   sendMetricsToBarecheck,
-  getMetricsFromBaseBranch
+  getBaseMetric
 };
 
 
@@ -10045,6 +10069,8 @@ module.exports = {
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const core = __nccwpck_require__(2186);
+const github = __nccwpck_require__(5438);
+
 const getChangedFiles = __nccwpck_require__(397);
 const { uncoveredFileLinesByFileNames } = __nccwpck_require__(3318);
 const { mergeFileLinesWithChangedFiles } = __nccwpck_require__(3257);
@@ -10053,7 +10079,7 @@ const { getShowAnnotations } = __nccwpck_require__(6);
 const showAnnotations = async (compareFileData) => {
   const showAnnotationsInput = getShowAnnotations();
 
-  if (showAnnotationsInput) {
+  if (showAnnotationsInput && github.context.payload.pull_request) {
     core.info("Show annotations feature enabled");
     const changedFiles = await getChangedFiles();
 
@@ -10859,7 +10885,7 @@ const { sendSummaryComment } = __nccwpck_require__(7788);
 const { showAnnotations } = __nccwpck_require__(3360);
 const {
   sendMetricsToBarecheck,
-  getMetricsFromBaseBranch
+  getBaseMetric
 } = __nccwpck_require__(4536);
 
 const { getCoverageFromFile } = __nccwpck_require__(4594);
@@ -10877,7 +10903,7 @@ const runFeatures = async (diff, coverage) => {
 // TODO: move to `coverage` service to define priorities from
 // where metrics should be calculated
 const runCodeCoverage = async (coverage, baseFile) => {
-  const baseMetrics = await getMetricsFromBaseBranch();
+  const baseMetrics = await getBaseMetric();
   let baseCoveragePercentage = baseMetrics ? baseMetrics.coverage : 0;
 
   if (!baseCoveragePercentage && baseFile) {

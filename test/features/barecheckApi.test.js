@@ -2,10 +2,12 @@ const sinon = require("sinon");
 const { assert } = require("chai");
 
 const { importMock } = require("../utils");
+const actionsCoreStub = require("../stubs/actionsCore.stub");
 
 const path = "features/barecheckApi";
 
 const defaultStubValues = {
+  ...actionsCoreStub,
   github: {
     context: {
       payload: {
@@ -30,26 +32,35 @@ const defaultStubValues = {
 const barecheckApiMock = importMock(
   path,
   defaultStubValues,
-  ({ github, getProjectMetric, setProjectMetric, getBarecheckApiKey }) => ({
+  ({
+    github,
+    getProjectMetric,
+    setProjectMetric,
+    getBarecheckApiKey,
+    info,
+    getInput
+  }) => ({
     "@actions/github": github,
+    "@actions/core": { getInput, info },
     "../services/barecheckApi": { getProjectMetric, setProjectMetric },
     "../input": { getBarecheckApiKey }
   })
 );
 
 describe(path, () => {
-  describe("getMetricsFromBaseBranch", () => {
+  describe("getBaseMetric", () => {
     it("should return metrics from getProjectMetric barecheck endpoint", async () => {
       const apiKey = "key-1-2-3";
-      const ref = "br";
+      const branchName = "test-branch-name";
+      const ref = `refs/heads/${branchName}`;
       const sha = "sha";
 
       const github = {
         context: {
           payload: {
+            base_ref: ref,
             pull_request: {
               base: {
-                ref,
                 sha
               }
             }
@@ -63,39 +74,66 @@ describe(path, () => {
       const getProjectMetric = sinon.stub().returns(expectedResponse);
       const getBarecheckApiKey = sinon.stub().returns(apiKey);
 
-      const { getMetricsFromBaseBranch } = barecheckApiMock({
+      const { getBaseMetric } = barecheckApiMock({
         getProjectMetric,
         getBarecheckApiKey,
         github
       });
 
-      const actualRes = await getMetricsFromBaseBranch();
+      const actualRes = await getBaseMetric();
 
       assert.isTrue(getProjectMetric.calledOnce);
-      assert.deepEqual(getProjectMetric.firstCall.args, [apiKey, ref, sha]);
+      assert.deepEqual(getProjectMetric.firstCall.args, [
+        apiKey,
+        branchName,
+        sha
+      ]);
 
       assert.deepEqual(actualRes, expectedResponse);
+    });
+
+    it("should return null when ref or sha cannot be defined", async () => {
+      const apiKey = "key-1-2-3";
+
+      const github = {
+        context: {
+          payload: {}
+        }
+      };
+
+      const expectedResponse = {
+        coverage: 123
+      };
+      const getProjectMetric = sinon.stub().returns(expectedResponse);
+      const getBarecheckApiKey = sinon.stub().returns(apiKey);
+
+      const { getBaseMetric } = barecheckApiMock({
+        getProjectMetric,
+        getBarecheckApiKey,
+        github
+      });
+
+      const actualRes = await getBaseMetric();
+
+      assert.isFalse(getProjectMetric.calledOnce);
+
+      assert.isNull(actualRes);
     });
   });
 
   describe("sendMetricsToBarecheck", () => {
     it("should send coverage through barecheckApi service", async () => {
       const apiKey = "key-1-2-3";
-      const ref = "br";
+      const branchName = "test-branch-name";
+      const ref = `refs/heads/${branchName}`;
       const sha = "sha";
       const coverage = 123;
       const projectMetricId = 3;
 
       const github = {
         context: {
-          payload: {
-            pull_request: {
-              head: {
-                ref,
-                sha
-              }
-            }
-          }
+          ref,
+          sha
         }
       };
 
@@ -116,7 +154,7 @@ describe(path, () => {
       assert.isTrue(setProjectMetric.calledOnce);
       assert.deepEqual(setProjectMetric.firstCall.args, [
         apiKey,
-        ref,
+        branchName,
         sha,
         coverage
       ]);
