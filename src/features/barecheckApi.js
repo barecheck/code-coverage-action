@@ -22,6 +22,9 @@ const getBaseMetric = async () => {
 
   const sha = pullRequest ? pullRequest.base.sha : baseSha;
 
+  // eslint-disable-next-line no-console
+  console.log(sha, ref);
+
   // # if for some reason base ref, sha cannot be defined just skip comparision part
   if (!ref || !sha) {
     return null;
