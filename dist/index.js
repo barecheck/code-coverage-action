@@ -9945,16 +9945,11 @@ const cleanRef = (fullRef) =>
   fullRef ? fullRef.replace("refs/heads/", "") : null;
 
 const getBaseMetric = async () => {
-  const {
-    before: baseSha,
-    base_ref: baseRef,
-    ref: currentRef,
-    pull_request: pullRequest
-  } = github.context.payload;
+  const { before: baseSha, pull_request: pullRequest } = github.context.payload;
+  const { ref: currentRef } = github.context;
 
-  // eslint-disable-next-line no-console
-  console.log(baseRef, currentRef, github.context);
-  const ref = cleanRef(baseRef || currentRef);
+  const fullRef = pullRequest ? pullRequest.base.ref : currentRef;
+  const ref = cleanRef(fullRef);
 
   const sha = pullRequest ? pullRequest.base.sha : baseSha;
 
