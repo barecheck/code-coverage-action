@@ -70,10 +70,10 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.base_ref }}
-      - name: Use Node.js v16.11.0
+      - name: Use Node.js 16.11.0
         uses: actions/setup-node@v1
         with:
-          node-version: v16.11.0
+          node-version: 16.11.0
 
       - name: Install dependencies
         run: yarn
@@ -92,10 +92,10 @@ jobs:
     needs: base_branch_cov
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js v16.11.0
+      - name: Use Node.js 16.11.0
         uses: actions/setup-node@v1
         with:
-          node-version: v16.11.0
+          node-version: 16.11.0
 
       - name: Download code coverage report from base branch
         uses: actions/download-artifact@v2
