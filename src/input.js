@@ -27,10 +27,20 @@ const getBarecheckGithubAppToken = () =>
 
 const getBarecheckApiKey = () => core.getInput("barecheck-api-key");
 
+const getLcovFile = () => core.getInput("lcov-file");
+
+const getBaseLcovFile = () => {
+  const baseFile = core.getInput("base-lcov-file");
+
+  return baseFile === "" || baseFile === "false" ? false : baseFile;
+};
+
 module.exports = {
   getShowAnnotations,
   getGithubToken,
   getBarecheckGithubAppToken,
   getBarecheckApiKey,
-  getAppName
+  getAppName,
+  getLcovFile,
+  getBaseLcovFile
 };

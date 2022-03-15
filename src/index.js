@@ -9,6 +9,7 @@ const {
 } = require("./features/barecheckApi");
 
 const { getCoverageFromFile } = require("./services/lcovFile");
+const { getLcovFile, getBaseLcovFile } = require("./input");
 
 const runFeatures = async (diff, coverage) => {
   await sendSummaryComment(diff, coverage.percentage, coverage.data);
@@ -40,8 +41,8 @@ const runCodeCoverage = async (coverage, baseFile) => {
 };
 
 async function main() {
-  const compareFile = core.getInput("lcov-file");
-  const baseFile = core.getInput("base-lcov-file");
+  const compareFile = getLcovFile();
+  const baseFile = getBaseLcovFile();
 
   core.info(`lcov-file: ${compareFile}`);
   core.info(`base-lcov-file: ${baseFile}`);
