@@ -85,4 +85,63 @@ describe("input", () => {
       assert.equal(res, expectedRes);
     });
   });
+
+  describe("getLcovFile", () => {
+    it("should return value from getInput core function", () => {
+      const expectedRes = "path-lcov-file";
+      const getInput = sinon.stub().withArgs("lcov-file").returns(expectedRes);
+
+      const { getLcovFile } = inputMock({ getInput });
+
+      const res = getLcovFile();
+
+      assert.equal(res, expectedRes);
+    });
+  });
+
+  describe("getBaseLcovFile", () => {
+    [
+      { input: "value1", expected: "value1" },
+      { input: "", expected: false },
+      { input: "false", expected: false },
+      { input: "False", expected: false }
+    ].forEach(({ input, expected }) =>
+      it(`should return ${expected} when  'base-lcov-file=${input}'`, () => {
+        const expectedRes = "path-lcov-file";
+        const getInput = sinon
+          .stub()
+          .withArgs("base-lcov-file")
+          .returns(expectedRes);
+
+        const { getBaseLcovFile } = inputMock({ getInput });
+
+        const res = getBaseLcovFile();
+
+        assert.equal(res, expectedRes);
+      })
+    );
+  });
+
+  describe("getBarecheckApiKey", () => {
+    [
+      { input: "value1", expected: "value1" },
+      { input: "", expected: false },
+      { input: "false", expected: false },
+      { input: "False", expected: false }
+    ].forEach(({ input, expected }) =>
+      it(`should return ${expected} when  'barecheck-api-key=${input}'`, () => {
+        const expectedRes = "path-lcov-file";
+        const getInput = sinon
+          .stub()
+          .withArgs("barecheck-api-key")
+          .returns(expectedRes);
+
+        const { getBarecheckApiKey } = inputMock({ getInput });
+
+        const res = getBarecheckApiKey();
+
+        assert.equal(res, expectedRes);
+      })
+    );
+  });
 });

@@ -1,7 +1,7 @@
 const core = require("@actions/core");
 
 const valueOrFalse = (value) =>
-  value === "" || value === "false" ? false : value;
+  value === "" || value.toLowerCase() === "false" ? false : value;
 
 const getShowAnnotations = () => {
   const availableAnnotations = ["warning", "error"];
