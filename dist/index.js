@@ -51589,12 +51589,12 @@ const sendSummaryComment = async (
 
     const title = "Code coverage report";
 
-    const body = getCoverageReportBody(
+    const body = getCoverageReportBody({
       changedFiles,
       title,
       coverageDiff,
       totalCoverage
-    );
+    });
 
     const octokit = githubApi.createOctokitClient(appToken);
     // we can add an option how comments should be added create | update | none
