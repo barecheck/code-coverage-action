@@ -23,6 +23,9 @@ const sendSummaryComment = async (
     });
 
     const octokit = githubApi.createOctokitClient(appToken);
+
+    // eslint-disable-next-line no-console
+    console.log(octokit);
     // we can add an option how comments should be added create | update | none
     await githubApi.createOrUpdateComment(octokit, {
       owner: "barecheck",
