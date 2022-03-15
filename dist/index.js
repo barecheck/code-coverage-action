@@ -51596,7 +51596,7 @@ const sendSummaryComment = async (
       totalCoverage
     });
 
-    const octokit = githubApi.createOctokitClient(appToken);
+    const octokit = await githubApi.createOctokitClient(appToken);
 
     // eslint-disable-next-line no-console
     console.log(octokit);
