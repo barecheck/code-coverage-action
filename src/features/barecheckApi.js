@@ -23,13 +23,13 @@ const getBaseRefSha = () => {
 };
 
 const getBaseMetric = async () => {
+  const apiKey = getBarecheckApiKey();
+
   const { ref, sha } = getBaseRefSha();
   // # if for some reason base ref, sha cannot be defined just skip comparision part
   if (!ref || !sha) {
     return null;
   }
-
-  const apiKey = getBarecheckApiKey();
 
   core.info(`Getting metrics from Barecheck. ref=${ref}, sha=${sha}`);
   const metrics = await getProjectMetric(apiKey, ref, sha);

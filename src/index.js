@@ -9,13 +9,17 @@ const {
 } = require("./features/barecheckApi");
 
 const { getCoverageFromFile } = require("./services/lcovFile");
+const { getLcovFile, getBaseLcovFile, getBarecheckApiKey } = require("./input");
 
 const runFeatures = async (diff, coverage) => {
   await sendSummaryComment(diff, coverage.percentage, coverage.data);
   checkMinimumRatio(diff);
   await showAnnotations(coverage.data);
 
-  await sendMetricsToBarecheck(coverage.percentage);
+  if (getBarecheckApiKey()) {
+    await sendMetricsToBarecheck(coverage.percentage);
+  }
+
   core.setOutput("percentage", coverage.percentage);
   core.setOutput("diff", diff);
 };
@@ -23,7 +27,7 @@ const runFeatures = async (diff, coverage) => {
 // TODO: move to `coverage` service to define priorities from
 // where metrics should be calculated
 const runCodeCoverage = async (coverage, baseFile) => {
-  const baseMetrics = await getBaseMetric();
+  const baseMetrics = getBarecheckApiKey() ? await getBaseMetric() : false;
   let baseCoveragePercentage = baseMetrics ? baseMetrics.coverage : 0;
 
   if (!baseCoveragePercentage && baseFile) {
@@ -40,8 +44,8 @@ const runCodeCoverage = async (coverage, baseFile) => {
 };
 
 async function main() {
-  const compareFile = core.getInput("lcov-file");
-  const baseFile = core.getInput("base-lcov-file");
+  const compareFile = getLcovFile();
+  const baseFile = getBaseLcovFile();
 
   core.info(`lcov-file: ${compareFile}`);
   core.info(`base-lcov-file: ${baseFile}`);

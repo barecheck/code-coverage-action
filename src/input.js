@@ -1,5 +1,8 @@
 const core = require("@actions/core");
 
+const valueOrFalse = (value) =>
+  value === "" || value.toLowerCase() === "false" ? false : value;
+
 const getShowAnnotations = () => {
   const availableAnnotations = ["warning", "error"];
 
@@ -25,12 +28,19 @@ const getAppName = () => core.getInput("app-name");
 const getBarecheckGithubAppToken = () =>
   core.getInput("barecheck-github-app-token");
 
-const getBarecheckApiKey = () => core.getInput("barecheck-api-key");
+const getBarecheckApiKey = () =>
+  valueOrFalse(core.getInput("barecheck-api-key"));
+
+const getLcovFile = () => core.getInput("lcov-file");
+
+const getBaseLcovFile = () => valueOrFalse(core.getInput("base-lcov-file"));
 
 module.exports = {
   getShowAnnotations,
   getGithubToken,
   getBarecheckGithubAppToken,
   getBarecheckApiKey,
-  getAppName
+  getAppName,
+  getLcovFile,
+  getBaseLcovFile
 };
