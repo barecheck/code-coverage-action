@@ -51838,6 +51838,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
+/* eslint-disable no-console */
 const core = __nccwpck_require__(42186);
 
 const { parseLcovFile } = __nccwpck_require__(47127);
@@ -51847,7 +51848,10 @@ const { getLcovFile, getBaseLcovFile } = __nccwpck_require__(70006);
 const sendSummaryComment = __nccwpck_require__(92599);
 
 const runFeatures = async (diff, coverage) => {
+  console.log(coverage);
+  console.log(coverage.data);
   await sendSummaryComment(coverage.data, coverage.percentage, coverage.data);
+
   // checkMinimumRatio(diff);
   // await showAnnotations(coverage.data);
 

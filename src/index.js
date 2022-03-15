@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const core = require("@actions/core");
 
 const { parseLcovFile } = require("barecheck");
@@ -7,7 +8,10 @@ const { getLcovFile, getBaseLcovFile } = require("./input");
 const sendSummaryComment = require("./services/sendSummaryComment");
 
 const runFeatures = async (diff, coverage) => {
+  console.log(coverage);
+  console.log(coverage.data);
   await sendSummaryComment(coverage.data, coverage.percentage, coverage.data);
+
   // checkMinimumRatio(diff);
   // await showAnnotations(coverage.data);
 
