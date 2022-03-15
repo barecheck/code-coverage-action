@@ -1,32 +1,28 @@
 const github = require("@actions/github");
 const core = require("@actions/core");
-const getChangedFiles = require("../github/getChangedFiles");
-const createOrUpdateComment = require("../github/createOrUpdateComment");
-const buildBody = require("../github/comment/buildBody");
-
-const { buildGithubCommentTitle } = require("../github/utils");
+const { getCoverageReportBody, githubApi } = require("barecheck");
 
 const sendSummaryComment = async (
+  changedFiles,
   coverageDiff,
-  totalCoverage,
-  compareFileData
+  totalCoverage
 ) => {
   const sendSummaryCommentInput = core.getInput("send-summary-comment");
 
   if (sendSummaryCommentInput && github.context.payload.pull_request) {
     core.info(`send-summary-comment is enabled for this workflow`);
 
-    const changedFiles = await getChangedFiles();
+    const title = "Code coverage report";
 
-    const body = buildBody(
+    const body = getCoverageReportBody(
       changedFiles,
+      title,
       coverageDiff,
-      totalCoverage,
-      compareFileData
+      totalCoverage
     );
-    const githubCommentTitle = buildGithubCommentTitle();
+
     // we can add an option how comments should be added create | update | none
-    await createOrUpdateComment(githubCommentTitle, body);
+    await githubApi.createOrUpdateComment(title, body);
   }
 };
 
