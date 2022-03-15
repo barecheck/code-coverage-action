@@ -9712,7 +9712,7 @@ module.exports = {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.barecheckApiUrl = exports.currentDir = void 0;
 exports.currentDir = process.cwd();
-exports.barecheckApiUrl = process.env.BARECHECK_API_URL || 'https://api.barecheck.com/graphql';
+exports.barecheckApiUrl = process.env.BARECHECK_API_URL || 'https://barecheck.vercel.app/api/graphql';
 //# sourceMappingURL=config.js.map
 
 /***/ }),
