@@ -10,12 +10,12 @@ const defaultMocks = {
 
 const minCoverageRatioMock = (mocks) => {
   const { getInput, info, setFailed } = { ...defaultMocks, ...mocks };
-  return proxyquire("../../src/features/minimumRatio", {
+  return proxyquire("../../src/services/minimumRatio", {
     "@actions/core": { getInput, info, setFailed }
   });
 };
 
-describe("features/minCoverageRatio", () => {
+describe("services/minCoverageRatio", () => {
   describe("checkMinimumRatio", () => {
     it("error shouldn't be thrown once feature is not enabled", () => {
       const minCoverageRatio = NaN;
@@ -27,7 +27,7 @@ describe("features/minCoverageRatio", () => {
         .returns(minCoverageRatio);
       const setFailed = sinon.spy();
 
-      const { checkMinimumRatio } = minCoverageRatioMock({
+      const checkMinimumRatio = minCoverageRatioMock({
         getInput,
         setFailed
       });
@@ -47,7 +47,7 @@ describe("features/minCoverageRatio", () => {
         .returns(minCoverageRatio);
       const setFailed = sinon.spy();
 
-      const { checkMinimumRatio } = minCoverageRatioMock({
+      const checkMinimumRatio = minCoverageRatioMock({
         getInput,
         setFailed
       });
@@ -67,7 +67,7 @@ describe("features/minCoverageRatio", () => {
         .returns(minCoverageRatio);
       const setFailed = sinon.spy();
 
-      const { checkMinimumRatio } = minCoverageRatioMock({
+      const checkMinimumRatio = minCoverageRatioMock({
         getInput,
         setFailed
       });
@@ -88,7 +88,7 @@ describe("features/minCoverageRatio", () => {
 
       const setFailed = sinon.spy();
 
-      const { checkMinimumRatio } = minCoverageRatioMock({
+      const checkMinimumRatio = minCoverageRatioMock({
         getInput,
         setFailed
       });
