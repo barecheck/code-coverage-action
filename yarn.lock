@@ -691,10 +691,10 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
   integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
 
-barecheck@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/barecheck/-/barecheck-0.2.0.tgz#b1e4b41c5609133f8ea627eb7a832d4b240b53b6"
-  integrity sha512-QyAs7dSuCq6odCq/4iGM/LU1+zP1CwyRntOZ2ltil0d/vL9cxYFae40qIJZIOZuwlsxqiWy132UotuHACfL5Mg==
+barecheck@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/barecheck/-/barecheck-0.3.1.tgz#ad522afb688bdf189ccb6ebb968e070bb5a0289a"
+  integrity sha512-wqlK24XOmJnPcNG/ceZNNVeYFWiXfPyLvG7HBbtsCn6iD47jYsrFXBSN6HjT33saIIxxInJdAa6bLK8YDUHRkQ==
   dependencies:
     "@jscpd/core" "^3.4.1"
     "@jscpd/finder" "^3.4.1"
