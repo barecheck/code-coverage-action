@@ -8,6 +8,7 @@ const sendSummaryComment = async (
   totalCoverage
 ) => {
   const sendSummaryCommentInput = core.getInput("send-summary-comment");
+  const appToken = core.getInput("barecheck-github-app-token");
 
   if (sendSummaryCommentInput && github.context.payload.pull_request) {
     core.info(`send-summary-comment is enabled for this workflow`);
@@ -21,11 +22,16 @@ const sendSummaryComment = async (
       totalCoverage
     );
 
+    const octokit = githubApi.createOctokitClient(appToken);
     // we can add an option how comments should be added create | update | none
-    await githubApi.createOrUpdateComment(title, body);
+    await githubApi.createOrUpdateComment(octokit, {
+      owner: "barecheck",
+      repo: "code-coverage-action",
+      issueNumber: "154",
+      searchBody: title,
+      body
+    });
   }
 };
 
-module.exports = {
-  sendSummaryComment
-};
+module.exports = sendSummaryComment;

@@ -32,6 +32,4 @@ const showAnnotations = async (coverageData) => {
   }
 };
 
-module.exports = {
-  showAnnotations
-};
+module.exports = showAnnotations;

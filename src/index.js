@@ -4,37 +4,38 @@ const { parseLcovFile } = require("barecheck");
 
 const { getLcovFile, getBaseLcovFile } = require("./input");
 
-// const runFeatures = async (diff, coverage) => {
-//   await sendSummaryComment(diff, coverage.percentage, coverage.data);
-//   checkMinimumRatio(diff);
-//   await showAnnotations(coverage.data);
+const sendSummaryComment = require("./services/sendSummaryComment");
 
-//   if (getBarecheckApiKey()) {
-//     await sendMetricsToBarecheck(coverage.percentage);
-//   }
+const runFeatures = async (diff, coverage) => {
+  await sendSummaryComment(coverage.data, coverage.percentage, coverage.data);
+  // checkMinimumRatio(diff);
+  // await showAnnotations(coverage.data);
 
-//   core.setOutput("percentage", coverage.percentage);
-//   core.setOutput("diff", diff);
-// };
+  // if (getBarecheckApiKey()) {
+  //   await sendMetricsToBarecheck(coverage.percentage);
+  // }
 
-// TODO: move to `coverage` service to define priorities from
-// where metrics should be calculated
-// const runCodeCoverage = async (coverage, baseFile) => {
-//   const baseMetrics = getBarecheckApiKey() ? await getBaseMetric() : false;
-//   let baseCoveragePercentage = baseMetrics ? baseMetrics.coverage : 0;
+  core.setOutput("percentage", coverage.percentage);
+  core.setOutput("diff", diff);
+};
 
-//   if (!baseCoveragePercentage && baseFile) {
-//     const baseCoverage = await getCoverageFromFile(baseFile);
-//     baseCoveragePercentage = baseCoverage.percentage;
-//   }
+const runCodeCoverage = async (coverage) => {
+  // const baseMetrics = getBarecheckApiKey() ? await getBaseMetric() : false;
+  // let baseCoveragePercentage = baseMetrics ? baseMetrics.coverage : 0;
 
-//   core.info(`Base branch code coverage: ${baseCoveragePercentage}%`);
+  // if (!baseCoveragePercentage && baseFile) {
+  //   const baseCoverage = await getCoverageFromFile(baseFile);
+  //   baseCoveragePercentage = baseCoverage.percentage;
+  // }
 
-//   const diff = (coverage.percentage - baseCoveragePercentage).toFixed(2);
-//   core.info(`Code coverage diff: ${diff}%`);
+  // core.info(`Base branch code coverage: ${baseCoveragePercentage}%`);
 
-//   await runFeatures(diff, coverage);
-// };
+  // const diff = (coverage.percentage - baseCoveragePercentage).toFixed(2);
+  const diff = 0;
+  core.info(`Code coverage diff: ${diff}%`);
+
+  await runFeatures(diff, coverage);
+};
 
 async function main() {
   process.env.BARECHECK_API_URL = "https://barecheck.vercel.app/api/graphql";
@@ -49,7 +50,7 @@ async function main() {
   core.info(`Current code coverage: ${coverage.percentage}%`);
   core.info(`Current code coverage: ${coverage.data}%`);
 
-  // await runCodeCoverage(coverage, baseFile);
+  await runCodeCoverage(coverage, baseFile);
 }
 
 try {
