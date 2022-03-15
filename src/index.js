@@ -9,7 +9,7 @@ const {
 } = require("./features/barecheckApi");
 
 const { getCoverageFromFile } = require("./services/lcovFile");
-const { getLcovFile, getBaseLcovFile } = require("./input");
+const { getLcovFile, getBaseLcovFile, getBarecheckApiKey } = require("./input");
 
 const runFeatures = async (diff, coverage) => {
   await sendSummaryComment(diff, coverage.percentage, coverage.data);
@@ -24,7 +24,7 @@ const runFeatures = async (diff, coverage) => {
 // TODO: move to `coverage` service to define priorities from
 // where metrics should be calculated
 const runCodeCoverage = async (coverage, baseFile) => {
-  const baseMetrics = await getBaseMetric();
+  const baseMetrics = getBarecheckApiKey() ? await getBaseMetric() : false;
   let baseCoveragePercentage = baseMetrics ? baseMetrics.coverage : 0;
 
   if (!baseCoveragePercentage && baseFile) {

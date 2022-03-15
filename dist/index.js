@@ -10622,13 +10622,13 @@ const getBaseRefSha = () => {
 };
 
 const getBaseMetric = async () => {
+  const apiKey = getBarecheckApiKey();
+
   const { ref, sha } = getBaseRefSha();
   // # if for some reason base ref, sha cannot be defined just skip comparision part
   if (!ref || !sha) {
     return null;
   }
-
-  const apiKey = getBarecheckApiKey();
 
   core.info(`Getting metrics from Barecheck. ref=${ref}, sha=${sha}`);
   const metrics = await getProjectMetric(apiKey, ref, sha);
@@ -11092,6 +11092,9 @@ module.exports = {
 
 const core = __nccwpck_require__(2186);
 
+const valueOrFalse = (value) =>
+  value === "" || value === "false" ? false : value;
+
 const getShowAnnotations = () => {
   const availableAnnotations = ["warning", "error"];
 
@@ -11117,15 +11120,12 @@ const getAppName = () => core.getInput("app-name");
 const getBarecheckGithubAppToken = () =>
   core.getInput("barecheck-github-app-token");
 
-const getBarecheckApiKey = () => core.getInput("barecheck-api-key");
+const getBarecheckApiKey = () =>
+  valueOrFalse(core.getInput("barecheck-api-key"));
 
 const getLcovFile = () => core.getInput("lcov-file");
 
-const getBaseLcovFile = () => {
-  const baseFile = core.getInput("base-lcov-file");
-
-  return baseFile === "" || baseFile === "false" ? false : baseFile;
-};
+const getBaseLcovFile = () => valueOrFalse(core.getInput("base-lcov-file"));
 
 module.exports = {
   getShowAnnotations,
@@ -11561,7 +11561,7 @@ const {
 } = __nccwpck_require__(4536);
 
 const { getCoverageFromFile } = __nccwpck_require__(4594);
-const { getLcovFile, getBaseLcovFile } = __nccwpck_require__(6);
+const { getLcovFile, getBaseLcovFile, getBarecheckApiKey } = __nccwpck_require__(6);
 
 const runFeatures = async (diff, coverage) => {
   await sendSummaryComment(diff, coverage.percentage, coverage.data);
@@ -11576,7 +11576,7 @@ const runFeatures = async (diff, coverage) => {
 // TODO: move to `coverage` service to define priorities from
 // where metrics should be calculated
 const runCodeCoverage = async (coverage, baseFile) => {
-  const baseMetrics = await getBaseMetric();
+  const baseMetrics = getBarecheckApiKey() ? await getBaseMetric() : false;
   let baseCoveragePercentage = baseMetrics ? baseMetrics.coverage : 0;
 
   if (!baseCoveragePercentage && baseFile) {
