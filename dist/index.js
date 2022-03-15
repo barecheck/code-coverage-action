@@ -11093,7 +11093,7 @@ module.exports = {
 const core = __nccwpck_require__(2186);
 
 const valueOrFalse = (value) =>
-  value === "" || value === "false" ? false : value;
+  value === "" || value.toLowerCase() === "false" ? false : value;
 
 const getShowAnnotations = () => {
   const availableAnnotations = ["warning", "error"];
