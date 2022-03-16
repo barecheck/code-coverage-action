@@ -13554,19 +13554,22 @@ const runFeatures = async (diff, coverage) => {
   const { repo, owner, pullNumber } = getPullRequestContext();
   const octokit = await getOctokit();
 
-  const changedFiles = await githubApi.getChangedFiles(octokit, {
-    repo,
-    owner,
-    pullNumber
-  });
+  const changedFiles = await githubApi
+    .getChangedFiles(octokit, {
+      repo,
+      owner,
+      pullNumber
+    })
+    .map(({ filename }) => filename);
 
-  // eslint-disable-next-line no-console
-  console.log("change files", changedFiles);
+  const changedData = coverage.data.filter((file) =>
+    changedFiles.includes(file)
+  );
 
-  await sendSummaryComment(coverage.data, diff, coverage.percentage);
+  await sendSummaryComment(changedData, diff, coverage.percentage);
 
   // checkMinimumRatio(diff);
-  await showAnnotations(coverage.data);
+  await showAnnotations(changedData);
 
   // if (getBarecheckApiKey()) {
   //   await sendMetricsToBarecheck(coverage.percentage);
