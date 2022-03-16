@@ -10,7 +10,7 @@ const showAnnotations = require("./services/showAnnotations");
 
 const runFeatures = async (diff, coverage) => {
   const { repo, owner, pullNumber } = getPullRequestContext();
-  const octokit = getOctokit();
+  const octokit = await getOctokit();
 
   const changedFiles = await githubApi.getChangedFiles(octokit, {
     repo,

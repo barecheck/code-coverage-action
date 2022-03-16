@@ -13260,9 +13260,9 @@ const getPullRequestContext = () => {
   };
 };
 
-const getOctokit = () => {
+const getOctokit = async () => {
   if (!octokit)
-    octokit = githubApi.createOctokitClient(
+    octokit = await githubApi.createOctokitClient(
       getBarecheckGithubAppToken(),
       getGithubToken()
     );
@@ -13552,7 +13552,7 @@ const showAnnotations = __nccwpck_require__(5100);
 
 const runFeatures = async (diff, coverage) => {
   const { repo, owner, pullNumber } = getPullRequestContext();
-  const octokit = getOctokit();
+  const octokit = await getOctokit();
 
   const changedFiles = await githubApi.getChangedFiles(octokit, {
     repo,

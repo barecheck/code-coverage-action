@@ -17,9 +17,9 @@ const getPullRequestContext = () => {
   };
 };
 
-const getOctokit = () => {
+const getOctokit = async () => {
   if (!octokit)
-    octokit = githubApi.createOctokitClient(
+    octokit = await githubApi.createOctokitClient(
       getBarecheckGithubAppToken(),
       getGithubToken()
     );
