@@ -13562,7 +13562,7 @@ const runFeatures = async (diff, coverage) => {
 
   const changedFilesNames = changedFiles.map(({ filename }) => filename);
 
-  const changedData = coverage.data.filter((file) =>
+  const changedData = coverage.data.filter(({ file }) =>
     changedFilesNames.includes(file)
   );
 
