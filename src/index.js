@@ -1,17 +1,30 @@
-/* eslint-disable no-console */
 const core = require("@actions/core");
 
-const { parseLcovFile } = require("barecheck");
+const { parseLcovFile, githubApi } = require("barecheck");
 
 const { getLcovFile, getBaseLcovFile } = require("./input");
+const { getPullRequestContext, getOctokit } = require("./lib/github");
 
 const sendSummaryComment = require("./services/sendSummaryComment");
+const showAnnotations = require("./services/showAnnotations");
 
 const runFeatures = async (diff, coverage) => {
+  const { repo, owner, pullNumber } = getPullRequestContext();
+  const octokit = getOctokit();
+
+  const changedFiles = await githubApi.getChangedFiles(octokit, {
+    repo,
+    owner,
+    pullNumber
+  });
+
+  // eslint-disable-next-line no-console
+  console.log("change files", changedFiles);
+
   await sendSummaryComment(coverage.data, diff, coverage.percentage);
 
   // checkMinimumRatio(diff);
-  // await showAnnotations(coverage.data);
+  await showAnnotations(coverage.data);
 
   // if (getBarecheckApiKey()) {
   //   await sendMetricsToBarecheck(coverage.percentage);

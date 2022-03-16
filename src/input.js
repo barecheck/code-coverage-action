@@ -21,12 +21,12 @@ const getShowAnnotations = () => {
   return showAnnotations;
 };
 
-const getGithubToken = () => core.getInput("github-token");
+const getGithubToken = () => valueOrFalse(core.getInput("github-token"));
 
-const getAppName = () => core.getInput("app-name");
+const getAppName = () => valueOrFalse(core.getInput("app-name"));
 
 const getBarecheckGithubAppToken = () =>
-  core.getInput("barecheck-github-app-token");
+  valueOrFalse(core.getInput("barecheck-github-app-token"));
 
 const getBarecheckApiKey = () =>
   valueOrFalse(core.getInput("barecheck-api-key"));

@@ -10,8 +10,6 @@ const showAnnotations = async (coverageData) => {
 
   if (showAnnotationsInput && github.context.payload.pull_request) {
     core.info("Show annotations feature enabled");
-    // TODO: show annotation only for changed files
-    // const changedFiles = await githubApi.getChangedFiles();
 
     coverageData.forEach(({ file, lines }) => {
       lines.forEach((line) => {
