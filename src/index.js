@@ -8,9 +8,7 @@ const { getLcovFile, getBaseLcovFile } = require("./input");
 const sendSummaryComment = require("./services/sendSummaryComment");
 
 const runFeatures = async (diff, coverage) => {
-  console.log(coverage);
-  console.log(coverage.data);
-  await sendSummaryComment(coverage.data, coverage.percentage, coverage.data);
+  await sendSummaryComment(coverage.data, diff, coverage.percentage);
 
   // checkMinimumRatio(diff);
   // await showAnnotations(coverage.data);
@@ -42,8 +40,6 @@ const runCodeCoverage = async (coverage) => {
 };
 
 async function main() {
-  process.env.BARECHECK_API_URL = "https://barecheck.vercel.app/api/graphql";
-
   const compareFile = getLcovFile();
   const baseFile = getBaseLcovFile();
 
@@ -52,7 +48,6 @@ async function main() {
 
   const coverage = await parseLcovFile(compareFile);
   core.info(`Current code coverage: ${coverage.percentage}%`);
-  core.info(`Current code coverage: ${coverage.data}%`);
 
   await runCodeCoverage(coverage, baseFile);
 }

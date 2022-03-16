@@ -6298,8 +6298,6 @@ const sendSummaryComment = async (
 
     const octokit = await githubApi.createOctokitClient(appToken);
 
-    // eslint-disable-next-line no-console
-    console.log(octokit);
     // we can add an option how comments should be added create | update | none
     await githubApi.createOrUpdateComment(octokit, {
       owner: "barecheck",
@@ -6511,9 +6509,7 @@ const { getLcovFile, getBaseLcovFile } = __nccwpck_require__(6);
 const sendSummaryComment = __nccwpck_require__(2599);
 
 const runFeatures = async (diff, coverage) => {
-  console.log(coverage);
-  console.log(coverage.data);
-  await sendSummaryComment(coverage.data, coverage.percentage, coverage.data);
+  await sendSummaryComment(coverage.data, diff, coverage.percentage);
 
   // checkMinimumRatio(diff);
   // await showAnnotations(coverage.data);
@@ -6545,8 +6541,6 @@ const runCodeCoverage = async (coverage) => {
 };
 
 async function main() {
-  process.env.BARECHECK_API_URL = "https://barecheck.vercel.app/api/graphql";
-
   const compareFile = getLcovFile();
   const baseFile = getBaseLcovFile();
 
@@ -6555,7 +6549,6 @@ async function main() {
 
   const coverage = await parseLcovFile(compareFile);
   core.info(`Current code coverage: ${coverage.percentage}%`);
-  core.info(`Current code coverage: ${coverage.data}%`);
 
   await runCodeCoverage(coverage, baseFile);
 }
