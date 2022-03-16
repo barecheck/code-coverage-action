@@ -24,6 +24,9 @@ const runFeatures = async (diff, coverage) => {
     changedFilesNames.includes(file)
   );
 
+  // eslint-disable-next-line no-console
+  console.log(coverage.data, changedFilesNames);
+
   await sendSummaryComment(changedData, diff, coverage.percentage);
 
   // checkMinimumRatio(diff);
