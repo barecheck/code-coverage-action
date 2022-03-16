@@ -13554,16 +13554,16 @@ const runFeatures = async (diff, coverage) => {
   const { repo, owner, pullNumber } = getPullRequestContext();
   const octokit = await getOctokit();
 
-  const changedFiles = await githubApi
-    .getChangedFiles(octokit, {
-      repo,
-      owner,
-      pullNumber
-    })
-    .map(({ filename }) => filename);
+  const changedFiles = await githubApi.getChangedFiles(octokit, {
+    repo,
+    owner,
+    pullNumber
+  });
+
+  const changedFilesNames = changedFiles.map(({ filename }) => filename);
 
   const changedData = coverage.data.filter((file) =>
-    changedFiles.includes(file)
+    changedFilesNames.includes(file)
   );
 
   await sendSummaryComment(changedData, diff, coverage.percentage);
