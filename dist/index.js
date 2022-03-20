@@ -13278,6 +13278,31 @@ module.exports = {
 
 /***/ }),
 
+/***/ 8329:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const core = __nccwpck_require__(2186);
+
+const checkMinimumRatio = (coverageDiff) => {
+  const minCoverageRatio = parseInt(core.getInput("minimum-ratio"), 10);
+
+  core.info(`minimum-ratio: ${minCoverageRatio}`);
+
+  if (minCoverageRatio >= 0) {
+    core.info(`minimum-ratio is enabled for this workflow`);
+    const coverageDiffAlert = Number(coverageDiff) + minCoverageRatio;
+
+    if (coverageDiffAlert < 0) {
+      core.setFailed("Code coverage is less than minimum code coverage ratio");
+    }
+  } else core.info(`minimum-ratio is disabled for this workflow`);
+};
+
+module.exports = checkMinimumRatio;
+
+
+/***/ }),
+
 /***/ 2599:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -13549,6 +13574,7 @@ const { getPullRequestContext, getOctokit } = __nccwpck_require__(8383);
 
 const sendSummaryComment = __nccwpck_require__(2599);
 const showAnnotations = __nccwpck_require__(5100);
+const checkMinimumRatio = __nccwpck_require__(8329);
 
 const runFeatures = async (diff, coverage) => {
   const { repo, owner, pullNumber } = getPullRequestContext();
@@ -13566,12 +13592,9 @@ const runFeatures = async (diff, coverage) => {
     changedFilesNames.includes(file)
   );
 
-  // eslint-disable-next-line no-console
-  console.log(coverage.data, changedFilesNames);
-
   await sendSummaryComment(changedData, diff, coverage.percentage);
 
-  // checkMinimumRatio(diff);
+  await checkMinimumRatio(diff);
   await showAnnotations(changedData);
 
   // if (getBarecheckApiKey()) {

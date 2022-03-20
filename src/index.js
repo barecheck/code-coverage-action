@@ -7,6 +7,7 @@ const { getPullRequestContext, getOctokit } = require("./lib/github");
 
 const sendSummaryComment = require("./services/sendSummaryComment");
 const showAnnotations = require("./services/showAnnotations");
+const checkMinimumRatio = require("./services/minimumRatio");
 
 const runFeatures = async (diff, coverage) => {
   const { repo, owner, pullNumber } = getPullRequestContext();
@@ -24,12 +25,9 @@ const runFeatures = async (diff, coverage) => {
     changedFilesNames.includes(file)
   );
 
-  // eslint-disable-next-line no-console
-  console.log(coverage.data, changedFilesNames);
-
   await sendSummaryComment(changedData, diff, coverage.percentage);
 
-  // checkMinimumRatio(diff);
+  await checkMinimumRatio(diff);
   await showAnnotations(changedData);
 
   // if (getBarecheckApiKey()) {
