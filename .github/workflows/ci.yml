@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - fix-branch-metrics-send
   pull_request:
 
 jobs:
