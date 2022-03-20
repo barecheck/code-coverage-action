@@ -13265,7 +13265,7 @@ const getBaseBranchCoverage = async () => {
     apiKey
   });
 
-  const coverageMetrics = barecheckApi.coverageMetrics(accessToken, {
+  const coverageMetrics = await barecheckApi.coverageMetrics(accessToken, {
     projectId: project.id,
     ref,
     sha,
