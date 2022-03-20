@@ -4,6 +4,8 @@ const { parseLcovFile } = require("barecheck");
 
 const { getLcovFile } = require("./input");
 
+const { sendCurrentCoverage } = require("./lib/api");
+
 const sendSummaryComment = require("./services/sendSummaryComment");
 const showAnnotations = require("./services/showAnnotations");
 const checkMinimumRatio = require("./services/minimumRatio");
@@ -19,6 +21,7 @@ const runCodeCoverage = async (coverage) => {
 
   await checkMinimumRatio(diff);
   await showAnnotations(changedFilesCoverage);
+  await sendCurrentCoverage(coverage.percentage);
 
   core.setOutput("percentage", coverage.percentage);
   core.setOutput("diff", diff);

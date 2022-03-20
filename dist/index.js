@@ -13248,8 +13248,30 @@ module.exports = {
 const core = __nccwpck_require__(2186);
 const { barecheckApi } = __nccwpck_require__(4044);
 
-const { getBaseRefSha } = __nccwpck_require__(8383);
+const { getBaseRefSha, getCurrentRefSha } = __nccwpck_require__(8383);
 const { getBarecheckApiKey } = __nccwpck_require__(6);
+
+let projectAuthState = false;
+
+const authProject = async () => {
+  if (!projectAuthState) {
+    const apiKey = getBarecheckApiKey();
+
+    const authProjectRes = await barecheckApi.authProject({
+      apiKey
+    });
+    projectAuthState = {
+      projectId: authProjectRes.project.id,
+      accessToken: authProjectRes.accessToken
+    };
+  }
+
+  return projectAuthState;
+};
+
+const cleanAuthProject = () => {
+  projectAuthState = false;
+};
 
 const getBaseBranchCoverage = async () => {
   const { ref, sha } = getBaseRefSha();
@@ -13258,28 +13280,41 @@ const getBaseBranchCoverage = async () => {
     return null;
   }
 
-  const apiKey = getBarecheckApiKey();
-
   core.info(`Getting metrics from Barecheck. ref=${ref}, sha=${sha}`);
-  const { project, accessToken } = await barecheckApi.authProject({
-    apiKey
-  });
+
+  const { projectId, accessToken } = await authProject();
 
   const coverageMetrics = await barecheckApi.coverageMetrics(accessToken, {
-    projectId: project.id,
+    projectId,
     ref,
     sha,
     take: 1
   });
 
-  // eslint-disable-next-line no-console
-  console.log(coverageMetrics);
+  return coverageMetrics[0] ? coverageMetrics[0].totalCoverage : false;
+};
 
-  return coverageMetrics;
+const sendCurrentCoverage = async (totalCoverage) => {
+  const { ref, sha } = getCurrentRefSha();
+
+  core.info(
+    `Sending metrics to Barecheck. ref=${ref}, sha=${sha}, coverage=${totalCoverage}`
+  );
+
+  const { projectId, accessToken } = await authProject();
+
+  await barecheckApi.createCoverageMetric(accessToken, {
+    projectId,
+    ref,
+    sha,
+    totalCoverage
+  });
 };
 
 module.exports = {
-  getBaseBranchCoverage
+  getBaseBranchCoverage,
+  sendCurrentCoverage,
+  cleanAuthProject
 };
 
 
@@ -13324,6 +13359,14 @@ const getBaseRefSha = () => {
   return { ref, sha };
 };
 
+const getCurrentRefSha = () => {
+  const { ref: fullRef, sha } = github.context;
+
+  const ref = cleanRef(fullRef);
+
+  return { ref, sha };
+};
+
 const getOctokit = async () => {
   if (!octokit)
     octokit = await githubApi.createOctokitClient(
@@ -13342,7 +13385,8 @@ module.exports = {
   getPullRequestContext,
   getOctokit,
   cleanOctokit,
-  getBaseRefSha
+  getBaseRefSha,
+  getCurrentRefSha
 };
 
 
@@ -13710,6 +13754,8 @@ const { parseLcovFile } = __nccwpck_require__(4044);
 
 const { getLcovFile } = __nccwpck_require__(6);
 
+const { sendCurrentCoverage } = __nccwpck_require__(2069);
+
 const sendSummaryComment = __nccwpck_require__(2599);
 const showAnnotations = __nccwpck_require__(5100);
 const checkMinimumRatio = __nccwpck_require__(8329);
@@ -13725,6 +13771,7 @@ const runCodeCoverage = async (coverage) => {
 
   await checkMinimumRatio(diff);
   await showAnnotations(changedFilesCoverage);
+  await sendCurrentCoverage(coverage.percentage);
 
   core.setOutput("percentage", coverage.percentage);
   core.setOutput("diff", diff);

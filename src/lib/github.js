@@ -34,6 +34,14 @@ const getBaseRefSha = () => {
   return { ref, sha };
 };
 
+const getCurrentRefSha = () => {
+  const { ref: fullRef, sha } = github.context;
+
+  const ref = cleanRef(fullRef);
+
+  return { ref, sha };
+};
+
 const getOctokit = async () => {
   if (!octokit)
     octokit = await githubApi.createOctokitClient(
@@ -52,5 +60,6 @@ module.exports = {
   getPullRequestContext,
   getOctokit,
   cleanOctokit,
-  getBaseRefSha
+  getBaseRefSha,
+  getCurrentRefSha
 };

@@ -1,8 +1,30 @@
 const core = require("@actions/core");
 const { barecheckApi } = require("barecheck");
 
-const { getBaseRefSha } = require("./github");
+const { getBaseRefSha, getCurrentRefSha } = require("./github");
 const { getBarecheckApiKey } = require("../input");
+
+let projectAuthState = false;
+
+const authProject = async () => {
+  if (!projectAuthState) {
+    const apiKey = getBarecheckApiKey();
+
+    const authProjectRes = await barecheckApi.authProject({
+      apiKey
+    });
+    projectAuthState = {
+      projectId: authProjectRes.project.id,
+      accessToken: authProjectRes.accessToken
+    };
+  }
+
+  return projectAuthState;
+};
+
+const cleanAuthProject = () => {
+  projectAuthState = false;
+};
 
 const getBaseBranchCoverage = async () => {
   const { ref, sha } = getBaseRefSha();
@@ -11,26 +33,39 @@ const getBaseBranchCoverage = async () => {
     return null;
   }
 
-  const apiKey = getBarecheckApiKey();
-
   core.info(`Getting metrics from Barecheck. ref=${ref}, sha=${sha}`);
-  const { project, accessToken } = await barecheckApi.authProject({
-    apiKey
-  });
+
+  const { projectId, accessToken } = await authProject();
 
   const coverageMetrics = await barecheckApi.coverageMetrics(accessToken, {
-    projectId: project.id,
+    projectId,
     ref,
     sha,
     take: 1
   });
 
-  // eslint-disable-next-line no-console
-  console.log(coverageMetrics);
+  return coverageMetrics[0] ? coverageMetrics[0].totalCoverage : false;
+};
 
-  return coverageMetrics;
+const sendCurrentCoverage = async (totalCoverage) => {
+  const { ref, sha } = getCurrentRefSha();
+
+  core.info(
+    `Sending metrics to Barecheck. ref=${ref}, sha=${sha}, coverage=${totalCoverage}`
+  );
+
+  const { projectId, accessToken } = await authProject();
+
+  await barecheckApi.createCoverageMetric(accessToken, {
+    projectId,
+    ref,
+    sha,
+    totalCoverage
+  });
 };
 
 module.exports = {
-  getBaseBranchCoverage
+  getBaseBranchCoverage,
+  sendCurrentCoverage,
+  cleanAuthProject
 };
