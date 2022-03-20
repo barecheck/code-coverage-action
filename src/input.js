@@ -35,6 +35,9 @@ const getLcovFile = () => core.getInput("lcov-file");
 
 const getBaseLcovFile = () => valueOrFalse(core.getInput("base-lcov-file"));
 
+const getSendSummaryComment = () =>
+  valueOrFalse(core.getInput("send-summary-comment"));
+
 module.exports = {
   getShowAnnotations,
   getGithubToken,
@@ -42,5 +45,6 @@ module.exports = {
   getBarecheckApiKey,
   getAppName,
   getLcovFile,
-  getBaseLcovFile
+  getBaseLcovFile,
+  getSendSummaryComment
 };

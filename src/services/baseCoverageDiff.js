@@ -4,7 +4,7 @@ const { parseLcovFile } = require("barecheck");
 const { getBaseLcovFile } = require("../input");
 
 // eslint-disable-next-line max-statements
-const coverageDiff = async (coverage) => {
+const getBasecoverageDiff = async (coverage) => {
   // TODO: Get metrics from Barecheck API
   const baseFile = getBaseLcovFile();
   const baseMetrics = false;
@@ -24,4 +24,4 @@ const coverageDiff = async (coverage) => {
   return diff;
 };
 
-module.exports = coverageDiff;
+module.exports = getBasecoverageDiff;

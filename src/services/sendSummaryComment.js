@@ -1,19 +1,23 @@
-const github = require("@actions/github");
 const core = require("@actions/core");
 const { getCoverageReportBody, githubApi } = require("barecheck");
+
+const { getPullRequestContext, getOctokit } = require("../lib/github");
+const { getSendSummaryComment, getAppName } = require("../input");
 
 const sendSummaryComment = async (
   changedFiles,
   coverageDiff,
   totalCoverage
 ) => {
-  const sendSummaryCommentInput = core.getInput("send-summary-comment");
-  const appToken = core.getInput("barecheck-github-app-token");
+  const isSendSummaryComment = getSendSummaryComment();
+  const pullRequestContext = getPullRequestContext();
 
-  if (sendSummaryCommentInput && github.context.payload.pull_request) {
+  if (isSendSummaryComment && pullRequestContext) {
     core.info(`send-summary-comment is enabled for this workflow`);
 
-    const title = "Code coverage report";
+    const appName = getAppName() ? getAppName() : "Barecheck";
+
+    const title = `${appName} - Code coverage report`;
 
     const body = getCoverageReportBody({
       changedFiles,
@@ -22,13 +26,12 @@ const sendSummaryComment = async (
       totalCoverage
     });
 
-    const octokit = await githubApi.createOctokitClient(appToken);
-
-    // we can add an option how comments should be added create | update | none
+    const octokit = await getOctokit();
+    const { repo, owner, pullNumber } = pullRequestContext;
     await githubApi.createOrUpdateComment(octokit, {
-      owner: "barecheck",
-      repo: "code-coverage-action",
-      issueNumber: "154",
+      owner,
+      repo,
+      issueNumber: pullNumber,
       searchBody: title,
       body
     });

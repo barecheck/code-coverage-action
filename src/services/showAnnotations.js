@@ -1,14 +1,13 @@
 const core = require("@actions/core");
-const github = require("@actions/github");
-
-// const { githubApi } = require("barecheck");
 
 const { getShowAnnotations } = require("../input");
+const { getPullRequestContext } = require("../lib/github");
 
 const showAnnotations = async (coverageData) => {
   const showAnnotationsInput = getShowAnnotations();
+  const pullRequestContext = getPullRequestContext();
 
-  if (showAnnotationsInput && github.context.payload.pull_request) {
+  if (showAnnotationsInput && pullRequestContext) {
     core.info("Show annotations feature enabled");
 
     coverageData.forEach(({ file, lines }) => {

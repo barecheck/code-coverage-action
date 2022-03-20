@@ -13225,6 +13225,9 @@ const getLcovFile = () => core.getInput("lcov-file");
 
 const getBaseLcovFile = () => valueOrFalse(core.getInput("base-lcov-file"));
 
+const getSendSummaryComment = () =>
+  valueOrFalse(core.getInput("send-summary-comment"));
+
 module.exports = {
   getShowAnnotations,
   getGithubToken,
@@ -13232,7 +13235,8 @@ module.exports = {
   getBarecheckApiKey,
   getAppName,
   getLcovFile,
-  getBaseLcovFile
+  getBaseLcovFile,
+  getSendSummaryComment
 };
 
 
@@ -13249,6 +13253,8 @@ const { getBarecheckGithubAppToken, getGithubToken } = __nccwpck_require__(6);
 let octokit = null;
 
 const getPullRequestContext = () => {
+  if (!github.context.payload.pull_request) return false;
+
   const { owner, repo } = github.context.repo;
 
   const pullNumber = github.context.payload.pull_request.number;
@@ -13287,7 +13293,7 @@ const { parseLcovFile } = __nccwpck_require__(4044);
 const { getBaseLcovFile } = __nccwpck_require__(6);
 
 // eslint-disable-next-line max-statements
-const coverageDiff = async (coverage) => {
+const getBasecoverageDiff = async (coverage) => {
   // TODO: Get metrics from Barecheck API
   const baseFile = getBaseLcovFile();
   const baseMetrics = false;
@@ -13307,7 +13313,7 @@ const coverageDiff = async (coverage) => {
   return diff;
 };
 
-module.exports = coverageDiff;
+module.exports = getBasecoverageDiff;
 
 
 /***/ }),
@@ -13371,22 +13377,26 @@ module.exports = checkMinimumRatio;
 /***/ 2599:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-const github = __nccwpck_require__(5438);
 const core = __nccwpck_require__(2186);
 const { getCoverageReportBody, githubApi } = __nccwpck_require__(4044);
+
+const { getPullRequestContext, getOctokit } = __nccwpck_require__(8383);
+const { getSendSummaryComment, getAppName } = __nccwpck_require__(6);
 
 const sendSummaryComment = async (
   changedFiles,
   coverageDiff,
   totalCoverage
 ) => {
-  const sendSummaryCommentInput = core.getInput("send-summary-comment");
-  const appToken = core.getInput("barecheck-github-app-token");
+  const isSendSummaryComment = getSendSummaryComment();
+  const pullRequestContext = getPullRequestContext();
 
-  if (sendSummaryCommentInput && github.context.payload.pull_request) {
+  if (isSendSummaryComment && pullRequestContext) {
     core.info(`send-summary-comment is enabled for this workflow`);
 
-    const title = "Code coverage report";
+    const appName = getAppName() ? getAppName() : "Barecheck";
+
+    const title = `${appName} - Code coverage report`;
 
     const body = getCoverageReportBody({
       changedFiles,
@@ -13395,13 +13405,12 @@ const sendSummaryComment = async (
       totalCoverage
     });
 
-    const octokit = await githubApi.createOctokitClient(appToken);
-
-    // we can add an option how comments should be added create | update | none
+    const octokit = await getOctokit();
+    const { repo, owner, pullNumber } = pullRequestContext;
     await githubApi.createOrUpdateComment(octokit, {
-      owner: "barecheck",
-      repo: "code-coverage-action",
-      issueNumber: "154",
+      owner,
+      repo,
+      issueNumber: pullNumber,
       searchBody: title,
       body
     });
@@ -13417,16 +13426,15 @@ module.exports = sendSummaryComment;
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const core = __nccwpck_require__(2186);
-const github = __nccwpck_require__(5438);
-
-// const { githubApi } = require("barecheck");
 
 const { getShowAnnotations } = __nccwpck_require__(6);
+const { getPullRequestContext } = __nccwpck_require__(8383);
 
 const showAnnotations = async (coverageData) => {
   const showAnnotationsInput = getShowAnnotations();
+  const pullRequestContext = getPullRequestContext();
 
-  if (showAnnotationsInput && github.context.payload.pull_request) {
+  if (showAnnotationsInput && pullRequestContext) {
     core.info("Show annotations feature enabled");
 
     coverageData.forEach(({ file, lines }) => {
