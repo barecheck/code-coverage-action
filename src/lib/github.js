@@ -36,12 +36,10 @@ const getBaseRefSha = () => {
 };
 
 const getCurrentRefSha = () => {
-  const { ref: fullRef, sha } = github.context;
+  const { sha, ref: fullRef } = github.context;
 
-  console.log(github.context);
-  console.log(github.context.payload.pull_request.head);
-  console.log(github.context.payload.pull_request.base);
-  const ref = cleanRef(fullRef);
+  const pullRequest = github.context.payload.pull_request;
+  const ref = pullRequest ? pullRequest.head.ref : cleanRef(fullRef);
 
   return { ref, sha };
 };
