@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const github = require("@actions/github");
 const { githubApi } = require("barecheck");
 
@@ -37,8 +38,9 @@ const getBaseRefSha = () => {
 const getCurrentRefSha = () => {
   const { ref: fullRef, sha } = github.context;
 
-  // eslint-disable-next-line no-console
   console.log(github.context);
+  console.log(github.context.payload.pull_request.head);
+  console.log(github.context.payload.pull_request.base);
   const ref = cleanRef(fullRef);
 
   return { ref, sha };

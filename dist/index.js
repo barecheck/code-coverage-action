@@ -13323,6 +13323,7 @@ module.exports = {
 /***/ 8383:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
+/* eslint-disable no-console */
 const github = __nccwpck_require__(5438);
 const { githubApi } = __nccwpck_require__(4044);
 
@@ -13362,8 +13363,9 @@ const getBaseRefSha = () => {
 const getCurrentRefSha = () => {
   const { ref: fullRef, sha } = github.context;
 
-  // eslint-disable-next-line no-console
   console.log(github.context);
+  console.log(github.context.payload.pull_request.head);
+  console.log(github.context.payload.pull_request.base);
   const ref = cleanRef(fullRef);
 
   return { ref, sha };
