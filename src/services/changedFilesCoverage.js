@@ -3,9 +3,13 @@ const { githubApi } = require("barecheck");
 const { getPullRequestContext, getOctokit } = require("../lib/github");
 
 const getChangedFilesCoverage = async (coverage) => {
-  const { repo, owner, pullNumber } = getPullRequestContext();
+  const pullRequestContext = getPullRequestContext();
+
+  if (!pullRequestContext) return coverage.data;
+
   const octokit = await getOctokit();
 
+  const { repo, owner, pullNumber } = pullRequestContext;
   const changedFiles = await githubApi.getChangedFiles(octokit, {
     repo,
     owner,

@@ -13435,9 +13435,13 @@ const { githubApi } = __nccwpck_require__(4044);
 const { getPullRequestContext, getOctokit } = __nccwpck_require__(8383);
 
 const getChangedFilesCoverage = async (coverage) => {
-  const { repo, owner, pullNumber } = getPullRequestContext();
+  const pullRequestContext = getPullRequestContext();
+
+  if (!pullRequestContext) return coverage.data;
+
   const octokit = await getOctokit();
 
+  const { repo, owner, pullNumber } = pullRequestContext;
   const changedFiles = await githubApi.getChangedFiles(octokit, {
     repo,
     owner,
