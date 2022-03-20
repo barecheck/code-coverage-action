@@ -13276,9 +13276,14 @@ const getOctokit = async () => {
   return octokit;
 };
 
+const cleanOctokit = () => {
+  octokit = null;
+};
+
 module.exports = {
   getPullRequestContext,
-  getOctokit
+  getOctokit,
+  cleanOctokit
 };
 
 
