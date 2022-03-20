@@ -13,6 +13,7 @@ const authProject = async () => {
     const authProjectRes = await barecheckApi.authProject({
       apiKey
     });
+
     projectAuthState = {
       projectId: authProjectRes.project.id,
       accessToken: authProjectRes.accessToken
@@ -28,10 +29,6 @@ const cleanAuthProject = () => {
 
 const getBaseBranchCoverage = async () => {
   const { ref, sha } = getBaseRefSha();
-  // # if for some reason base ref, sha cannot be defined just skip comparision part
-  if (!ref || !sha) {
-    return null;
-  }
 
   core.info(`Getting metrics from Barecheck. ref=${ref}, sha=${sha}`);
 
@@ -67,5 +64,6 @@ const sendCurrentCoverage = async (totalCoverage) => {
 module.exports = {
   getBaseBranchCoverage,
   sendCurrentCoverage,
+  authProject,
   cleanAuthProject
 };
