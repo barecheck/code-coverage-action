@@ -13321,7 +13321,6 @@ module.exports = {
 /***/ 8383:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-/* eslint-disable no-console */
 const github = __nccwpck_require__(5438);
 const { githubApi } = __nccwpck_require__(4044);
 
@@ -13346,7 +13345,6 @@ const getPullRequestContext = () => {
 };
 
 const getBaseRefSha = () => {
-  console.log(github.context.payload);
   const { before: baseSha, pull_request: pullRequest } = github.context.payload;
   const { ref: fullRef } = github.context;
 
@@ -13357,7 +13355,6 @@ const getBaseRefSha = () => {
 };
 
 const getCurrentRefSha = () => {
-  console.log(github.context);
   const { sha, ref: fullRef } = github.context;
 
   const pullRequest = github.context.payload.pull_request;
