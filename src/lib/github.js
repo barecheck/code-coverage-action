@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const github = require("@actions/github");
 const { githubApi } = require("barecheck");
 
@@ -23,7 +22,6 @@ const getPullRequestContext = () => {
 };
 
 const getBaseRefSha = () => {
-  console.log(github.context.payload);
   const { before: baseSha, pull_request: pullRequest } = github.context.payload;
   const { ref: fullRef } = github.context;
 
@@ -34,7 +32,6 @@ const getBaseRefSha = () => {
 };
 
 const getCurrentRefSha = () => {
-  console.log(github.context);
   const { sha, ref: fullRef } = github.context;
 
   const pullRequest = github.context.payload.pull_request;
