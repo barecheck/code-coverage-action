@@ -1,29 +1,16 @@
 const core = require("@actions/core");
-const github = require("@actions/github");
 
-const getChangedFiles = require("../github/getChangedFiles");
-const { uncoveredFileLinesByFileNames } = require("../lcov");
-const { mergeFileLinesWithChangedFiles } = require("../coverage");
 const { getShowAnnotations } = require("../input");
+const { getPullRequestContext } = require("../lib/github");
 
-const showAnnotations = async (compareFileData) => {
+const showAnnotations = async (coverageData) => {
   const showAnnotationsInput = getShowAnnotations();
+  const pullRequestContext = getPullRequestContext();
 
-  if (showAnnotationsInput && github.context.payload.pull_request) {
+  if (showAnnotationsInput && pullRequestContext) {
     core.info("Show annotations feature enabled");
-    const changedFiles = await getChangedFiles();
 
-    const uncoveredFileLines = uncoveredFileLinesByFileNames(
-      changedFiles.map(({ filename }) => filename),
-      compareFileData
-    );
-
-    const fileLinesWithChangedFiles = mergeFileLinesWithChangedFiles(
-      uncoveredFileLines,
-      changedFiles
-    );
-
-    fileLinesWithChangedFiles.forEach(({ file, lines }) => {
+    coverageData.forEach(({ file, lines }) => {
       lines.forEach((line) => {
         const message = () => {
           if (Array.isArray(line)) {
@@ -42,6 +29,4 @@ const showAnnotations = async (compareFileData) => {
   }
 };
 
-module.exports = {
-  showAnnotations
-};
+module.exports = showAnnotations;

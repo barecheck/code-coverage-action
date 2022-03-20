@@ -21,12 +21,12 @@ const getShowAnnotations = () => {
   return showAnnotations;
 };
 
-const getGithubToken = () => core.getInput("github-token");
+const getGithubToken = () => valueOrFalse(core.getInput("github-token"));
 
-const getAppName = () => core.getInput("app-name");
+const getAppName = () => valueOrFalse(core.getInput("app-name"));
 
 const getBarecheckGithubAppToken = () =>
-  core.getInput("barecheck-github-app-token");
+  valueOrFalse(core.getInput("barecheck-github-app-token"));
 
 const getBarecheckApiKey = () =>
   valueOrFalse(core.getInput("barecheck-api-key"));
@@ -35,6 +35,9 @@ const getLcovFile = () => core.getInput("lcov-file");
 
 const getBaseLcovFile = () => valueOrFalse(core.getInput("base-lcov-file"));
 
+const getSendSummaryComment = () =>
+  valueOrFalse(core.getInput("send-summary-comment"));
+
 module.exports = {
   getShowAnnotations,
   getGithubToken,
@@ -42,5 +45,6 @@ module.exports = {
   getBarecheckApiKey,
   getAppName,
   getLcovFile,
-  getBaseLcovFile
+  getBaseLcovFile,
+  getSendSummaryComment
 };

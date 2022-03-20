@@ -15,6 +15,4 @@ const checkMinimumRatio = (coverageDiff) => {
   } else core.info(`minimum-ratio is disabled for this workflow`);
 };
 
-module.exports = {
-  checkMinimumRatio
-};
+module.exports = checkMinimumRatio;
