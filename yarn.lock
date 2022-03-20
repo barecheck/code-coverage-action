@@ -529,10 +529,10 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
-barecheck@^0.3.7:
-  version "0.3.7"
-  resolved "https://registry.yarnpkg.com/barecheck/-/barecheck-0.3.7.tgz#398e2f31fb4eabaab0c6597a721bfa833c8200b9"
-  integrity sha512-cv4SPLtQkfXdNimGE+q3grFvvcDCxgbdY3RJlK1y4N0UPlabGsudvx4ffw5ZGedOXHzsimrmLUNj0GLrZtX40A==
+barecheck@^0.3.8:
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/barecheck/-/barecheck-0.3.8.tgz#fda1ee6e822dc13d361c9df05538fa2e11fc913a"
+  integrity sha512-W/pvUrkR2DGct6PS9r+J2MXZSdj7rZJGklkpH5dkcDogEhlgSiLcqrDUFFVx+dRVV+myg+7KsJJvtD+asrfeDw==
   dependencies:
     "@octokit/core" "^3.5.1"
     axios "^0.26.0"
