@@ -13278,6 +13278,71 @@ module.exports = {
 
 /***/ }),
 
+/***/ 5819:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const core = __nccwpck_require__(2186);
+const { parseLcovFile } = __nccwpck_require__(4044);
+
+const { getBaseLcovFile } = __nccwpck_require__(6);
+
+// eslint-disable-next-line max-statements
+const coverageDiff = async (coverage) => {
+  // TODO: Get metrics from Barecheck API
+  const baseFile = getBaseLcovFile();
+  const baseMetrics = false;
+  let baseCoveragePercentage = baseMetrics ? baseMetrics.coverage : 0;
+
+  if (!baseCoveragePercentage && baseFile) {
+    core.info(`base-lcov-file: ${baseFile}`);
+    const baseCoverage = await parseLcovFile(baseFile);
+    baseCoveragePercentage = baseCoverage.percentage;
+  }
+
+  const diff = (coverage.percentage - baseCoveragePercentage).toFixed(2);
+
+  core.info(`Base branch code coverage: ${baseCoveragePercentage}%`);
+  core.info(`Code coverage diff: ${diff}%`);
+
+  return diff;
+};
+
+module.exports = coverageDiff;
+
+
+/***/ }),
+
+/***/ 3228:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const { githubApi } = __nccwpck_require__(4044);
+
+const { getPullRequestContext, getOctokit } = __nccwpck_require__(8383);
+
+const getChangedFilesCoverage = async (coverage) => {
+  const { repo, owner, pullNumber } = getPullRequestContext();
+  const octokit = await getOctokit();
+
+  const changedFiles = await githubApi.getChangedFiles(octokit, {
+    repo,
+    owner,
+    pullNumber
+  });
+
+  const changedFilesNames = changedFiles.map(({ filename }) => filename);
+
+  const changedFilesCoverage = coverage.data.filter(({ file }) =>
+    changedFilesNames.includes(file)
+  );
+
+  return changedFilesCoverage;
+};
+
+module.exports = getChangedFilesCoverage;
+
+
+/***/ }),
+
 /***/ 8329:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -13567,57 +13632,30 @@ var __webpack_exports__ = {};
 (() => {
 const core = __nccwpck_require__(2186);
 
-const { parseLcovFile, githubApi } = __nccwpck_require__(4044);
+const { parseLcovFile } = __nccwpck_require__(4044);
 
-const { getLcovFile, getBaseLcovFile } = __nccwpck_require__(6);
-const { getPullRequestContext, getOctokit } = __nccwpck_require__(8383);
+const { getLcovFile } = __nccwpck_require__(6);
 
 const sendSummaryComment = __nccwpck_require__(2599);
 const showAnnotations = __nccwpck_require__(5100);
 const checkMinimumRatio = __nccwpck_require__(8329);
+const getBaseCoverageDiff = __nccwpck_require__(5819);
+const getChangedFilesCoverage = __nccwpck_require__(3228);
 
 const runFeatures = async (diff, coverage) => {
-  const { repo, owner, pullNumber } = getPullRequestContext();
-  const octokit = await getOctokit();
-
-  const changedFiles = await githubApi.getChangedFiles(octokit, {
-    repo,
-    owner,
-    pullNumber
-  });
-
-  const changedFilesNames = changedFiles.map(({ filename }) => filename);
-
-  const changedData = coverage.data.filter(({ file }) =>
-    changedFilesNames.includes(file)
-  );
-
-  await sendSummaryComment(changedData, diff, coverage.percentage);
+  const changedFilesCoverage = await getChangedFilesCoverage(coverage);
+  await sendSummaryComment(changedFilesCoverage, diff, coverage.percentage);
 
   await checkMinimumRatio(diff);
-  await showAnnotations(changedData);
-
-  // if (getBarecheckApiKey()) {
-  //   await sendMetricsToBarecheck(coverage.percentage);
-  // }
+  await showAnnotations(changedFilesCoverage);
 
   core.setOutput("percentage", coverage.percentage);
   core.setOutput("diff", diff);
 };
 
 const runCodeCoverage = async (coverage) => {
-  // const baseMetrics = getBarecheckApiKey() ? await getBaseMetric() : false;
-  // let baseCoveragePercentage = baseMetrics ? baseMetrics.coverage : 0;
+  const diff = await getBaseCoverageDiff(coverage);
 
-  // if (!baseCoveragePercentage && baseFile) {
-  //   const baseCoverage = await getCoverageFromFile(baseFile);
-  //   baseCoveragePercentage = baseCoverage.percentage;
-  // }
-
-  // core.info(`Base branch code coverage: ${baseCoveragePercentage}%`);
-
-  // const diff = (coverage.percentage - baseCoveragePercentage).toFixed(2);
-  const diff = 0;
   core.info(`Code coverage diff: ${diff}%`);
 
   await runFeatures(diff, coverage);
@@ -13625,15 +13663,13 @@ const runCodeCoverage = async (coverage) => {
 
 async function main() {
   const compareFile = getLcovFile();
-  const baseFile = getBaseLcovFile();
 
   core.info(`lcov-file: ${compareFile}`);
-  core.info(`base-lcov-file: ${baseFile}`);
 
   const coverage = await parseLcovFile(compareFile);
   core.info(`Current code coverage: ${coverage.percentage}%`);
 
-  await runCodeCoverage(coverage, baseFile);
+  await runCodeCoverage(coverage);
 }
 
 try {
