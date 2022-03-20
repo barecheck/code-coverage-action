@@ -73,4 +73,39 @@ describe("services/changedFilesCoverage", () => {
       }
     ]);
   });
+
+  it("show return coverage data when there is not Pull Request context", async () => {
+    const pullRequestContext = false;
+    const coverage = {
+      data: [
+        {
+          file: "changed1.js",
+          lines: [1, 2]
+        },
+        {
+          file: "not changed 3.js",
+          lines: [1, 2]
+        }
+      ]
+    };
+
+    const getChangedFiles = sinon.spy();
+
+    const getPullRequestContext = sinon.stub().returns(pullRequestContext);
+    const getOctokit = sinon.spy();
+    const githubApi = {
+      getChangedFiles
+    };
+
+    const getChangedFilesCoverage = getChangedFilesCoverageMock({
+      getPullRequestContext,
+      getOctokit,
+      githubApi
+    });
+    const res = await getChangedFilesCoverage(coverage);
+
+    assert.deepEqual(res, coverage.data);
+    assert.isFalse(getChangedFiles.calledOnce);
+    assert.isFalse(getOctokit.calledOnce);
+  });
 });

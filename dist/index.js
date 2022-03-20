@@ -13321,7 +13321,6 @@ module.exports = {
 /***/ 8383:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-/* eslint-disable no-console */
 const github = __nccwpck_require__(5438);
 const { githubApi } = __nccwpck_require__(4044);
 
@@ -13433,9 +13432,13 @@ const { githubApi } = __nccwpck_require__(4044);
 const { getPullRequestContext, getOctokit } = __nccwpck_require__(8383);
 
 const getChangedFilesCoverage = async (coverage) => {
-  const { repo, owner, pullNumber } = getPullRequestContext();
+  const pullRequestContext = getPullRequestContext();
+
+  if (!pullRequestContext) return coverage.data;
+
   const octokit = await getOctokit();
 
+  const { repo, owner, pullNumber } = pullRequestContext;
   const changedFiles = await githubApi.getChangedFiles(octokit, {
     repo,
     owner,

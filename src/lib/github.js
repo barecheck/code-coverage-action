@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const github = require("@actions/github");
 const { githubApi } = require("barecheck");
 
