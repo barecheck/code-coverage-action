@@ -13362,6 +13362,8 @@ const getBaseRefSha = () => {
 const getCurrentRefSha = () => {
   const { ref: fullRef, sha } = github.context;
 
+  // eslint-disable-next-line no-console
+  console.log(github.context);
   const ref = cleanRef(fullRef);
 
   return { ref, sha };
