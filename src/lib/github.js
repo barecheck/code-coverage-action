@@ -1,9 +1,12 @@
+/* eslint-disable no-console */
 const github = require("@actions/github");
 const { githubApi } = require("barecheck");
 
 const { getBarecheckGithubAppToken, getGithubToken } = require("../input");
 
 let octokit = null;
+
+const cleanRef = (fullRef) => fullRef.replace("refs/heads/", "");
 
 const getPullRequestContext = () => {
   if (!github.context.payload.pull_request) return false;
@@ -17,6 +20,25 @@ const getPullRequestContext = () => {
     repo,
     pullNumber
   };
+};
+
+const getBaseRefSha = () => {
+  const { before: baseSha, pull_request: pullRequest } = github.context.payload;
+  const { ref: fullRef } = github.context;
+
+  const ref = pullRequest ? pullRequest.base.ref : cleanRef(fullRef);
+  const sha = pullRequest ? pullRequest.base.sha : baseSha;
+
+  return { ref, sha };
+};
+
+const getCurrentRefSha = () => {
+  const { sha, ref: fullRef } = github.context;
+
+  const pullRequest = github.context.payload.pull_request;
+  const ref = pullRequest ? pullRequest.head.ref : cleanRef(fullRef);
+
+  return { ref, sha };
 };
 
 const getOctokit = async () => {
@@ -36,5 +58,7 @@ const cleanOctokit = () => {
 module.exports = {
   getPullRequestContext,
   getOctokit,
-  cleanOctokit
+  cleanOctokit,
+  getBaseRefSha,
+  getCurrentRefSha
 };

@@ -1,13 +1,15 @@
 const core = require("@actions/core");
 const { parseLcovFile } = require("barecheck");
 
-const { getBaseLcovFile } = require("../input");
+const { getBaseLcovFile, getBarecheckApiKey } = require("../input");
+const { getBaseBranchCoverage } = require("../lib/api");
 
 // eslint-disable-next-line max-statements
 const getBasecoverageDiff = async (coverage) => {
-  // TODO: Get metrics from Barecheck API
   const baseFile = getBaseLcovFile();
-  const baseMetrics = false;
+  const baseMetrics = getBarecheckApiKey()
+    ? await getBaseBranchCoverage()
+    : false;
   let baseCoveragePercentage = baseMetrics ? baseMetrics.coverage : 0;
 
   if (!baseCoveragePercentage && baseFile) {

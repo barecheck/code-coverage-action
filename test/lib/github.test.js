@@ -94,4 +94,137 @@ describe("lib/github", () => {
       assert.isTrue(createOctokitClient.calledOnce);
     });
   });
+
+  describe("getBaseRefSha()", () => {
+    it("should return ref from Pull Request context", async () => {
+      const github = {
+        context: {
+          ref: "some-unused-ref",
+          payload: {
+            before: "some-unused-sha",
+            pull_request: {
+              base: {
+                ref: "feat-some-test-branch",
+                sha: "7e1102a88c46b7816221fc2318c8289149229fae"
+              }
+            }
+          }
+        }
+      };
+
+      const { getBaseRefSha } = getGitHubLibMock({
+        github
+      });
+
+      const { ref, sha } = await getBaseRefSha();
+
+      assert.equal(ref, "feat-some-test-branch");
+      assert.equal(sha, "7e1102a88c46b7816221fc2318c8289149229fae");
+    });
+
+    it("should return ref from github context", async () => {
+      const github = {
+        context: {
+          ref: "feat-some-test-branch",
+          payload: {
+            before: "7e1102a88c46b7816221fc2318c8289149229fae"
+          }
+        }
+      };
+
+      const { getBaseRefSha } = getGitHubLibMock({
+        github
+      });
+
+      const { ref, sha } = await getBaseRefSha();
+
+      assert.equal(ref, "feat-some-test-branch");
+      assert.equal(sha, "7e1102a88c46b7816221fc2318c8289149229fae");
+    });
+
+    it("should clean ref from heads prefix", async () => {
+      const github = {
+        context: {
+          ref: "refs/heads/feat-some-test-branch",
+          payload: {
+            before: "7e1102a88c46b7816221fc2318c8289149229fae"
+          }
+        }
+      };
+
+      const { getBaseRefSha } = getGitHubLibMock({
+        github
+      });
+
+      const { ref, sha } = await getBaseRefSha();
+
+      assert.equal(ref, "feat-some-test-branch");
+      assert.equal(sha, "7e1102a88c46b7816221fc2318c8289149229fae");
+    });
+  });
+
+  describe("getCurrentRefSha()", () => {
+    it("should return ref from Pull Request context", async () => {
+      const github = {
+        context: {
+          ref: "some-unused-ref",
+          sha: "7e1102a88c46b7816221fc2318c8289149229fae",
+          payload: {
+            pull_request: {
+              head: {
+                ref: "feat-some-test-branch"
+              }
+            }
+          }
+        }
+      };
+
+      const { getCurrentRefSha } = getGitHubLibMock({
+        github
+      });
+
+      const { ref, sha } = await getCurrentRefSha();
+
+      assert.equal(ref, "feat-some-test-branch");
+      assert.equal(sha, "7e1102a88c46b7816221fc2318c8289149229fae");
+    });
+
+    it("should return ref from github context", async () => {
+      const github = {
+        context: {
+          ref: "feat-some-test-branch",
+          sha: "7e1102a88c46b7816221fc2318c8289149229fae",
+          payload: {}
+        }
+      };
+
+      const { getCurrentRefSha } = getGitHubLibMock({
+        github
+      });
+
+      const { ref, sha } = await getCurrentRefSha();
+
+      assert.equal(ref, "feat-some-test-branch");
+      assert.equal(sha, "7e1102a88c46b7816221fc2318c8289149229fae");
+    });
+
+    it("should clean ref from heads prefix", async () => {
+      const github = {
+        context: {
+          ref: "refs/heads/feat-some-test-branch",
+          sha: "7e1102a88c46b7816221fc2318c8289149229fae",
+          payload: {}
+        }
+      };
+
+      const { getCurrentRefSha } = getGitHubLibMock({
+        github
+      });
+
+      const { ref, sha } = await getCurrentRefSha();
+
+      assert.equal(ref, "feat-some-test-branch");
+      assert.equal(sha, "7e1102a88c46b7816221fc2318c8289149229fae");
+    });
+  });
 });
