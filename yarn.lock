@@ -216,6 +216,16 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
+"@barecheck/core@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@barecheck/core/-/core-0.2.2.tgz#dfed104f435b554bba9a1cb906edb39ad7ca6b91"
+  integrity sha512-REL5UVa6PAyNtOjVvx0y8vHghnl33vcpdL7xTqzoPOyK+KD7UJ6Xf+DsfHnhvNNJmVZ0acBhicOqJxAhXWp8kw==
+  dependencies:
+    "@octokit/core" "^3.6.0"
+    "@types/node" "^16.11.0"
+    axios "^0.26.1"
+    lcov-parse "^1.0.0"
+
 "@eslint/eslintrc@^1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-1.2.1.tgz#8b5e1c49f4077235516bc9ec7d41378c0f69b8c6"
@@ -286,7 +296,7 @@
   dependencies:
     "@octokit/types" "^6.0.3"
 
-"@octokit/core@^3.4.0", "@octokit/core@^3.5.1":
+"@octokit/core@^3.4.0", "@octokit/core@^3.6.0":
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/@octokit/core/-/core-3.6.0.tgz#3376cb9f3008d9b3d110370d90e0a1fcd5fe6085"
   integrity sha512-7RKRKuA4xTjMhY+eG3jthb3hlZCsOwg3rztWh75Xc+ShDWOfDDATWbeZpAHBNRpm4Tv9WgBMOy1zEJYXG6NJ7Q==
@@ -397,6 +407,11 @@
   version "0.0.29"
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
+
+"@types/node@^16.11.0":
+  version "16.11.26"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.26.tgz#63d204d136c9916fb4dcd1b50f9740fe86884e47"
+  integrity sha512-GZ7bu5A6+4DtG7q9GsoHXy3ALcgeIHP4NnL0Vv2wu0uUB/yQex26v0tf6/na1mm0+bS9Uw+0DFex7aaKr2qawQ==
 
 "@ungap/promise-all-settled@1.1.2":
   version "1.1.2"
@@ -517,7 +532,7 @@ assertion-error@^1.1.0:
   resolved "https://registry.yarnpkg.com/assertion-error/-/assertion-error-1.1.0.tgz#e60b6b0e8f301bd97e5375215bda406c85118c0b"
   integrity sha512-jgsaNduz+ndvGyFt3uSuWqvy4lCnIJiovtouQN5JZHOKCS2QuhEdbcQHFhVksz2N2U9hXJo8odG7ETyWlEeuDw==
 
-axios@^0.26.0:
+axios@^0.26.1:
   version "0.26.1"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.26.1.tgz#1ede41c51fcf51bbbd6fd43669caaa4f0495aaa9"
   integrity sha512-fPwcX4EvnSHuInCMItEhAGnaSEXRBjtzh9fOtsE6E1G6p7vl7edEeZe11QHf18+6+9gR5PbKV/sGKNaD8YaMeA==
@@ -528,15 +543,6 @@ balanced-match@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
-
-barecheck@^0.3.8:
-  version "0.3.8"
-  resolved "https://registry.yarnpkg.com/barecheck/-/barecheck-0.3.8.tgz#fda1ee6e822dc13d361c9df05538fa2e11fc913a"
-  integrity sha512-W/pvUrkR2DGct6PS9r+J2MXZSdj7rZJGklkpH5dkcDogEhlgSiLcqrDUFFVx+dRVV+myg+7KsJJvtD+asrfeDw==
-  dependencies:
-    "@octokit/core" "^3.5.1"
-    axios "^0.26.0"
-    lcov-parse "^1.0.0"
 
 before-after-hook@^2.2.0:
   version "2.2.2"
