@@ -1,6 +1,6 @@
 const core = require("@actions/core");
 
-const { parseLcovFile } = require("barecheck");
+const { parseLcovFile } = require("@barecheck/core");
 
 const { getLcovFile } = require("./input");
 

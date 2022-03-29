@@ -25,7 +25,7 @@ const apiLibMock = (mocks) => {
   };
   return proxyquire("../../src/lib/api", {
     "@actions/core": { info },
-    barecheck: { barecheckApi },
+    "@barecheck/core": { barecheckApi },
     "../input": { getBarecheckApiKey },
     "./github": { getBaseRefSha, getCurrentRefSha }
   });

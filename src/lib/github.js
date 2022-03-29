@@ -1,5 +1,5 @@
 const github = require("@actions/github");
-const { githubApi } = require("barecheck");
+const { githubApi } = require("@barecheck/core");
 
 const { getBarecheckGithubAppToken, getGithubToken } = require("../input");
 

@@ -1490,6 +1490,500 @@ exports.checkBypass = checkBypass;
 
 /***/ }),
 
+/***/ 8919:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.barecheckApiUrl = exports.currentDir = void 0;
+exports.currentDir = process.cwd();
+exports.barecheckApiUrl = process.env.BARECHECK_API_URL || 'https://barecheck.com/api/graphql';
+//# sourceMappingURL=config.js.map
+
+/***/ }),
+
+/***/ 5396:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getCoverageReportBody = exports.sendCoverage = exports.fetchCoverage = exports.parseLcovFile = exports.githubApi = exports.barecheckApi = void 0;
+// api
+exports.barecheckApi = __importStar(__nccwpck_require__(7935));
+exports.githubApi = __importStar(__nccwpck_require__(4327));
+//coverage
+var coverage_1 = __nccwpck_require__(1134);
+Object.defineProperty(exports, "parseLcovFile", ({ enumerable: true, get: function () { return coverage_1.parseLcovFile; } }));
+Object.defineProperty(exports, "fetchCoverage", ({ enumerable: true, get: function () { return coverage_1.fetchCoverage; } }));
+Object.defineProperty(exports, "sendCoverage", ({ enumerable: true, get: function () { return coverage_1.sendCoverage; } }));
+// reporters
+var coverage_2 = __nccwpck_require__(4122);
+Object.defineProperty(exports, "getCoverageReportBody", ({ enumerable: true, get: function () { return coverage_2.getCoverageReportBody; } }));
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 7935:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.coverageMetrics = exports.createCoverageMetric = exports.authProject = exports.createGithubAccessToken = void 0;
+const axios_1 = __importDefault(__nccwpck_require__(6545));
+const config_1 = __nccwpck_require__(8919);
+// TODO: define api request response interfaces
+const makeRequest = (accessToken, query, variables) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data } = yield axios_1.default.post(config_1.barecheckApiUrl, {
+        query,
+        variables
+    }, {
+        headers: Object.assign({ 'Content-Type': 'application/json' }, (accessToken
+            ? {
+                'auth-provider': 'custom',
+                authorization: `Bearer ${accessToken}`
+            }
+            : {}))
+    });
+    return data;
+});
+const createGithubAccessToken = (variables) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = `mutation createGithubAccessToken($appToken: String!) {
+    createGithubAccessToken(appToken:$appToken) {
+      accessToken
+    }
+  }`;
+    const response = yield makeRequest('', query, variables);
+    if (!response.data) {
+        throw new Error("Couldn't fetch accessToken token by using appToken. Check if you use the correct `BARECHECK_APP_KEY`");
+    }
+    return response.data.createGithubAccessToken;
+});
+exports.createGithubAccessToken = createGithubAccessToken;
+const authProject = (variables) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = `mutation authProject($apiKey: String!) {
+    authProject(apiKey:$apiKey) {
+      project {
+        id
+      }
+      accessToken
+    }
+  }`;
+    const response = yield makeRequest('', query, variables);
+    if (!response.data) {
+        throw new Error("Couldn't fetch accessToken token by using apiKey. Check if you use the correct `API_KEY`");
+    }
+    return response.data.authProject;
+});
+exports.authProject = authProject;
+const createCoverageMetric = (accessToken, variables) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = `mutation createCoverageMetric($projectId: Int!, $totalCoverage: Float! $ref: String!, $sha: String!) {
+    createCoverageMetric(input: {projectId: $projectId, totalCoverage: $totalCoverage, ref: $ref, sha: $sha }) {
+      id
+      totalCoverage
+      ref
+      sha
+      createdAt
+      updatedAt
+    }
+  }
+  `;
+    const response = yield makeRequest(accessToken, query, variables);
+    if (!response.data) {
+        throw new Error("Couldn't send your project coverage metric. Check if `accessToken` is valid or receive new one by using `authProject` mutation");
+    }
+    return response.data.createCoverageMetric;
+});
+exports.createCoverageMetric = createCoverageMetric;
+const coverageMetrics = (accessToken, variables) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = `query coverageMetrics($projectId: Int!, $ref: String, $dateTo: DateTime, $take: Int ) {
+    coverageMetrics(projectId: $projectId, ref:$ref, dateTo: $dateTo, take: $take){
+      id
+      ref
+      sha
+      totalCoverage
+      createdAt
+    }
+  }
+  `;
+    const response = yield makeRequest(accessToken, query, variables);
+    if (!response.data) {
+        return null;
+    }
+    return response.data.coverageMetrics;
+});
+exports.coverageMetrics = coverageMetrics;
+//# sourceMappingURL=endpoints.js.map
+
+/***/ }),
+
+/***/ 1134:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.sendCoverage = exports.fetchCoverage = exports.parseLcovFile = void 0;
+const fs = __importStar(__nccwpck_require__(7147));
+const lcov_1 = __nccwpck_require__(9642);
+const endpoints_1 = __nccwpck_require__(7935);
+const parseLcovFile = (coverageFilePath) => __awaiter(void 0, void 0, void 0, function* () {
+    const fileRaw = fs.readFileSync(coverageFilePath, 'utf8');
+    if (!fileRaw) {
+        throw new Error(`No coverage report found at '${coverageFilePath}', exiting...`);
+    }
+    const lcovData = yield (0, lcov_1.parseLcovFileData)(fileRaw);
+    const data = (0, lcov_1.groupLcovData)(lcovData);
+    const percentage = (0, lcov_1.calculatePercentage)(lcovData);
+    return { lcovData, data, percentage };
+});
+exports.parseLcovFile = parseLcovFile;
+const fetchCoverage = (apiKey, ref) => __awaiter(void 0, void 0, void 0, function* () {
+    const { accessToken, project } = yield (0, endpoints_1.authProject)({ apiKey });
+    const [latestCoverage] = yield (0, endpoints_1.coverageMetrics)(accessToken, {
+        projectId: project.id,
+        ref,
+        take: 1
+    });
+    return latestCoverage ? latestCoverage.totalCoverage : 0;
+});
+exports.fetchCoverage = fetchCoverage;
+const sendCoverage = (apiKey, totalCoverage, ref, sha) => __awaiter(void 0, void 0, void 0, function* () {
+    const { accessToken, project } = yield (0, endpoints_1.authProject)({ apiKey });
+    const [latestCoverage] = yield (0, endpoints_1.createCoverageMetric)(accessToken, {
+        projectId: project.id,
+        ref,
+        sha,
+        totalCoverage
+    });
+    return latestCoverage ? latestCoverage.totalCoverage : 0;
+});
+exports.sendCoverage = sendCoverage;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 9642:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.calculatePercentage = exports.parseLcovFileData = exports.groupLcovData = void 0;
+const lcov_parse_1 = __importDefault(__nccwpck_require__(7454));
+const groupByFile = (lcovData) => {
+    const response = [];
+    lcovData.forEach((fileData) => {
+        const lines = fileData.lines.details
+            .filter(({ hit }) => hit === 0)
+            .map(({ line }) => line);
+        if (lines.length > 0) {
+            response.push({
+                file: fileData.file,
+                lines
+            });
+        }
+    });
+    return response;
+};
+// TODO: this function is interapted by empty lines
+// Need to find a way how we can avoid this in order to keep the whole interval
+const groupByFileLines = (filesLines) => 
+// eslint-disable-next-line max-statements
+filesLines.map(({ file, lines }) => {
+    const groupedLines = [];
+    let previousLine = null;
+    let startLine = null;
+    const pushCurrentStateToArray = () => groupedLines.push(startLine !== previousLine ? [startLine, previousLine] : previousLine);
+    // eslint-disable-next-line no-restricted-syntax
+    for (const line of lines) {
+        // initialize first element
+        if (startLine === null) {
+            startLine = line;
+            previousLine = line;
+            // eslint-disable-next-line no-continue
+            continue;
+        }
+        /// group elements to range
+        if (previousLine !== line - 1) {
+            pushCurrentStateToArray();
+            startLine = line;
+        }
+        previousLine = line;
+    }
+    // Push last element
+    pushCurrentStateToArray();
+    return { file, lines: groupedLines };
+});
+const groupLcovData = (lcovData) => {
+    const groupedFiles = groupByFile(lcovData);
+    const groupedFileLines = groupByFileLines(groupedFiles);
+    return groupedFileLines;
+};
+exports.groupLcovData = groupLcovData;
+// TODO: add types for data and lcovData
+const parseLcovFileData = (data) => new Promise((resolve, reject) => (0, lcov_parse_1.default)(data, (err, res) => {
+    if (err) {
+        reject(err);
+        return;
+    }
+    resolve(res);
+}));
+exports.parseLcovFileData = parseLcovFileData;
+const calculatePercentage = (lcovData) => {
+    let hit = 0;
+    let found = 0;
+    lcovData.forEach((entry) => {
+        hit += entry.lines.hit;
+        found += entry.lines.found;
+    });
+    return parseFloat(((hit / found) * 100).toFixed(2));
+};
+exports.calculatePercentage = calculatePercentage;
+//# sourceMappingURL=lcov.js.map
+
+/***/ }),
+
+/***/ 535:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createOctokitClient = void 0;
+const core_1 = __nccwpck_require__(6762);
+const endpoints_1 = __nccwpck_require__(7935);
+const createNewAccessToken = (appToken) => __awaiter(void 0, void 0, void 0, function* () {
+    const { accessToken } = yield (0, endpoints_1.createGithubAccessToken)({ appToken });
+    return accessToken;
+});
+const createOctokitClient = (appToken, githubToken) => __awaiter(void 0, void 0, void 0, function* () {
+    let githubAccessToken = null;
+    if (appToken) {
+        githubAccessToken = yield createNewAccessToken(appToken);
+    }
+    else {
+        if (!githubToken) {
+            throw new Error('Either Application or Github token is required to create Octokit client');
+        }
+        githubAccessToken = githubToken;
+    }
+    const octokit = new core_1.Octokit({ auth: githubAccessToken });
+    return octokit;
+});
+exports.createOctokitClient = createOctokitClient;
+//# sourceMappingURL=client.js.map
+
+/***/ }),
+
+/***/ 4327:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getChangedFiles = exports.createOrUpdateComment = exports.createComment = exports.updateComment = exports.findComment = exports.createOctokitClient = void 0;
+var client_1 = __nccwpck_require__(535);
+Object.defineProperty(exports, "createOctokitClient", ({ enumerable: true, get: function () { return client_1.createOctokitClient; } }));
+const findComment = (octokit, { repo, owner, issueNumber, searchBody }) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data } = yield octokit.request('GET /repos/{owner}/{repo}/issues/{issue_number}/comments', {
+        repo,
+        owner,
+        issue_number: issueNumber,
+        per_page: 100
+    });
+    const comment = data.find((comment) => comment.body.includes(searchBody));
+    return comment;
+});
+exports.findComment = findComment;
+const updateComment = (octokit, { repo, owner, commentId, body }) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data } = yield octokit.request('PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}', {
+        repo,
+        owner,
+        body,
+        comment_id: commentId
+    });
+    return data;
+});
+exports.updateComment = updateComment;
+const createComment = (octokit, { repo, owner, issueNumber, body }) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data } = yield octokit.request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
+        repo,
+        owner,
+        issue_number: issueNumber,
+        body
+    });
+    return data;
+});
+exports.createComment = createComment;
+const createOrUpdateComment = (octokit, { owner, repo, issueNumber, searchBody, body }) => __awaiter(void 0, void 0, void 0, function* () {
+    const comment = yield (0, exports.findComment)(octokit, {
+        owner,
+        repo,
+        issueNumber,
+        searchBody
+    });
+    return comment
+        ? (0, exports.updateComment)(octokit, { owner, repo, commentId: comment.id, body })
+        : (0, exports.createComment)(octokit, { owner, repo, issueNumber, body });
+});
+exports.createOrUpdateComment = createOrUpdateComment;
+/**
+ * Returns first 100 files that were changed
+ * TODO: decide if we need to show more than that in the details report
+ *  */
+const getChangedFiles = (octokit, { repo, owner, pullNumber }) => __awaiter(void 0, void 0, void 0, function* () {
+    const changedFiles = yield octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
+        repo,
+        owner,
+        pull_number: pullNumber,
+        per_page: 100
+    });
+    return changedFiles.data;
+});
+exports.getChangedFiles = getChangedFiles;
+//# sourceMappingURL=endpoints.js.map
+
+/***/ }),
+
+/***/ 4122:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getCoverageReportBody = void 0;
+const buildTableRow = ({ file, lines, url }) => {
+    const getChangesLink = (lineLines) => `${url}${lineLines}`;
+    // TODO: find a way to get diff patch
+    // `https://github.com/${owner}/${repo}/pull/${pullRequestNumber}/files#diff-${sha}${lines}`;
+    const buildArrayLink = (lineLines) => {
+        const href = getChangesLink(`#L${lineLines[0]}-L${lineLines[1]}`);
+        const text = lineLines.join('-');
+        return `<a href="${href}">${text}</a>`;
+    };
+    const buildLink = (line) => `<a href="${getChangesLink(`#L${line}`)}">${line}</a>`;
+    const buildUncoveredLines = (line) => Array.isArray(line) ? buildArrayLink(line) : buildLink(line);
+    const formattedlines = lines.map(buildUncoveredLines).join(', ');
+    const formattedFile = `<a href="${getChangesLink('')}">${file}</a>`;
+    return `<tr><td>${formattedFile}</td><td>${formattedlines}</td></tr>`;
+};
+const buildDetailsBlock = (changedFiles) => {
+    if (changedFiles.length === 0)
+        return '✅ All code changes are covered';
+    const summary = '<summary>Uncovered files and lines</summary>';
+    const tableHeader = '<tr><th>File</th><th>Lines</th></tr>';
+    const tableBody = changedFiles.map(buildTableRow).join('');
+    const table = `<table><tbody>${tableHeader}${tableBody}</tbody></table>`;
+    return `<details>${summary}${table}</details>`;
+};
+const getCoverageReportBody = ({ changedFiles, title, coverageDiff, totalCoverage }) => {
+    const coverageDiffOutput = coverageDiff < 0 ? '▾' : '▴';
+    const trendArrow = coverageDiff === 0 ? '' : coverageDiffOutput;
+    const header = `${title}`;
+    const detailsWithChangedFiles = buildDetailsBlock(changedFiles);
+    const descTotal = `Total: <b>${totalCoverage}%</b>`;
+    const descCoverageDiff = `Your code coverage diff: <b>${coverageDiff}% ${trendArrow}</b>`;
+    const description = `${descTotal}\n\n${descCoverageDiff}`;
+    const body = `<h3>${header}</h3>${description}\n\n${detailsWithChangedFiles}`;
+    return body;
+};
+exports.getCoverageReportBody = getCoverageReportBody;
+exports["default"] = exports.getCoverageReportBody;
+//# sourceMappingURL=coverage.js.map
+
+/***/ }),
+
 /***/ 334:
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -6267,500 +6761,6 @@ module.exports = {
   stripBOM: stripBOM
 };
 
-
-/***/ }),
-
-/***/ 5299:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.barecheckApiUrl = exports.currentDir = void 0;
-exports.currentDir = process.cwd();
-exports.barecheckApiUrl = process.env.BARECHECK_API_URL || 'https://barecheck.com/api/graphql';
-//# sourceMappingURL=config.js.map
-
-/***/ }),
-
-/***/ 4044:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getCoverageReportBody = exports.sendCoverage = exports.fetchCoverage = exports.parseLcovFile = exports.githubApi = exports.barecheckApi = void 0;
-// api
-exports.barecheckApi = __importStar(__nccwpck_require__(6061));
-exports.githubApi = __importStar(__nccwpck_require__(7483));
-//coverage
-var coverage_1 = __nccwpck_require__(827);
-Object.defineProperty(exports, "parseLcovFile", ({ enumerable: true, get: function () { return coverage_1.parseLcovFile; } }));
-Object.defineProperty(exports, "fetchCoverage", ({ enumerable: true, get: function () { return coverage_1.fetchCoverage; } }));
-Object.defineProperty(exports, "sendCoverage", ({ enumerable: true, get: function () { return coverage_1.sendCoverage; } }));
-// reporters
-var coverage_2 = __nccwpck_require__(3436);
-Object.defineProperty(exports, "getCoverageReportBody", ({ enumerable: true, get: function () { return coverage_2.getCoverageReportBody; } }));
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 6061:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.coverageMetrics = exports.createCoverageMetric = exports.authProject = exports.createGithubAccessToken = void 0;
-const axios_1 = __importDefault(__nccwpck_require__(6545));
-const config_1 = __nccwpck_require__(5299);
-// TODO: define api request response interfaces
-const makeRequest = (accessToken, query, variables) => __awaiter(void 0, void 0, void 0, function* () {
-    const { data } = yield axios_1.default.post(config_1.barecheckApiUrl, {
-        query,
-        variables
-    }, {
-        headers: Object.assign({ 'Content-Type': 'application/json' }, (accessToken
-            ? {
-                'auth-provider': 'custom',
-                authorization: `Bearer ${accessToken}`
-            }
-            : {}))
-    });
-    return data;
-});
-const createGithubAccessToken = (variables) => __awaiter(void 0, void 0, void 0, function* () {
-    const query = `mutation createGithubAccessToken($appToken: String!) {
-    createGithubAccessToken(appToken:$appToken) {
-      accessToken
-    }
-  }`;
-    const response = yield makeRequest('', query, variables);
-    if (!response.data) {
-        throw new Error("Couldn't fetch accessToken token by using appToken. Check if you use the correct `BARECHECK_APP_KEY`");
-    }
-    return response.data.createGithubAccessToken;
-});
-exports.createGithubAccessToken = createGithubAccessToken;
-const authProject = (variables) => __awaiter(void 0, void 0, void 0, function* () {
-    const query = `mutation authProject($apiKey: String!) {
-    authProject(apiKey:$apiKey) {
-      project {
-        id
-      }
-      accessToken
-    }
-  }`;
-    const response = yield makeRequest('', query, variables);
-    if (!response.data) {
-        throw new Error("Couldn't fetch accessToken token by using apiKey. Check if you use the correct `API_KEY`");
-    }
-    return response.data.authProject;
-});
-exports.authProject = authProject;
-const createCoverageMetric = (accessToken, variables) => __awaiter(void 0, void 0, void 0, function* () {
-    const query = `mutation createCoverageMetric($projectId: Int!, $totalCoverage: Float! $ref: String!, $sha: String!) {
-    createCoverageMetric(input: {projectId: $projectId, totalCoverage: $totalCoverage, ref: $ref, sha: $sha }) {
-      id
-      totalCoverage
-      ref
-      sha
-      createdAt
-      updatedAt
-    }
-  }
-  `;
-    const response = yield makeRequest(accessToken, query, variables);
-    if (!response.data) {
-        throw new Error("Couldn't send your project coverage metric. Check if `accessToken` is valid or receive new one by using `authProject` mutation");
-    }
-    return response.data.createCoverageMetric;
-});
-exports.createCoverageMetric = createCoverageMetric;
-const coverageMetrics = (accessToken, variables) => __awaiter(void 0, void 0, void 0, function* () {
-    const query = `query coverageMetrics($projectId: Int!, $ref: String, $dateTo: DateTime, $take: Int ) {
-    coverageMetrics(projectId: $projectId, ref:$ref, dateTo: $dateTo, take: $take){
-      id
-      ref
-      sha
-      totalCoverage
-      createdAt
-    }
-  }
-  `;
-    const response = yield makeRequest(accessToken, query, variables);
-    if (!response.data) {
-        return null;
-    }
-    return response.data.coverageMetrics;
-});
-exports.coverageMetrics = coverageMetrics;
-//# sourceMappingURL=endpoints.js.map
-
-/***/ }),
-
-/***/ 827:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.sendCoverage = exports.fetchCoverage = exports.parseLcovFile = void 0;
-const fs = __importStar(__nccwpck_require__(7147));
-const lcov_1 = __nccwpck_require__(2198);
-const endpoints_1 = __nccwpck_require__(6061);
-const parseLcovFile = (coverageFilePath) => __awaiter(void 0, void 0, void 0, function* () {
-    const fileRaw = fs.readFileSync(coverageFilePath, 'utf8');
-    if (!fileRaw) {
-        throw new Error(`No coverage report found at '${coverageFilePath}', exiting...`);
-    }
-    const lcovData = yield (0, lcov_1.parseLcovFileData)(fileRaw);
-    const data = (0, lcov_1.groupLcovData)(lcovData);
-    const percentage = (0, lcov_1.calculatePercentage)(lcovData);
-    return { lcovData, data, percentage };
-});
-exports.parseLcovFile = parseLcovFile;
-const fetchCoverage = (apiKey, ref) => __awaiter(void 0, void 0, void 0, function* () {
-    const { accessToken, project } = yield (0, endpoints_1.authProject)({ apiKey });
-    const [latestCoverage] = yield (0, endpoints_1.coverageMetrics)(accessToken, {
-        projectId: project.id,
-        ref,
-        take: 1
-    });
-    return latestCoverage ? latestCoverage.totalCoverage : 0;
-});
-exports.fetchCoverage = fetchCoverage;
-const sendCoverage = (apiKey, totalCoverage, ref, sha) => __awaiter(void 0, void 0, void 0, function* () {
-    const { accessToken, project } = yield (0, endpoints_1.authProject)({ apiKey });
-    const [latestCoverage] = yield (0, endpoints_1.createCoverageMetric)(accessToken, {
-        projectId: project.id,
-        ref,
-        sha,
-        totalCoverage
-    });
-    return latestCoverage ? latestCoverage.totalCoverage : 0;
-});
-exports.sendCoverage = sendCoverage;
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 2198:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.calculatePercentage = exports.parseLcovFileData = exports.groupLcovData = void 0;
-const lcov_parse_1 = __importDefault(__nccwpck_require__(7454));
-const groupByFile = (lcovData) => {
-    const response = [];
-    lcovData.forEach((fileData) => {
-        const lines = fileData.lines.details
-            .filter(({ hit }) => hit === 0)
-            .map(({ line }) => line);
-        if (lines.length > 0) {
-            response.push({
-                file: fileData.file,
-                lines
-            });
-        }
-    });
-    return response;
-};
-// TODO: this function is interapted by empty lines
-// Need to find a way how we can avoid this in order to keep the whole interval
-const groupByFileLines = (filesLines) => 
-// eslint-disable-next-line max-statements
-filesLines.map(({ file, lines }) => {
-    const groupedLines = [];
-    let previousLine = null;
-    let startLine = null;
-    const pushCurrentStateToArray = () => groupedLines.push(startLine !== previousLine ? [startLine, previousLine] : previousLine);
-    // eslint-disable-next-line no-restricted-syntax
-    for (const line of lines) {
-        // initialize first element
-        if (startLine === null) {
-            startLine = line;
-            previousLine = line;
-            // eslint-disable-next-line no-continue
-            continue;
-        }
-        /// group elements to range
-        if (previousLine !== line - 1) {
-            pushCurrentStateToArray();
-            startLine = line;
-        }
-        previousLine = line;
-    }
-    // Push last element
-    pushCurrentStateToArray();
-    return { file, lines: groupedLines };
-});
-const groupLcovData = (lcovData) => {
-    const groupedFiles = groupByFile(lcovData);
-    const groupedFileLines = groupByFileLines(groupedFiles);
-    return groupedFileLines;
-};
-exports.groupLcovData = groupLcovData;
-// TODO: add types for data and lcovData
-const parseLcovFileData = (data) => new Promise((resolve, reject) => (0, lcov_parse_1.default)(data, (err, res) => {
-    if (err) {
-        reject(err);
-        return;
-    }
-    resolve(res);
-}));
-exports.parseLcovFileData = parseLcovFileData;
-const calculatePercentage = (lcovData) => {
-    let hit = 0;
-    let found = 0;
-    lcovData.forEach((entry) => {
-        hit += entry.lines.hit;
-        found += entry.lines.found;
-    });
-    return parseFloat(((hit / found) * 100).toFixed(2));
-};
-exports.calculatePercentage = calculatePercentage;
-//# sourceMappingURL=lcov.js.map
-
-/***/ }),
-
-/***/ 7762:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createOctokitClient = void 0;
-const core_1 = __nccwpck_require__(6762);
-const endpoints_1 = __nccwpck_require__(6061);
-const createNewAccessToken = (appToken) => __awaiter(void 0, void 0, void 0, function* () {
-    const { accessToken } = yield (0, endpoints_1.createGithubAccessToken)({ appToken });
-    return accessToken;
-});
-const createOctokitClient = (appToken, githubToken) => __awaiter(void 0, void 0, void 0, function* () {
-    let githubAccessToken = null;
-    if (appToken) {
-        githubAccessToken = yield createNewAccessToken(appToken);
-    }
-    else {
-        if (!githubToken) {
-            throw new Error('Either Application or Github token is required to create Octokit client');
-        }
-        githubAccessToken = githubToken;
-    }
-    const octokit = new core_1.Octokit({ auth: githubAccessToken });
-    return octokit;
-});
-exports.createOctokitClient = createOctokitClient;
-//# sourceMappingURL=client.js.map
-
-/***/ }),
-
-/***/ 7483:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getChangedFiles = exports.createOrUpdateComment = exports.createComment = exports.updateComment = exports.findComment = exports.createOctokitClient = void 0;
-var client_1 = __nccwpck_require__(7762);
-Object.defineProperty(exports, "createOctokitClient", ({ enumerable: true, get: function () { return client_1.createOctokitClient; } }));
-const findComment = (octokit, { repo, owner, issueNumber, searchBody }) => __awaiter(void 0, void 0, void 0, function* () {
-    const { data } = yield octokit.request('GET /repos/{owner}/{repo}/issues/{issue_number}/comments', {
-        repo,
-        owner,
-        issue_number: issueNumber,
-        per_page: 100
-    });
-    const comment = data.find((comment) => comment.body.includes(searchBody));
-    return comment;
-});
-exports.findComment = findComment;
-const updateComment = (octokit, { repo, owner, commentId, body }) => __awaiter(void 0, void 0, void 0, function* () {
-    const { data } = yield octokit.request('PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}', {
-        repo,
-        owner,
-        body,
-        comment_id: commentId
-    });
-    return data;
-});
-exports.updateComment = updateComment;
-const createComment = (octokit, { repo, owner, issueNumber, body }) => __awaiter(void 0, void 0, void 0, function* () {
-    const { data } = yield octokit.request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
-        repo,
-        owner,
-        issue_number: issueNumber,
-        body
-    });
-    return data;
-});
-exports.createComment = createComment;
-const createOrUpdateComment = (octokit, { owner, repo, issueNumber, searchBody, body }) => __awaiter(void 0, void 0, void 0, function* () {
-    const comment = yield (0, exports.findComment)(octokit, {
-        owner,
-        repo,
-        issueNumber,
-        searchBody
-    });
-    return comment
-        ? (0, exports.updateComment)(octokit, { owner, repo, commentId: comment.id, body })
-        : (0, exports.createComment)(octokit, { owner, repo, issueNumber, body });
-});
-exports.createOrUpdateComment = createOrUpdateComment;
-/**
- * Returns first 100 files that were changed
- * TODO: decide if we need to show more than that in the details report
- *  */
-const getChangedFiles = (octokit, { repo, owner, pullNumber }) => __awaiter(void 0, void 0, void 0, function* () {
-    const changedFiles = yield octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
-        repo,
-        owner,
-        pull_number: pullNumber,
-        per_page: 100
-    });
-    return changedFiles.data;
-});
-exports.getChangedFiles = getChangedFiles;
-//# sourceMappingURL=endpoints.js.map
-
-/***/ }),
-
-/***/ 3436:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getCoverageReportBody = void 0;
-const buildTableRow = ({ file, lines, url }) => {
-    const getChangesLink = (lineLines) => `${url}${lineLines}`;
-    // TODO: find a way to get diff patch
-    // `https://github.com/${owner}/${repo}/pull/${pullRequestNumber}/files#diff-${sha}${lines}`;
-    const buildArrayLink = (lineLines) => {
-        const href = getChangesLink(`#L${lineLines[0]}-L${lineLines[1]}`);
-        const text = lineLines.join('-');
-        return `<a href="${href}">${text}</a>`;
-    };
-    const buildLink = (line) => `<a href="${getChangesLink(`#L${line}`)}">${line}</a>`;
-    const buildUncoveredLines = (line) => Array.isArray(line) ? buildArrayLink(line) : buildLink(line);
-    const formattedlines = lines.map(buildUncoveredLines).join(', ');
-    const formattedFile = `<a href="${getChangesLink('')}">${file}</a>`;
-    return `<tr><td>${formattedFile}</td><td>${formattedlines}</td></tr>`;
-};
-const buildDetailsBlock = (changedFiles) => {
-    if (changedFiles.length === 0)
-        return '✅ All code changes are covered';
-    const summary = '<summary>Uncovered files and lines</summary>';
-    const tableHeader = '<tr><th>File</th><th>Lines</th></tr>';
-    const tableBody = changedFiles.map(buildTableRow).join('');
-    const table = `<table><tbody>${tableHeader}${tableBody}</tbody></table>`;
-    return `<details>${summary}${table}</details>`;
-};
-const getCoverageReportBody = ({ changedFiles, title, coverageDiff, totalCoverage }) => {
-    const coverageDiffOutput = coverageDiff < 0 ? '▾' : '▴';
-    const trendArrow = coverageDiff === 0 ? '' : coverageDiffOutput;
-    const header = `${title}`;
-    const detailsWithChangedFiles = buildDetailsBlock(changedFiles);
-    const descTotal = `Total: <b>${totalCoverage}%</b>`;
-    const descCoverageDiff = `Your code coverage diff: <b>${coverageDiff}% ${trendArrow}</b>`;
-    const description = `${descTotal}\n\n${descCoverageDiff}`;
-    const body = `<h3>${header}</h3>${description}\n\n${detailsWithChangedFiles}`;
-    return body;
-};
-exports.getCoverageReportBody = getCoverageReportBody;
-exports["default"] = exports.getCoverageReportBody;
-//# sourceMappingURL=coverage.js.map
 
 /***/ }),
 
@@ -13246,7 +13246,7 @@ module.exports = {
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const core = __nccwpck_require__(2186);
-const { barecheckApi } = __nccwpck_require__(4044);
+const { barecheckApi } = __nccwpck_require__(5396);
 
 const { getBaseRefSha, getCurrentRefSha } = __nccwpck_require__(8383);
 const { getBarecheckApiKey } = __nccwpck_require__(6);
@@ -13322,7 +13322,7 @@ module.exports = {
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const github = __nccwpck_require__(5438);
-const { githubApi } = __nccwpck_require__(4044);
+const { githubApi } = __nccwpck_require__(5396);
 
 const { getBarecheckGithubAppToken, getGithubToken } = __nccwpck_require__(6);
 
@@ -13392,7 +13392,7 @@ module.exports = {
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const core = __nccwpck_require__(2186);
-const { parseLcovFile } = __nccwpck_require__(4044);
+const { parseLcovFile } = __nccwpck_require__(5396);
 
 const { getBaseLcovFile, getBarecheckApiKey } = __nccwpck_require__(6);
 const { getBaseBranchCoverage } = __nccwpck_require__(2069);
@@ -13428,7 +13428,7 @@ module.exports = getBasecoverageDiff;
 /***/ 3228:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-const { githubApi } = __nccwpck_require__(4044);
+const { githubApi } = __nccwpck_require__(5396);
 
 const { getPullRequestContext, getOctokit } = __nccwpck_require__(8383);
 
@@ -13489,7 +13489,7 @@ module.exports = checkMinimumRatio;
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const core = __nccwpck_require__(2186);
-const { getCoverageReportBody, githubApi } = __nccwpck_require__(4044);
+const { getCoverageReportBody, githubApi } = __nccwpck_require__(5396);
 
 const { getPullRequestContext, getOctokit } = __nccwpck_require__(8383);
 const { getSendSummaryComment, getAppName } = __nccwpck_require__(6);
@@ -13751,7 +13751,7 @@ var __webpack_exports__ = {};
 (() => {
 const core = __nccwpck_require__(2186);
 
-const { parseLcovFile } = __nccwpck_require__(4044);
+const { parseLcovFile } = __nccwpck_require__(5396);
 
 const { getLcovFile } = __nccwpck_require__(6);
 

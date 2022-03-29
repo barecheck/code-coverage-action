@@ -28,7 +28,7 @@ const sendSummaryCommentMock = (mocks) => {
     ...mocks
   };
   return proxyquire("../../src/services/sendSummaryComment", {
-    barecheck: { getCoverageReportBody, githubApi },
+    "@barecheck/core": { getCoverageReportBody, githubApi },
     "@actions/core": { info },
     "../input": { getSendSummaryComment, getAppName },
     "../lib/github": { getPullRequestContext, getOctokit }

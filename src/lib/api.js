@@ -1,5 +1,5 @@
 const core = require("@actions/core");
-const { barecheckApi } = require("barecheck");
+const { barecheckApi } = require("@barecheck/core");
 
 const { getBaseRefSha, getCurrentRefSha } = require("./github");
 const { getBarecheckApiKey } = require("../input");
