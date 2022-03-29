@@ -13288,9 +13288,6 @@ const getBaseBranchCoverage = async () => {
     take: 1
   });
 
-  // eslint-disable-next-line no-console
-  console.log(coverageMetrics);
-
   return coverageMetrics[0] ? coverageMetrics[0].totalCoverage : false;
 };
 
@@ -13406,7 +13403,8 @@ const getBasecoverageDiff = async (coverage) => {
   const baseMetrics = getBarecheckApiKey()
     ? await getBaseBranchCoverage()
     : false;
-  let baseCoveragePercentage = baseMetrics ? baseMetrics.coverage : 0;
+
+  let baseCoveragePercentage = baseMetrics || 0;
 
   if (!baseCoveragePercentage && baseFile) {
     core.info(`base-lcov-file: ${baseFile}`);
