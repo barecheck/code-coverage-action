@@ -13288,6 +13288,9 @@ const getBaseBranchCoverage = async () => {
     take: 1
   });
 
+  // eslint-disable-next-line no-console
+  console.log(coverageMetrics);
+
   return coverageMetrics[0] ? coverageMetrics[0].totalCoverage : false;
 };
 
