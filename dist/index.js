@@ -13403,7 +13403,8 @@ const getBasecoverageDiff = async (coverage) => {
   const baseMetrics = getBarecheckApiKey()
     ? await getBaseBranchCoverage()
     : false;
-  let baseCoveragePercentage = baseMetrics ? baseMetrics.coverage : 0;
+
+  let baseCoveragePercentage = baseMetrics || 0;
 
   if (!baseCoveragePercentage && baseFile) {
     core.info(`base-lcov-file: ${baseFile}`);
