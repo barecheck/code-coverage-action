@@ -19,7 +19,7 @@ const getGitHubLibMock = (mocks) => {
   };
   return proxyquire("../../src/lib/github", {
     "@actions/github": github,
-    barecheck: { githubApi },
+    "@barecheck/core": { githubApi },
     "../input": { getBarecheckGithubAppToken, getGithubToken }
   });
 };

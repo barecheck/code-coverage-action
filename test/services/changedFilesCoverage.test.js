@@ -14,7 +14,7 @@ const getChangedFilesCoverageMock = (mocks) => {
     ...mocks
   };
   return proxyquire("../../src/services/changedFilesCoverage", {
-    barecheck: { githubApi },
+    "@barecheck/core": { githubApi },
     "../lib/github": { getPullRequestContext, getOctokit }
   });
 };

@@ -16,7 +16,7 @@ const getBaseCoverageDiffMock = (mocks) => {
     ...mocks
   };
   return proxyquire("../../src/services/baseCoverageDiff", {
-    barecheck: { parseLcovFile },
+    "@barecheck/core": { parseLcovFile },
     "@actions/core": { getInput, info, setFailed },
     "../input": { getBaseLcovFile }
   });
