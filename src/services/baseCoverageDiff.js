@@ -1,5 +1,5 @@
 const core = require("@actions/core");
-const { parseLcovFile } = require("barecheck");
+const { parseLcovFile } = require("@barecheck/core");
 
 const { getBaseLcovFile, getBarecheckApiKey } = require("../input");
 const { getBaseBranchCoverage } = require("../lib/api");

@@ -1,5 +1,5 @@
 const core = require("@actions/core");
-const { getCoverageReportBody, githubApi } = require("barecheck");
+const { getCoverageReportBody, githubApi } = require("@barecheck/core");
 
 const { getPullRequestContext, getOctokit } = require("../lib/github");
 const { getSendSummaryComment, getAppName } = require("../input");

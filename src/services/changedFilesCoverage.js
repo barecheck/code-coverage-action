@@ -1,4 +1,4 @@
-const { githubApi } = require("barecheck");
+const { githubApi } = require("@barecheck/core");
 
 const { getPullRequestContext, getOctokit } = require("../lib/github");
 
