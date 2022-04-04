@@ -216,10 +216,10 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
-"@barecheck/core@^0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@barecheck/core/-/core-0.2.3.tgz#296365ad66ea7ec0a38471f0aa3d7932c4ccd4a2"
-  integrity sha512-dWzAxtk00rAJYQjaUI1cZqxhajy8b2vb2Cb/uX6I3u9i4D3X1KFckHLgRTXhwiqh6XGBykhgT4QG7eP0TlJ37w==
+"@barecheck/core@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@barecheck/core/-/core-0.3.0.tgz#654cd1f92b69b20399ba93fc02e77cc2a488b9ef"
+  integrity sha512-+WLFX8DBQ3TVzgbSxRWxoK/iE7h+MiG9wkq8xaoum85LW54I+70SNcVNdvY6Is39apwwNZ/zMJ2cQl3M37V6uQ==
   dependencies:
     "@octokit/core" "^3.6.0"
     "@types/node" "^16.11.0"
