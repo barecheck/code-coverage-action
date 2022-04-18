@@ -9,7 +9,7 @@
     "@barecheck/core": "^0.2.3"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.33.3",
+    "@vercel/ncc": "^0.33.4",
     "chai": "^4.3.6",
     "eslint": "^8.13.0",
     "eslint-config-barecheck-base": "^0.5.4",
