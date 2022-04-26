@@ -13400,6 +13400,7 @@ const { getBaseBranchCoverage } = __nccwpck_require__(2069);
 // eslint-disable-next-line max-statements
 const getBasecoverageDiff = async (coverage) => {
   const baseFile = getBaseLcovFile();
+
   const baseMetrics = getBarecheckApiKey()
     ? await getBaseBranchCoverage()
     : false;
@@ -13753,7 +13754,7 @@ const core = __nccwpck_require__(2186);
 
 const { parseLcovFile } = __nccwpck_require__(5396);
 
-const { getLcovFile } = __nccwpck_require__(6);
+const { getLcovFile, getBarecheckApiKey } = __nccwpck_require__(6);
 
 const { sendCurrentCoverage } = __nccwpck_require__(2069);
 
@@ -13772,7 +13773,8 @@ const runCodeCoverage = async (coverage) => {
 
   await checkMinimumRatio(diff);
   await showAnnotations(changedFilesCoverage);
-  await sendCurrentCoverage(coverage.percentage);
+
+  if (getBarecheckApiKey()) await sendCurrentCoverage(coverage.percentage);
 
   core.setOutput("percentage", coverage.percentage);
   core.setOutput("diff", diff);

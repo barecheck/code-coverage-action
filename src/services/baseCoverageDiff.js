@@ -7,6 +7,7 @@ const { getBaseBranchCoverage } = require("../lib/api");
 // eslint-disable-next-line max-statements
 const getBasecoverageDiff = async (coverage) => {
   const baseFile = getBaseLcovFile();
+
   const baseMetrics = getBarecheckApiKey()
     ? await getBaseBranchCoverage()
     : false;
