@@ -13400,6 +13400,8 @@ const { getBaseBranchCoverage } = __nccwpck_require__(2069);
 // eslint-disable-next-line max-statements
 const getBasecoverageDiff = async (coverage) => {
   const baseFile = getBaseLcovFile();
+  // eslint-disable-next-line no-console
+  console.log(getBarecheckApiKey());
   const baseMetrics = getBarecheckApiKey()
     ? await getBaseBranchCoverage()
     : false;
