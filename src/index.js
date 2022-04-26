@@ -2,7 +2,7 @@ const core = require("@actions/core");
 
 const { parseLcovFile } = require("@barecheck/core");
 
-const { getLcovFile } = require("./input");
+const { getLcovFile, getBarecheckApiKey } = require("./input");
 
 const { sendCurrentCoverage } = require("./lib/api");
 
@@ -21,7 +21,8 @@ const runCodeCoverage = async (coverage) => {
 
   await checkMinimumRatio(diff);
   await showAnnotations(changedFilesCoverage);
-  await sendCurrentCoverage(coverage.percentage);
+
+  if (getBarecheckApiKey()) await sendCurrentCoverage(coverage.percentage);
 
   core.setOutput("percentage", coverage.percentage);
   core.setOutput("diff", diff);
