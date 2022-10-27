@@ -16,10 +16,25 @@ const getChangedFilesCoverage = async (coverage) => {
     pullNumber
   });
 
-  const changedFilesNames = changedFiles.map(({ filename }) => filename);
+  const changedFilesCoverage = coverage.data.reduce(
+    (allFiles, { file, lines }) => {
+      const changedFile = changedFiles.find(
+        ({ filename }) => filename === file
+      );
 
-  const changedFilesCoverage = coverage.data.filter(({ file }) =>
-    changedFilesNames.includes(file)
+      if (changedFile) {
+        return [
+          ...allFiles,
+          {
+            file,
+            url: changedFile.blob_url,
+            lines
+          }
+        ];
+      }
+      return allFiles;
+    },
+    []
   );
 
   return changedFilesCoverage;

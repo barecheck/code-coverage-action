@@ -31,10 +31,12 @@ describe("services/changedFilesCoverage", () => {
     };
     const changedFiles = [
       {
-        filename: "changed1.js"
+        filename: "changed1.js",
+        blob_url: "https://github.com/pull/1"
       },
       {
-        filename: "changed2.js"
+        filename: "changed2.js",
+        blob_url: "https://github.com/pull/2"
       }
     ];
 
@@ -42,7 +44,8 @@ describe("services/changedFilesCoverage", () => {
       data: [
         {
           file: "changed1.js",
-          lines: [1, 2]
+          lines: [1, 2],
+          url: "https://github.com/pull/1"
         },
         {
           file: "not changed 3.js",
@@ -69,7 +72,8 @@ describe("services/changedFilesCoverage", () => {
     assert.deepEqual(res, [
       {
         file: "changed1.js",
-        lines: [1, 2]
+        lines: [1, 2],
+        url: "https://github.com/pull/1"
       }
     ]);
   });
