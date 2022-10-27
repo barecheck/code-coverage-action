@@ -14652,10 +14652,25 @@ const getChangedFilesCoverage = async (coverage) => {
     pullNumber
   });
 
-  const changedFilesNames = changedFiles.map(({ filename }) => filename);
+  const changedFilesCoverage = coverage.data.reduce(
+    (allFiles, { file, lines }) => {
+      const changedFile = changedFiles.find(
+        ({ filename }) => filename === file
+      );
 
-  const changedFilesCoverage = coverage.data.filter(({ file }) =>
-    changedFilesNames.includes(file)
+      if (changedFile) {
+        return [
+          ...allFiles,
+          {
+            file,
+            url: changedFile.blob_url,
+            lines
+          }
+        ];
+      }
+      return allFiles;
+    },
+    []
   );
 
   return changedFilesCoverage;
@@ -14694,13 +14709,14 @@ module.exports = checkMinimumRatio;
 /***/ 2599:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
+/* eslint-disable no-console */
+/* eslint-disable max-statements  */
 const core = __nccwpck_require__(2186);
 const { getCoverageReportBody, githubApi } = __nccwpck_require__(5396);
 
 const { getPullRequestContext, getOctokit } = __nccwpck_require__(8383);
 const { getSendSummaryComment, getAppName } = __nccwpck_require__(6);
 
-// eslint-disable-next-line max-statements
 const sendSummaryComment = async (
   changedFiles,
   coverageDiff,
