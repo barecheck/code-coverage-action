@@ -14709,8 +14709,6 @@ module.exports = checkMinimumRatio;
 /***/ 2599:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-/* eslint-disable no-console */
-/* eslint-disable max-statements  */
 const core = __nccwpck_require__(2186);
 const { getCoverageReportBody, githubApi } = __nccwpck_require__(5396);
 
@@ -14731,8 +14729,6 @@ const sendSummaryComment = async (
     const appName = getAppName() ? getAppName() : "Barecheck";
 
     const title = `${appName} - Code coverage report`;
-
-    console.log(changedFiles);
 
     const body = getCoverageReportBody({
       changedFiles,

@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable max-statements  */
 const core = require("@actions/core");
 const { getCoverageReportBody, githubApi } = require("@barecheck/core");
 
@@ -20,8 +18,6 @@ const sendSummaryComment = async (
     const appName = getAppName() ? getAppName() : "Barecheck";
 
     const title = `${appName} - Code coverage report`;
-
-    console.log(changedFiles);
 
     const body = getCoverageReportBody({
       changedFiles,
