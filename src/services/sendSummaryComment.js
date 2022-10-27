@@ -1,10 +1,11 @@
+/* eslint-disable no-console */
+/* eslint-disable max-statements  */
 const core = require("@actions/core");
 const { getCoverageReportBody, githubApi } = require("@barecheck/core");
 
 const { getPullRequestContext, getOctokit } = require("../lib/github");
 const { getSendSummaryComment, getAppName } = require("../input");
 
-// eslint-disable-next-line max-statements
 const sendSummaryComment = async (
   changedFiles,
   coverageDiff,
