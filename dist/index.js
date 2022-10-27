@@ -14700,6 +14700,7 @@ const { getCoverageReportBody, githubApi } = __nccwpck_require__(5396);
 const { getPullRequestContext, getOctokit } = __nccwpck_require__(8383);
 const { getSendSummaryComment, getAppName } = __nccwpck_require__(6);
 
+// eslint-disable-next-line max-statements
 const sendSummaryComment = async (
   changedFiles,
   coverageDiff,
@@ -14714,6 +14715,8 @@ const sendSummaryComment = async (
     const appName = getAppName() ? getAppName() : "Barecheck";
 
     const title = `${appName} - Code coverage report`;
+
+    console.log(changedFiles);
 
     const body = getCoverageReportBody({
       changedFiles,
