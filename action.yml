@@ -42,5 +42,5 @@ outputs:
   diff:
     description: "Percantage difference between head branch"
 runs:
-  using: "node12"
+  using: "node16"
   main: "dist/index.js"
