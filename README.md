@@ -112,7 +112,7 @@ jobs:
       #  Compares two code coverage files and generates report as a comment
       - name: Generate Code Coverage report
         id: code-coverage
-        uses: barecheck/code-coverage-action@v1
+        uses: barecheck/code-coverage-action@v2
         with:
           barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
           lcov-file: "./coverage/lcov.info"
@@ -131,7 +131,7 @@ If you have monorepo with more than one application and want to have different c
 ```yml
 - name: Application1 - Generate Code Coverage report
   id: code-coverage
-  uses: barecheck/code-coverage-action@v1
+  uses: barecheck/code-coverage-action@v2
   with:
     barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
     lcov-file: "./coverage/lcov.info"
@@ -142,7 +142,7 @@ If you have monorepo with more than one application and want to have different c
 ```yml
 - name: Application2 - Generate Code Coverage report
   id: code-coverage
-  uses: barecheck/code-coverage-action@v1
+  uses: barecheck/code-coverage-action@v2
   with:
     barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
     lcov-file: "./coverage/lcov.info"
@@ -158,7 +158,7 @@ Action will not send any data besides just the coverage number and commit sha to
 ```yml
 - name: Generate Code Coverage report
   id: code-coverage
-  uses: barecheck/code-coverage-action@v1
+  uses: barecheck/code-coverage-action@v2
   with:
     barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
     barecheck-api-key: ${{ secrets.BARECHECK_API_KEY }}
