@@ -68,11 +68,11 @@ jobs:
   base_branch_cov:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.base_ref }}
       - name: Use Node.js v16.11.0
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: v16.11.0
 
@@ -83,7 +83,7 @@ jobs:
         run: yarn coverage
 
       - name: Upload code coverage for ref branch
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ref-lcov.info
           path: ./coverage/lcov.info
@@ -92,14 +92,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: base_branch_cov
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js v16.11.0
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: v16.11.0
 
       - name: Download code coverage report from base branch
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: ref-lcov.info
 
