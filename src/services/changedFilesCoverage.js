@@ -1,4 +1,5 @@
 const { githubApi } = require("@barecheck/core");
+const path = require("path");
 
 const { getPullRequestContext, getOctokit } = require("../lib/github");
 const { getWorkspacePath } = require("../input");
@@ -20,7 +21,7 @@ const getChangedFilesCoverage = async (coverage) => {
   const workspacePath = getWorkspacePath();
   const changedFilesCoverage = coverage.data.reduce(
     (allFiles, { file, lines }) => {
-      const filePath = workspacePath ? `${workspacePath}/${file}` : file;
+      const filePath = workspacePath ? path.join(workspacePath, file) : file;
       const changedFile = changedFiles.find(
         ({ filename }) => filename === filePath
       );
