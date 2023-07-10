@@ -22,7 +22,7 @@ const getChangedFilesCoverage = async (coverage) => {
   const changedFilesCoverage = coverage.data.reduce(
     (allFiles, { file, lines }) => {
       const filePath = workspacePath ? path.join(workspacePath, file) : file;
-      console.log(filePath);
+
       const changedFile = changedFiles.find(
         ({ filename }) => filename === filePath
       );
