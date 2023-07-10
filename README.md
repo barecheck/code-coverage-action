@@ -54,6 +54,7 @@ To integrate with this Github Action, you can just use the following configurati
 | `show-annotations`           | **no**   | 'warning'   | Option to enable Github annotation that would show uncovered files in review tab. Options: ' ' \| warning \| error                                   |
 | `minimum-ratio`              | **no**   | ''          | Percentage of uncovered lines that are allowed for new changes                                                                                       |
 | `app-name`                   | **no**   | 'Barecheck' | Application name would be used once you have more than one report in your workflow and want to have different reports per application.               |
+| `workspace-path`             | **no**   | 'Barecheck' | Option to specify the path of projects in monorepo                                                                                                   |
 
 ## Workflow Example
 
@@ -137,6 +138,7 @@ If you have monorepo with more than one application and want to have different c
     lcov-file: "./coverage/lcov.info"
     base-lcov-file: "./coverage/base-lcov.info"
     app-name: "Application 1"
+    workspace-path: "apps/application1"
 ```
 
 ```yml
@@ -148,6 +150,7 @@ If you have monorepo with more than one application and want to have different c
     lcov-file: "./coverage/lcov.info"
     base-lcov-file: "./coverage/base-lcov.info"
     app-name: "Application 2"
+    workspace-path: "apps/application2"
 ```
 
 ### Using Barecheck Cloud

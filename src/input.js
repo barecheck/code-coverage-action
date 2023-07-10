@@ -38,6 +38,8 @@ const getBaseLcovFile = () => valueOrFalse(core.getInput("base-lcov-file"));
 const getSendSummaryComment = () =>
   valueOrFalse(core.getInput("send-summary-comment"));
 
+const getWorkspacePath = () => core.getInput("workspace-path");
+
 module.exports = {
   getShowAnnotations,
   getGithubToken,
@@ -46,5 +48,6 @@ module.exports = {
   getAppName,
   getLcovFile,
   getBaseLcovFile,
-  getSendSummaryComment
+  getSendSummaryComment,
+  getWorkspacePath
 };
