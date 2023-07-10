@@ -14433,6 +14433,8 @@ const getBaseLcovFile = () => valueOrFalse(core.getInput("base-lcov-file"));
 const getSendSummaryComment = () =>
   valueOrFalse(core.getInput("send-summary-comment"));
 
+const getWorkspacePath = () => core.getInput("workspace-path");
+
 module.exports = {
   getShowAnnotations,
   getGithubToken,
@@ -14441,7 +14443,8 @@ module.exports = {
   getAppName,
   getLcovFile,
   getBaseLcovFile,
-  getSendSummaryComment
+  getSendSummaryComment,
+  getWorkspacePath
 };
 
 
@@ -14635,8 +14638,10 @@ module.exports = getBasecoverageDiff;
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const { githubApi } = __nccwpck_require__(5396);
+const path = __nccwpck_require__(1017);
 
 const { getPullRequestContext, getOctokit } = __nccwpck_require__(8383);
+const { getWorkspacePath } = __nccwpck_require__(6);
 
 const getChangedFilesCoverage = async (coverage) => {
   const pullRequestContext = getPullRequestContext();
@@ -14652,17 +14657,19 @@ const getChangedFilesCoverage = async (coverage) => {
     pullNumber
   });
 
+  const workspacePath = getWorkspacePath();
   const changedFilesCoverage = coverage.data.reduce(
     (allFiles, { file, lines }) => {
+      const filePath = workspacePath ? path.join(workspacePath, file) : file;
       const changedFile = changedFiles.find(
-        ({ filename }) => filename === file
+        ({ filename }) => filename === filePath
       );
 
       if (changedFile) {
         return [
           ...allFiles,
           {
-            file,
+            file: filePath,
             url: changedFile.blob_url,
             lines
           }
