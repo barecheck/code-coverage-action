@@ -3,6 +3,9 @@
   "version": "v1.0.0",
   "description": "GitHub Action that posts coverage as comment in Pull request",
   "main": "src/index.js",
+  "engines": {
+    "node": "20"
+  },
   "dependencies": {
     "@actions/core": "^1.10.0",
     "@actions/github": "^5.1.1",
