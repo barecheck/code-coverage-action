@@ -98,5 +98,49 @@ describe("services/minCoverageRatio", () => {
       assert.isUndefined(res);
       assert.isFalse(setFailed.calledOnce);
     });
+
+    it("Supports floats as the ratio, with an acceptable diff amount", () => {
+      const minCoverageRatio = 0.5;
+      const coverageDiff = "-0.45";
+
+      const getInput = sinon
+        .stub()
+        .withArgs("minimum-ratio")
+        .returns(minCoverageRatio);
+
+      const setFailed = sinon.spy();
+
+      const checkMinimumRatio = minCoverageRatioMock({
+        getInput,
+        setFailed
+      });
+
+      const res = checkMinimumRatio(coverageDiff);
+
+      assert.isUndefined(res);
+      assert.isFalse(setFailed.calledOnce);
+    })
+
+    it("Supports floats as the ratio, with an unacceptable diff amount", () => {
+      const minCoverageRatio = 0.5;
+      const coverageDiff = "-0.51";
+
+      const getInput = sinon
+        .stub()
+        .withArgs("minimum-ratio")
+        .returns(minCoverageRatio);
+
+      const setFailed = sinon.spy();
+
+      const checkMinimumRatio = minCoverageRatioMock({
+        getInput,
+        setFailed
+      });
+
+      const res = checkMinimumRatio(coverageDiff);
+
+      assert.isUndefined(res);
+      assert.isTrue(setFailed.calledOnce);
+    })
   });
 });

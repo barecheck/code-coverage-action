@@ -1,7 +1,7 @@
 const core = require("@actions/core");
 
 const checkMinimumRatio = (coverageDiff) => {
-  const minCoverageRatio = parseInt(core.getInput("minimum-ratio"), 10);
+  const minCoverageRatio = parseFloat(core.getInput("minimum-ratio"));
 
   core.info(`minimum-ratio: ${minCoverageRatio}`);
 
