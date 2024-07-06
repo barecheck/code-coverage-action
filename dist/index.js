@@ -14695,7 +14695,7 @@ module.exports = getChangedFilesCoverage;
 const core = __nccwpck_require__(2186);
 
 const checkMinimumRatio = (coverageDiff) => {
-  const minCoverageRatio = parseInt(core.getInput("minimum-ratio"), 10);
+  const minCoverageRatio = parseFloat(core.getInput("minimum-ratio"));
 
   core.info(`minimum-ratio: ${minCoverageRatio}`);
 
