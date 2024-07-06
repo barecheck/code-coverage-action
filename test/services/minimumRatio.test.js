@@ -119,7 +119,7 @@ describe("services/minCoverageRatio", () => {
 
       assert.isUndefined(res);
       assert.isFalse(setFailed.calledOnce);
-    })
+    });
 
     it("Supports floats as the ratio, with an unacceptable diff amount", () => {
       const minCoverageRatio = 0.5;
@@ -141,6 +141,6 @@ describe("services/minCoverageRatio", () => {
 
       assert.isUndefined(res);
       assert.isTrue(setFailed.calledOnce);
-    })
+    });
   });
 });
