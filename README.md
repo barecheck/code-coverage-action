@@ -178,6 +178,20 @@ Action will not send any data besides just the coverage number and commit sha to
 
 Whether you're a seasoned developer or just getting started, your contributions are valuable to us. Don't hesitate to jump in, explore the project, and make an impact. To start contributing, please check out our [Contribution Guidelines](CONTRIBUTING.md).
 
+### Cycle time (Last 30 days)
+---
+[![Cycle Time - (Last 30 Days) widget](https://embeddables.devactivity.com/orgs/barecheck/d65e7f42-0e39-4b52-a84e-e3c5316ab170.svg) ![Coding Time (Last 30 days) widget](https://embeddables.devactivity.com/orgs/barecheck/7f520b07-0c55-4fde-85b0-e8329ea188e6.svg) ![Pickup Time (Last 30 days) widget](https://embeddables.devactivity.com/orgs/barecheck/f7a8767f-053c-4587-ac8f-df5b6f5ac0d0.svg) ![Review Time (Last 30 days) widget](https://embeddables.devactivity.com/orgs/barecheck/a967d55c-5770-4b43-a9f6-ac1a932e175a.svg)](https://app.devactivity.com/public/?organizationLogin=barecheck#nav-contribution-stats)
+---
+<sup><sub>Check also our [Public Dashboard](https://app.devactivity.com/public/?organizationLogin=barecheck) powered by [devActivity](https://devactivity.com/?ref=public_widget)</sub></sup>
+
+
+### Repo Stats (last 45 days)
+---
+[![Contributors Count (Last 45 days) widget](https://embeddables.devactivity.com/orgs/barecheck/02685494-133d-4eb5-80a4-1d423d143aaf.svg) ![Commits Count (Last 45 days) widget](https://embeddables.devactivity.com/orgs/barecheck/1e7481c1-0a6e-4adc-8434-604cbfb83005.svg) ![Issues Closed Count (Last 45 days) widget](https://embeddables.devactivity.com/orgs/barecheck/62991fa4-eec3-4f55-bc4c-08f9ade63a48.svg) ![Issues Opened Count (Last 45 days) widget](https://embeddables.devactivity.com/orgs/barecheck/d0383fa5-6b8f-4555-a2ea-b627e9698610.svg) ![Pull Requests Closed Count (Last 45 days) widget](https://embeddables.devactivity.com/orgs/barecheck/c9cb0cf1-f9d6-4164-8762-ed1d434eda67.svg)](https://app.devactivity.com/public/?organizationLogin=barecheck#nav-contribution-stats)
+---
+<sup><sub>Check also our [Public Dashboard](https://app.devactivity.com/public/?organizationLogin=barecheck) powered by [devActivity](https://devactivity.com/?ref=public_widget)</sub></sup>
+
+
 ## Setup development environment
 
 - Clone this repository
