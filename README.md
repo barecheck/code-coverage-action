@@ -176,7 +176,7 @@ Action will not send any data besides just the coverage number and commit sha to
 
 👋 **Welcome, new contributors!**
 
-Whether you're a seasoned developer or just getting started, your contributions are valuable to us. Don't hesitate to jump in, explore the project, and make an impact. To start contributing, please check out our [Contribution Guidelines](CONTRIBUTING.md). 
+Whether you're a seasoned developer or just getting started, your contributions are valuable to us. Don't hesitate to jump in, explore the project, and make an impact. To start contributing, please check out our [Contribution Guidelines](CONTRIBUTING.md).
 
 ## Setup development environment
 
