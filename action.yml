@@ -36,6 +36,11 @@ inputs:
     description: "Application name should be used once you have more then one report in your workflow."
     default: ""
     required: false
+  workspace-path:
+    description: "Path to your application. Mostly used for Monorepos if you need to add prefix for all files"
+    default: ""
+    required: false
+
 outputs:
   percentage:
     description: "Total Percentage coverage"
