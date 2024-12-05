@@ -40,6 +40,13 @@ const getSendSummaryComment = () =>
 
 const getWorkspacePath = () => core.getInput("workspace-path");
 
+const getPullNumber = () => {
+  const rawValue = core.getInput("pull-number");
+  const intValue = parseInt(rawValue, 10);
+  const isNumber = !isNaN(intValue);
+  return (isNumber && intValue > 0);
+}
+
 module.exports = {
   getShowAnnotations,
   getGithubToken,
@@ -49,5 +56,6 @@ module.exports = {
   getLcovFile,
   getBaseLcovFile,
   getSendSummaryComment,
-  getWorkspacePath
+  getWorkspacePath,
+  getPullNumber
 };

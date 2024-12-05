@@ -40,6 +40,10 @@ inputs:
     description: "Path to your application. Mostly used for Monorepos if you need to add prefix for all files"
     default: ""
     required: false
+  pull-number:
+    description: "Pull request number (Optional). For use in non-'pull_request' events"
+    default: ""
+    required: false
 
 outputs:
   percentage:

@@ -3,30 +3,32 @@ const sinon = require("sinon");
 const { assert } = require("chai");
 
 const actionsCoreStub = require("../stubs/actionsCore.stub");
+const { getPullNumber } = require('../../src/input');
 
 const defaultMocks = {
   ...actionsCoreStub,
   github: {},
   githubApi: {},
   getBarecheckGithubAppToken: () => null,
-  getGithubToken: () => null
+  getGithubToken: () => null,
+  getPullNumber: () => false
 };
 
 const getGitHubLibMock = (mocks) => {
-  const { github, githubApi, getBarecheckGithubAppToken, getGithubToken } = {
+  const { github, githubApi, getBarecheckGithubAppToken, getGithubToken, getPullNumber } = {
     ...defaultMocks,
     ...mocks
   };
   return proxyquire("../../src/lib/github", {
     "@actions/github": github,
     "@barecheck/core": { githubApi },
-    "../input": { getBarecheckGithubAppToken, getGithubToken }
+    "../input": { getBarecheckGithubAppToken, getGithubToken, getPullNumber }
   });
 };
 
 describe("lib/github", () => {
   describe("getPullRequestContext()", () => {
-    it("should return value from github context", () => {
+    it("should return value from github context and no pull-number input", () => {
       const github = {
         context: {
           repo: {
@@ -51,7 +53,7 @@ describe("lib/github", () => {
       });
     });
 
-    it("should return false when there is no Pull request context", () => {
+    it("should return false when there is no Pull request context and no pull-number input", () => {
       const github = {
         context: {
           repo: {
@@ -66,6 +68,54 @@ describe("lib/github", () => {
       const pullRequestContext = getPullRequestContext();
 
       assert.isFalse(pullRequestContext);
+    });
+
+    it("should return true when there is a pull-number input and no Pull request context", () => {
+      const github = {
+        context: {
+          repo: {
+            owner: "barecheck",
+            repo: "barecheck"
+          },
+          payload: {}
+        }
+      };
+      const getPullNumber = sinon.stub().returns(321);
+      const { getPullRequestContext } = getGitHubLibMock({ getPullNumber, github });
+
+      const pullRequestContext = getPullRequestContext();
+
+      assert.deepEqual(pullRequestContext, {
+        owner: "barecheck",
+        repo: "barecheck",
+        pullNumber: 321
+      });
+    });
+
+    it("should return value with explicit pull-number precedence", () => {
+      const github = {
+        context: {
+          repo: {
+            owner: "barecheck",
+            repo: "barecheck"
+          },
+          payload: {
+            pull_request: {
+              number: 123
+            }
+          }
+        }
+      };
+      const getPullNumber = sinon.stub().returns(321);
+      const { getPullRequestContext } = getGitHubLibMock({ getPullNumber, github });
+
+      const pullRequestContext = getPullRequestContext();
+
+      assert.deepEqual(pullRequestContext, {
+        owner: "barecheck",
+        repo: "barecheck",
+        pullNumber: 321
+      });
     });
   });
 

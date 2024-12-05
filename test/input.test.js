@@ -144,4 +144,28 @@ describe("input", () => {
       })
     );
   });
+
+  describe("getPullNumber", () => {
+    [
+      { input: "foo", expected: false },
+      { input: "", expected: false },
+      { input: "-1", expected: false },
+      { input: "0", expected: false },
+      { input: "1", expected: true },
+    ].forEach(({ input, expected }) =>
+      it(`should return ${expected} when  'pull-number=${input}'`, () => {
+        const expectedRes = input;
+        const getInput = sinon
+          .stub()
+          .withArgs("pull-number")
+          .returns(expectedRes);
+
+        const { getPullNumber } = inputMock({ getInput });
+
+        const res = getPullNumber(input);
+
+        assert.equal(res, expected);
+      })
+    );
+  });
 });

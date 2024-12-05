@@ -1,18 +1,20 @@
 const github = require("@actions/github");
 const { githubApi } = require("@barecheck/core");
 
-const { getBarecheckGithubAppToken, getGithubToken } = require("../input");
+const { getBarecheckGithubAppToken, getGithubToken, getPullNumber } = require("../input");
 
 let octokit = null;
 
 const cleanRef = (fullRef) => fullRef.replace("refs/heads/", "");
 
 const getPullRequestContext = () => {
-  if (!github.context.payload.pull_request) return false;
+  const pullNumberInput = getPullNumber();
+
+  if (!github.context.payload.pull_request && !pullNumberInput) return false;
 
   const { owner, repo } = github.context.repo;
 
-  const pullNumber = github.context.payload.pull_request.number;
+  const pullNumber = pullNumberInput || github.context.payload.pull_request.number;
 
   return {
     owner,
