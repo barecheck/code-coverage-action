@@ -44,7 +44,7 @@ const getPullNumber = () => {
   const rawValue = core.getInput("pull-number");
   const intValue = parseInt(rawValue, 10);
   const isNumber = !isNaN(intValue);
-  return (isNumber && intValue > 0);
+  return isNumber && intValue > 0 ? intValue : false;
 }
 
 module.exports = {

@@ -6,7 +6,8 @@ branding:
 inputs:
   github-token:
     description: Your GitHub Action token
-    required: true
+    required: false
+    default: ''
   barecheck-github-app-token:
     description: Barecheck application token, received after application installation. Would be used instead of `github-token`
     required: false
