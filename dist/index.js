@@ -14438,9 +14438,9 @@ const getWorkspacePath = () => core.getInput("workspace-path");
 const getPullNumber = () => {
   const rawValue = core.getInput("pull-number");
   const intValue = parseInt(rawValue, 10);
-  const isNumber = !isNaN(intValue);
+  const isNumber = !Number.isNaN(intValue);
   return isNumber && intValue > 0 ? intValue : false;
-}
+};
 
 module.exports = {
   getShowAnnotations,
@@ -14540,7 +14540,11 @@ module.exports = {
 const github = __nccwpck_require__(5438);
 const { githubApi } = __nccwpck_require__(5396);
 
-const { getBarecheckGithubAppToken, getGithubToken, getPullNumber } = __nccwpck_require__(6);
+const {
+  getBarecheckGithubAppToken,
+  getGithubToken,
+  getPullNumber
+} = __nccwpck_require__(6);
 
 let octokit = null;
 
@@ -14553,7 +14557,8 @@ const getPullRequestContext = () => {
 
   const { owner, repo } = github.context.repo;
 
-  const pullNumber = pullNumberInput || github.context.payload.pull_request.number;
+  const pullNumber =
+    pullNumberInput || github.context.payload.pull_request.number;
 
   return {
     owner,
