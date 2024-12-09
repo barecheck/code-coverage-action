@@ -153,7 +153,7 @@ describe("input", () => {
       { input: "0", expected: false },
       { input: "1", expected: 1 },
       { input: "2", expected: 2 },
-      { input: "44", expected: 44 },
+      { input: "44", expected: 44 }
     ].forEach(({ input, expected }) =>
       it(`should return ${expected} when 'pull-number=${input}'`, () => {
         const expectedRes = input;

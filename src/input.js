@@ -43,9 +43,9 @@ const getWorkspacePath = () => core.getInput("workspace-path");
 const getPullNumber = () => {
   const rawValue = core.getInput("pull-number");
   const intValue = parseInt(rawValue, 10);
-  const isNumber = !isNaN(intValue);
+  const isNumber = !Number.isNaN(intValue);
   return isNumber && intValue > 0 ? intValue : false;
-}
+};
 
 module.exports = {
   getShowAnnotations,

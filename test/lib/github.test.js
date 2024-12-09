@@ -3,7 +3,7 @@ const sinon = require("sinon");
 const { assert } = require("chai");
 
 const actionsCoreStub = require("../stubs/actionsCore.stub");
-const { getPullNumber } = require('../../src/input');
+// const { getPullNumber } = require('../../src/input');
 
 const defaultMocks = {
   ...actionsCoreStub,
@@ -15,14 +15,24 @@ const defaultMocks = {
 };
 
 const getGitHubLibMock = (mocks) => {
-  const { github, githubApi, getBarecheckGithubAppToken, getGithubToken, getPullNumber } = {
+  const {
+    github,
+    githubApi,
+    getBarecheckGithubAppToken,
+    getGithubToken,
+    getPullNumber
+  } = {
     ...defaultMocks,
     ...mocks
   };
   return proxyquire("../../src/lib/github", {
     "@actions/github": github,
     "@barecheck/core": { githubApi },
-    "../input": { getBarecheckGithubAppToken, getGithubToken, getPullNumber }
+    "../input": {
+      getBarecheckGithubAppToken,
+      getGithubToken,
+      getPullNumber
+    }
   });
 };
 
@@ -81,7 +91,10 @@ describe("lib/github", () => {
         }
       };
       const getPullNumber = sinon.stub().returns(321);
-      const { getPullRequestContext } = getGitHubLibMock({ getPullNumber, github });
+      const { getPullRequestContext } = getGitHubLibMock({
+        getPullNumber,
+        github
+      });
 
       const pullRequestContext = getPullRequestContext();
 
@@ -107,7 +120,10 @@ describe("lib/github", () => {
         }
       };
       const getPullNumber = sinon.stub().returns(321);
-      const { getPullRequestContext } = getGitHubLibMock({ getPullNumber, github });
+      const { getPullRequestContext } = getGitHubLibMock({
+        getPullNumber,
+        github
+      });
 
       const pullRequestContext = getPullRequestContext();
 

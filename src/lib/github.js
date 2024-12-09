@@ -1,7 +1,11 @@
 const github = require("@actions/github");
 const { githubApi } = require("@barecheck/core");
 
-const { getBarecheckGithubAppToken, getGithubToken, getPullNumber } = require("../input");
+const {
+  getBarecheckGithubAppToken,
+  getGithubToken,
+  getPullNumber
+} = require("../input");
 
 let octokit = null;
 
@@ -14,7 +18,8 @@ const getPullRequestContext = () => {
 
   const { owner, repo } = github.context.repo;
 
-  const pullNumber = pullNumberInput || github.context.payload.pull_request.number;
+  const pullNumber =
+    pullNumberInput || github.context.payload.pull_request.number;
 
   return {
     owner,
