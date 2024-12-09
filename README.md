@@ -173,6 +173,34 @@ Action will not send any data besides just the coverage number and commit sha to
 
 `barecheck-api-key` has a bigger priority than `base-lcov-file` . Once you passed of them, only API KEY will be used. All other parameters can be used in the same way.
 
+### 'Push' events support
+
+If your workflows are using 'push' events but you still would like to receive barecheck code coverage comments in your Pull requests, there is a handy `pull-number` input that can be used. This input would be used as Pull request number where the comments need to be posted.
+
+Here are also handy actions that you can use to fetch an associated Pull request number for every 'push' event.
+
+- https://github.com/marketplace/actions/find-current-pull-request
+- https://github.com/marketplace/actions/find-pull-request
+
+```yml
+# Find the PR associated with this push, if there is one.
+- uses: jwalton/gh-find-current-pr@master
+  id: findPr
+  with:
+    # Can be "open", "closed", or "all".  Defaults to "open".
+    state: open
+
+- name: Generate Code Coverage report
+  id: code-coverage
+  if: success() && steps.findPr.outputs.number
+  uses: barecheck/code-coverage-action@v1
+  with:
+    barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
+    barecheck-api-key: ${{ secrets.BARECHECK_API_KEY }}
+    lcov-file: "./coverage/lcov.info"
+    pull-number: ${{ steps.findPr.outputs.number }}
+```
+
 ## Contributing
 
 👋 **Welcome, new contributors!**
