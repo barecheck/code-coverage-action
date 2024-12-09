@@ -45,19 +45,19 @@ To integrate with this Github Action, you can just use the following configurati
 
 ## Inputs
 
-| Key                          | Required | Default                                                               | Description                                                                                                                                          |
-| ---------------------------- | -------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `github-token`               | **yes**  | -                                                                     | Default Github Actions token. The token is not required if GitHub application is installed and the token passed through `barecheck-github-app-token` |
-| `lcov-file`                  | **yes**  | -                                                                     | Lcov.info file that was generated after your test coverage command                                                                                   |
-| `barecheck-github-app-token` | **no**   | -                                                                     | Barecheck application token, received after application installation comment.                                                                        |
-| `barecheck-api-key`          | **no**   | -                                                                     | Your project API_KEY generated from https://barecheck.com. Use this property to avoid running coverage for the base branch.                          |
-| `base-lcov-file`             | **no**   | -                                                                     | Lcov.info file that would be used to compare code coverage. The comparison will be disabled if the file is not passed                                |
-| `send-summary-comment`       | **no**   | true                                                                  | Option to send Github code coverage comment based on the changes that were made in PR                                                                |
-| `show-annotations`           | **no**   | 'warning'                                                             | Option to enable Github annotation that would show uncovered files in review tab. Options: ' ' \| warning \| error                                   |
-| `minimum-ratio`              | **no**   | ''                                                                    | Percentage of uncovered lines that are allowed for new changes                                                                                       |
-| `app-name`                   | **no**   | 'Barecheck'                                                           | Application name would be used once you have more than one report in your workflow and want to have different reports per application.               |
-| `workspace-path`             | **no**   | 'Barecheck'                                                           | Option to specify the path of projects in monorepo                                                                                                   |
-| `pull-number`                | **no**   | 'Pull request number (Optional). For use in non-'pull_request' events |
+| Key                          | Required | Default     | Description                                                                                                                                          |
+| ---------------------------- | -------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `github-token`               | **yes**  | -           | Default Github Actions token. The token is not required if GitHub application is installed and the token passed through `barecheck-github-app-token` |
+| `lcov-file`                  | **yes**  | -           | Lcov.info file that was generated after your test coverage command                                                                                   |
+| `barecheck-github-app-token` | **no**   | -           | Barecheck application token, received after application installation comment.                                                                        |
+| `barecheck-api-key`          | **no**   | -           | Your project API_KEY generated from https://barecheck.com. Use this property to avoid running coverage for the base branch.                          |
+| `base-lcov-file`             | **no**   | -           | Lcov.info file that would be used to compare code coverage. The comparison will be disabled if the file is not passed                                |
+| `send-summary-comment`       | **no**   | true        | Option to send Github code coverage comment based on the changes that were made in PR                                                                |
+| `show-annotations`           | **no**   | 'warning'   | Option to enable Github annotation that would show uncovered files in review tab. Options: ' ' \| warning \| error                                   |
+| `minimum-ratio`              | **no**   | ''          | Percentage of uncovered lines that are allowed for new changes                                                                                       |
+| `app-name`                   | **no**   | 'Barecheck' | Application name would be used once you have more than one report in your workflow and want to have different reports per application.               |
+| `workspace-path`             | **no**   | 'Barecheck' | Option to specify the path of projects in monorepo                                                                                                   |
+| `pull-number`                | **no**   | ''          | Pull request number (Optional). For use in non-'pull_request' events                                                                                 |
 
 ## Workflow Example
 
