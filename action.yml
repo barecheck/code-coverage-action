@@ -6,7 +6,8 @@ branding:
 inputs:
   github-token:
     description: Your GitHub Action token
-    required: true
+    required: false
+    default: ''
   barecheck-github-app-token:
     description: Barecheck application token, received after application installation. Would be used instead of `github-token`
     required: false
@@ -38,6 +39,10 @@ inputs:
     required: false
   workspace-path:
     description: "Path to your application. Mostly used for Monorepos if you need to add prefix for all files"
+    default: ""
+    required: false
+  pull-number:
+    description: "Pull request number (Optional). For use in non-'pull_request' events"
     default: ""
     required: false
 
