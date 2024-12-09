@@ -3,37 +3,104 @@ name: CI
 on:
   push:
     branches:
-      - master
-      - v1
+      - '**'
   pull_request:
 
 jobs:
-  checks:
-    runs-on: ubuntu-latest
+  install-dependencies:
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js v20.9.0
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+    
+      - name: Use NodeJS 20.x
+        uses: actions/setup-node@v4
         with:
-          node-version: v20.9.0
+          node-version: 20.x
+
+      - name: node_modules cache
+        uses: actions/cache@v4
+        with:
+          key: node_modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            node_modules-
+          path: |
+            ./node_modules
 
       - name: Install dependencies
         run: yarn
 
+  lint:
+    runs-on: ubuntu-22.04
+    needs: install-dependencies
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+    
+      - name: Use NodeJS 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: node_modules global cache restore
+        uses: actions/cache/restore@v4
+        with:
+          key: node_modules-${{ hashFiles('**/yarn.lock') }}
+          fail-on-cache-miss: true
+          path: |
+            ./node_modules
+
       - name: Run linting checks
         run: yarn lint
+
+  format-check:
+    runs-on: ubuntu-22.04
+    needs: install-dependencies
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+    
+      - name: Use NodeJS 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: node_modules global cache restore
+        uses: actions/cache/restore@v4
+        with:
+          key: node_modules-${{ hashFiles('**/yarn.lock') }}
+          fail-on-cache-miss: true
+          path: |
+            ./node_modules
 
       - name: Run formatting checks
         run: yarn format-check
 
-      - name: Install dependencies
-        run: yarn test
+  test-coverage:
+    runs-on: ubuntu-22.04
+    needs: install-dependencies
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+    
+      - name: Use NodeJS 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: node_modules global cache restore
+        uses: actions/cache/restore@v4
+        with:
+          key: node_modules-${{ hashFiles('**/yarn.lock') }}
+          fail-on-cache-miss: true
+          path: |
+            ./node_modules
 
       - name: Run test coverage
         run: yarn coverage
 
       - name: Generate Code Coverage report
         id: code-coverage
+        if: ${{ github.event_name == 'pull_request' }}
         uses: ./
         with:
           barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
