@@ -57,7 +57,7 @@ To integrate with this Github Action, you can just use the following configurati
 | `minimum-ratio`              | **no**   | ''          | Percentage of uncovered lines that are allowed for new changes                                                                                       |
 | `app-name`                   | **no**   | 'Barecheck' | Application name would be used once you have more than one report in your workflow and want to have different reports per application.               |
 | `workspace-path`             | **no**   | 'Barecheck' | Option to specify the path of projects in monorepo                                                                                                   |
-| `pull-number`                | **no**   | ''          | Pull request number (Optional). For use in non-'pull_request' events                                                                                 |
+| `pull-number`                | **no**   | ''          | Pull request number where code coverage comment will be send. This arg mostly is for 'push' events workflows.                                        |
 
 ## Workflow Example
 
