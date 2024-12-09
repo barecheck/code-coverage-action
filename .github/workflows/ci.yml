@@ -100,7 +100,6 @@ jobs:
 
       - name: Generate Code Coverage report
         id: code-coverage
-        if: ${{ github.event_name == 'pull_request' }}
         uses: ./
         with:
           barecheck-github-app-token: ${{ secrets.BARECHECK_GITHUB_APP_TOKEN }}
